@@ -98,6 +98,29 @@ export const y2012c2: Question[] = [
     answer: 'C',
     explanation:
       '考虑最坏情况：3 个进程各获得 4 − 1 = 3 个资源且都还差 1 个，若资源只有 9 个，则每个进程都因申请不到最后一个资源而互相等待，发生死锁。在此基础上再增加 1 个资源（共 10 个），必有某个进程能凑足 4 个资源运行完毕并释放，死锁不会发生。一般结论：n 个进程、每个最多需 k 个资源时，至少配置 n(k−1)+1 个资源可保证不死锁，本题 3×3+1 = 10。',
+    visual: {
+      kind: 'flow',
+      title: '最少资源数的死锁边界分析',
+      nodes: [
+        { id: 's', label: '3 个进程\n各最多需 4 个', type: 'start' },
+        { id: 'p1', label: '最坏情况：\n各进程已获 3 个', type: 'proc' },
+        { id: 'p2', label: '共占 3×3=9 个\n各还差 1 个', type: 'proc' },
+        { id: 'c1', label: '总资源 ≥ 10？', type: 'cond' },
+        { id: 'p3', label: '某进程凑足\n4 个，可运行完', type: 'proc' },
+        { id: 'p4', label: '运行完释放\n4 个资源', type: 'proc' },
+        { id: 'e1', label: '其余进程相继完成\n不会死锁\n(n(k−1)+1)', type: 'end' },
+        { id: 'e2', label: '各差 1 个\n互相等待死锁', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'p1' },
+        { from: 'p1', to: 'p2' },
+        { from: 'p2', to: 'c1' },
+        { from: 'c1', to: 'p3', label: '是' },
+        { from: 'c1', to: 'e2', label: '否' },
+        { from: 'p3', to: 'p4' },
+        { from: 'p4', to: 'e1' },
+      ],
+    },
   },
   {
     id: 'q-2012-26',
@@ -108,6 +131,7 @@ export const y2012c2: Question[] = [
     topic: '处理机调度',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'os-schedule-metrics',
     score: 2,
     question: '下列关于处理机调度的叙述中，错误的是（ ）。',
     options: [
@@ -129,6 +153,7 @@ export const y2012c2: Question[] = [
     topic: '快表',
     difficulty: 1,
     source: 'adapted',
+    templateId: 'os-paging-translate',
     score: 2,
     question: '在分页存储管理中引入快表（TLB）的主要目的是（ ）。',
     options: [
@@ -289,6 +314,7 @@ export const y2012c2: Question[] = [
     topic: '子网划分',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'cn-vlsm',
     score: 2,
     question:
       '某主机的 IP 地址为 180.80.77.55，子网掩码为 255.255.252.0。该主机所在子网的广播地址是（ ）。',
@@ -306,6 +332,7 @@ export const y2012c2: Question[] = [
     topic: 'IP 分片',
     difficulty: 3,
     source: 'adapted',
+    templateId: 'cn-fragment',
     score: 2,
     question:
       '一个总长度为 4000 B（含 20 B 首部）的 IP 数据报，经过一个 MTU = 1500 B 的网络时将被分片。该数据报被分成的片数及最后一个分片的片偏移字段值（以 8 B 为单位）分别是（ ）。',
@@ -313,6 +340,27 @@ export const y2012c2: Question[] = [
     answer: 'A',
     explanation:
       '数据部分共 4000 − 20 = 3980 B。每片最多携带 1500 − 20 = 1480 B 数据（1480 恰为 8 的倍数）。前两片各 1480 B，剩余 3980 − 2960 = 1020 B 为第 3 片，故共 3 片。片偏移以 8 B 为单位记录该片数据在原数据报中的相对位置：第 1 片为 0，第 2 片为 1480/8 = 185，第 3 片为 2960/8 = 370，选 A。185 是第 2 片的偏移；3980/1480 ≈ 2.7 向上取整为 3 片，不是 2 片也不是 4 片。',
+    visual: {
+      kind: 'flow',
+      title: 'IP 数据报分片（总长 4000 B，MTU = 1500 B）',
+      nodes: [
+        { id: 's', label: '总长 4000 B\n含首部 20 B', type: 'start' },
+        { id: 'p1', label: '数据部分\n3980 B', type: 'proc' },
+        { id: 'p2', label: '每片最多\n1500−20=1480 B', type: 'proc' },
+        { id: 'p3', label: '片1：1480 B\n偏移 0，MF=1', type: 'proc' },
+        { id: 'p4', label: '片2：1480 B\n偏移 185，MF=1', type: 'proc' },
+        { id: 'p5', label: '片3：1020 B\n偏移 370，MF=0', type: 'proc' },
+        { id: 'e', label: '共 3 片，末片\n偏移字段 370', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'p1' },
+        { from: 'p1', to: 'p2' },
+        { from: 'p2', to: 'p3', label: '偏移=起点÷8' },
+        { from: 'p3', to: 'p4' },
+        { from: 'p4', to: 'p5' },
+        { from: 'p5', to: 'e' },
+      ],
+    },
   },
   {
     id: 'q-2012-37',
@@ -340,6 +388,7 @@ export const y2012c2: Question[] = [
     topic: '拥塞控制',
     difficulty: 3,
     source: 'adapted',
+    templateId: 'cn-cwnd',
     score: 2,
     question:
       '主机甲与主机乙之间建立 TCP 连接，初始拥塞窗口 cwnd = 1 MSS，慢开始门限 ssthresh = 8 MSS，每一轮传输（RTT）都被确认，无超时与冗余确认。经过 5 个 RTT 后，拥塞窗口 cwnd 的大小为（ ）。',
@@ -347,6 +396,18 @@ export const y2012c2: Question[] = [
     answer: 'C',
     explanation:
       '慢开始阶段 cwnd 每 RTT 翻倍：初始 1 → 2 → 4 → 8，第 3 个 RTT 结束时 cwnd 达到 ssthresh = 8 MSS，随即转入拥塞避免阶段，cwnd 每 RTT 只加 1 MSS：第 4 个 RTT 后为 9，第 5 个 RTT 后为 10 MSS。8 是未进入拥塞避免的值；9 少算了一轮；16 是全程按指数增长的结果，忽略了 ssthresh 的切换作用。',
+    visual: {
+      kind: 'cwnd',
+      title: '慢开始 → 拥塞避免（ssthresh = 8 MSS，无超时）',
+      points: [
+        { round: 0, cwnd: 1, ssthresh: 8 },
+        { round: 1, cwnd: 2, ssthresh: 8 },
+        { round: 2, cwnd: 4, ssthresh: 8 },
+        { round: 3, cwnd: 8, ssthresh: 8, event: '到达门限，转拥塞避免' },
+        { round: 4, cwnd: 9, ssthresh: 8 },
+        { round: 5, cwnd: 10, ssthresh: 8, event: '5 个 RTT 后' },
+      ],
+    },
   },
   {
     id: 'q-2012-39',

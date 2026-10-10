@@ -594,6 +594,25 @@ export const mock06c2: Question[] = [
     ],
     explanation:
       'TCP 自适应重传的三件套：RTTs（平滑往返时间，低通滤波）、RTTD（偏差加权平均）、RTO = RTTs + 4×RTTD。更新次序固定：先 RTTs（α = 1/8），后 RTTD（β = 1/4，基准为新 RTTs），最后拼 RTO。本题验算链 106.25 → 29.6875 → 225，逐位可复算。补充规则：发生重传的样本不再用于更新（Karn 算法），连续重传时 RTO 指数退避。',
+    visual: {
+      kind: 'flow',
+      title: 'RFC 6298 超时重传时间 RTO 的更新链',
+      nodes: [
+        { id: 's', label: 'RTTs=100ms\nRTTD=25ms', type: 'start' },
+        { id: 'a', label: '测得新样本\nRTT=150ms', type: 'proc' },
+        { id: 'b', label: 'RTTs=106.25ms\n（7/8旧+1/8新）', type: 'proc' },
+        { id: 'c', label: 'RTTD=29.6875ms\n（基准为新 RTTs）', type: 'proc' },
+        { id: 'd', label: 'RTO = RTTs\n+ 4×RTTD', type: 'proc' },
+        { id: 'e', label: '106.25+118.75\n=225ms（答案）', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'a' },
+        { from: 'a', to: 'b' },
+        { from: 'b', to: 'c' },
+        { from: 'c', to: 'd' },
+        { from: 'd', to: 'e' },
+      ],
+    },
   },
   {
     id: 'mock06-40',
@@ -605,6 +624,7 @@ export const mock06c2: Question[] = [
     topic: '信道利用率',
     difficulty: 3,
     source: 'mock',
+    templateId: 'cn-latency',
     score: 2,
     question:
       '主机甲经一条 10 Mb/s 链路向主机乙连续发送数据，帧长 2500B，往返传播时延 RTT 为 30ms，忽略确认帧的发送时延与处理时延，发送窗口固定为 12 帧（连续 ARQ）。稳定运行时该信道的利用率约为（　）。',
@@ -618,5 +638,26 @@ export const mock06c2: Question[] = [
     ],
     explanation:
       '滑动窗口利用率公式：U = min(1, W×Td/(Td + RTT))（忽略确认帧时延）。本题 W×Td = 24ms < Td + RTT = 32ms，故 U = 24/32 = 75%；若把窗口加大到 16 帧则 U = 100%（连续发送），若窗口减为 1 即停等协议 U = Td/(Td+RTT) = 6.25%。解题三步：算 Td（注意 2500B = 20000bit）、算周期（首帧发出到其确认到达）、比大小取 min。窗口不足时「管道填不满」，这正是序号位数与窗口设计的工程意义。',
+    visual: {
+      kind: 'flow',
+      title: '滑动窗口信道利用率的计算链',
+      nodes: [
+        { id: 's', label: '10Mb/s、帧 2500B\nRTT=30ms', type: 'start' },
+        { id: 'a', label: '一帧 20000bit\nTd=2ms', type: 'proc' },
+        { id: 'b', label: '周期 = Td+RTT\n= 2+30 = 32ms', type: 'proc' },
+        { id: 'c', label: '窗口 12 帧占时\n12×Td=24ms', type: 'proc' },
+        { id: 'd', label: 'W×Td ≥ 周期？\n（24 ≥ 32？）', type: 'cond' },
+        { id: 'e', label: '是：U=100%\n（需 W≥16 帧）', type: 'end' },
+        { id: 'f', label: '否：U=24/32\n=75%（答案）', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'a' },
+        { from: 'a', to: 'b' },
+        { from: 'b', to: 'c' },
+        { from: 'c', to: 'd' },
+        { from: 'd', to: 'e', label: '是' },
+        { from: 'd', to: 'f', label: '否' },
+      ],
+    },
   },
 ]

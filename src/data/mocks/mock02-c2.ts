@@ -40,6 +40,7 @@ export const mock02c2: Question[] = [
     topic: '总线带宽',
     difficulty: 1,
     source: 'mock',
+    templateId: 'co-bus-bandwidth',
     score: 2,
     question:
       '某同步总线的时钟频率为 200MHz，数据线宽度 32 位，每个时钟周期可传送 2 次数据（如上升沿、下降沿各一次）。该总线的数据传输率（带宽）为（　）。',
@@ -115,6 +116,7 @@ export const mock02c2: Question[] = [
     topic: '前趋图与PV',
     difficulty: 3,
     source: 'mock',
+    templateId: 'os-pv-model',
     score: 2,
     question:
       '某计算包含 5 个活动 S1～S5，前趋关系为：S1→S2、S1→S3、S2→S4、S3→S4、S4→S5。为用信号量保证前趋关系，设置信号量 a、b、c、d、e（初值均为 0）：S1 结束时执行 V(a)、V(b)；S2 前执行 P(a)、结束后执行 V(c)；S3 前执行 P(b)、结束后执行 V(d)；S5 前执行 P(e)。则 S4 对应进程段中应安排的操作是（　）。',
@@ -133,6 +135,42 @@ export const mock02c2: Question[] = [
     ],
     explanation:
       '前趋图 PV 化的规则：为每条有向边设一个初值为 0 的信号量；箭头尾部活动结束时 V 它，箭头头部活动开始前 P 它。一个活动有几个直接前趋就做几个 P，有几个直接后继就做几个 V。据此 S4 前为 P(c)、P(d)（等 S2、S3 都完成），后为 V(e)（通知 S5）。本题也可推广验证：5 条边恰好需要 5 个信号量。',
+    visual: {
+      kind: 'graph',
+      title: '前趋图与信号量的对应（S4 的 P/V 安排）',
+      nodes: [
+        { id: 'S1', x: 50, y: 6 },
+        { id: 'S2', x: 20, y: 38 },
+        { id: 'S3', x: 80, y: 38 },
+        { id: 'S4', x: 50, y: 66 },
+        { id: 'S5', x: 50, y: 94 },
+      ],
+      edges: [
+        { from: 'S1', to: 'S2', directed: true },
+        { from: 'S1', to: 'S3', directed: true },
+        { from: 'S2', to: 'S4', directed: true },
+        { from: 'S3', to: 'S4', directed: true },
+        { from: 'S4', to: 'S5', directed: true },
+      ],
+      steps: [
+        {
+          labels: { S1: 'V(a),V(b)', S2: 'P(a)/V(c)', S3: 'P(b)/V(d)', S4: '？', S5: 'P(e)' },
+          note: '每条前趋边对应一个初值 0 的信号量：箭尾活动结束时 V，箭头活动开始前 P',
+        },
+        {
+          activeNodes: ['S2', 'S3', 'S4'],
+          activeEdges: ['S2-S4', 'S3-S4'],
+          labels: { S1: 'V(a),V(b)', S2: 'V(c)', S3: 'V(d)', S4: 'P(c),P(d)', S5: 'P(e)' },
+          note: 'S4 的两条入边：S2→S4 对应 c、S3→S4 对应 d，故 S4 开始前须执行 P(c)、P(d)',
+        },
+        {
+          activeNodes: ['S4', 'S5'],
+          activeEdges: ['S4-S5'],
+          labels: { S1: 'V(a),V(b)', S2: 'P(a)/V(c)', S3: 'P(b)/V(d)', S4: 'P(c),P(d) 后 V(e)', S5: 'P(e)' },
+          note: 'S4 唯一的直接后继是 S5（信号量 e）：S4 结束时执行 V(e)，故选 D',
+        },
+      ],
+    },
   },
   {
     id: 'mock02-26',
@@ -144,6 +182,7 @@ export const mock02c2: Question[] = [
     topic: '银行家算法',
     difficulty: 3,
     source: 'mock',
+    templateId: 'os-banker',
     score: 2,
     question:
       '系统中有 R1、R2 两类资源各 4 个，进程 P1、P2、P3 当前已分配与最大需求如下表（矩阵每行为一个进程）：\n已分配：P1(1,0)、P2(1,1)、P3(0,1)\n最大需求：P1(2,1)、P2(3,2)、P3(3,2)\n则下列序列中，不可能是安全序列的是（　）。',
@@ -157,6 +196,31 @@ export const mock02c2: Question[] = [
     ],
     explanation:
       '银行家算法判断安全序列的固定步骤：先算 Need = Max − Allocation，再从「当前可用资源」出发，逐个考察序列中的进程——每个进程的 Need 必须不超过当时剩余的可分配量，完成后归还其全部占用资源，可用量只增不减。本题剩余 (2,2)，而 P3 需要 (3,1) 且无人归还前 R1 至多 2 个，任何以 P3 开头的序列都走不通。注意「不安全 ≠ 死锁」，只是找不到保证完成的顺序。',
+    visual: {
+      kind: 'flow',
+      title: '银行家算法：判断 P3 开头的序列',
+      nodes: [
+        { id: 's', label: '开始', type: 'start' },
+        { id: 'a', label: 'Need=Max−分配\nP3 尚需 (3,1)', type: 'proc' },
+        { id: 'b', label: '可用资源 (2,2)\n= (4,4)−(2,2)', type: 'proc' },
+        { id: 'c', label: '序列以 P3 开头？', type: 'cond' },
+        { id: 'd', label: 'P3 需 (3,1)\nR1 缺口 3>2 启动失败', type: 'proc' },
+        { id: 'e', label: 'B 无法推进\nP3 开头不安全', type: 'end' },
+        { id: 'f', label: 'P1/P2 的 Need\n(1,1)与(2,1)可满足', type: 'proc' },
+        { id: 'g', label: '完成并回收资源\nP3 随后可完成', type: 'proc' },
+        { id: 'h', label: 'A、C、D 均安全\n仅 B 不可能', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'a' },
+        { from: 'a', to: 'b' },
+        { from: 'b', to: 'c' },
+        { from: 'c', to: 'd', label: '是' },
+        { from: 'd', to: 'e' },
+        { from: 'c', to: 'f', label: '否' },
+        { from: 'f', to: 'g' },
+        { from: 'g', to: 'h' },
+      ],
+    },
   },
   {
     id: 'mock02-27',
@@ -168,6 +232,7 @@ export const mock02c2: Question[] = [
     topic: '页面置换',
     difficulty: 3,
     source: 'mock',
+    templateId: 'os-page-replace',
     score: 2,
     question:
       '某请求分页系统为进程分配 3 个页框，页面访问序列为 3、1、4、1、2、5、3、2、1、4（初始页框为空，首次调入也算缺页）。采用 LRU 置换算法，缺页次数为（　）。',
@@ -256,6 +321,7 @@ export const mock02c2: Question[] = [
     topic: '位示图',
     difficulty: 2,
     source: 'mock',
+    templateId: 'os-bitmap',
     score: 2,
     question:
       '某文件系统用位示图管理磁盘空闲块，位示图的字号、位号及磁盘块号都从 0 开始编号，每个字 32 位（第 i 位为 1 表示对应块空闲）。2048 号磁盘块对应位示图中的字号与位号分别是（　）。',
@@ -280,6 +346,7 @@ export const mock02c2: Question[] = [
     topic: '作业调度',
     difficulty: 2,
     source: 'mock',
+    templateId: 'os-schedule-metrics',
     score: 2,
     question:
       '某单处理机系统采用非抢占式短作业优先（SJF）调度。进程 P1、P2、P3、P4 的到达时间依次为 0、1、2、4，服务时间依次为 7、4、2、5（忽略调度与切换开销）。4 个进程的平均周转时间为（　）。',
@@ -304,6 +371,7 @@ export const mock02c2: Question[] = [
     topic: '磁盘调度',
     difficulty: 2,
     source: 'mock',
+    templateId: 'os-disk-schedule',
     score: 2,
     question:
       '某磁盘磁头当前位于 55 号磁道，等待服务的请求磁道依次为 30、92、70、25、88。采用电梯调度（SCAN）算法，磁头沿磁道号增大方向扫描，经过该方向最后一个请求后折返，则磁头服务请求的次序是（　）。',
@@ -452,6 +520,7 @@ export const mock02c2: Question[] = [
     topic: '拥塞控制',
     difficulty: 3,
     source: 'mock',
+    templateId: 'cn-cwnd',
     score: 2,
     question:
       'TCP 连接建立后，发送方执行拥塞控制：初始 cwnd = 1 MSS、ssthresh = 12 MSS。慢启动阶段 cwnd 每轮（RTT）翻倍，若翻倍后将超过门限则取门限值并转入拥塞避免（线性加 1）；第 9 轮结束时发生超时，此后 ssthresh 更新为超时时 cwnd 的一半、cwnd 重置为 1 重新慢启动。则第 12 轮结束时 cwnd 为（　）。',

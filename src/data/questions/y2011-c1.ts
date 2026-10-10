@@ -11,12 +11,60 @@ export const y2011c1: Question[] = [
     topic: '完全二叉树',
     difficulty: 3,
     source: 'real',
+    templateId: 'ds-tree-count',
     score: 2,
     question: '一棵有 124 个叶结点的完全二叉树，最多有多少个结点？（ ）',
     options: ['247', '248', '249', '250'],
     answer: 'B',
     explanation:
       '完全二叉树中度为 1 的结点数 n1 只能取 0 或 1。由二叉树性质 n0 = n2 + 1，得 n2 = 124 − 1 = 123。要使总结点数最多，取 n1 = 1，故 n = n0 + n1 + n2 = 124 + 1 + 123 = 248。也可以用编号规律验证：124 个叶结点对应的最左叶结点编号为 125 时树最深。若漏掉 n1 的存在（取 0）会误得 247；若把 n0 = n2 + 1 写反则误得 249/250。',
+    visual: {
+      kind: 'tree',
+      title: '完全二叉树 n0/n1/n2 计数示意（124 个叶结点）',
+      steps: [
+        {
+          nodes: [
+            { id: 'r', label: 'n2' },
+            { id: 'a', label: 'n2', parent: 'r' },
+            { id: 'b', label: 'n2', parent: 'r' },
+            { id: 'c', label: 'n1', parent: 'a' },
+            { id: 'd', label: 'n0', parent: 'a' },
+            { id: 'e', label: 'n0', parent: 'b' },
+            { id: 'f', label: 'n0', parent: 'b' },
+            { id: 'g', label: 'n0', parent: 'c' },
+          ],
+          note: '完全二叉树：n1 至多 1 个（示意结点 c），内部结点均为 n2',
+        },
+        {
+          nodes: [
+            { id: 'r', label: 'n2' },
+            { id: 'a', label: 'n2', parent: 'r' },
+            { id: 'b', label: 'n2', parent: 'r' },
+            { id: 'c', label: 'n1', parent: 'a' },
+            { id: 'd', label: 'n0', parent: 'a' },
+            { id: 'e', label: 'n0', parent: 'b' },
+            { id: 'f', label: 'n0', parent: 'b' },
+            { id: 'g', label: 'n0', parent: 'c' },
+          ],
+          highlight: ['c'],
+          note: '性质 n0 = n2 + 1（与 n1 无关）：n2 = 124 − 1 = 123',
+        },
+        {
+          nodes: [
+            { id: 'r', label: 'n2' },
+            { id: 'a', label: 'n2', parent: 'r' },
+            { id: 'b', label: 'n2', parent: 'r' },
+            { id: 'c', label: 'n1', parent: 'a' },
+            { id: 'd', label: 'n0', parent: 'a' },
+            { id: 'e', label: 'n0', parent: 'b' },
+            { id: 'f', label: 'n0', parent: 'b' },
+            { id: 'g', label: 'n0', parent: 'c' },
+          ],
+          highlight: ['r', 'a', 'b', 'c', 'd', 'e', 'f', 'g'],
+          note: '结点最多取 n1 = 1：n = 124 + 1 + 123 = 248，选 B',
+        },
+      ],
+    },
   },
   {
     id: 'q-2011-02',
@@ -44,6 +92,7 @@ export const y2011c1: Question[] = [
     topic: '折半查找',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'ds-bsearch-asl',
     score: 2,
     question:
       '对有序表 {2, 4, 6, 8, 10, 12, 14, 16}（元素下标为 1～8，mid 取 ⌊(low+high)/2⌋）进行折半查找，查找关键字 12 时依次与待查元素比较的是（ ）。',
@@ -51,6 +100,53 @@ export const y2011c1: Question[] = [
     answer: 'A',
     explanation:
       '第一次 low=1、high=8，mid=4，与 8 比较，12 > 8，low=5；第二次 mid=(5+8)/2=6，与 12 比较，相等，查找成功。比较序列为 8、12，共 2 次。折半查找的判定树形态由表长决定，长度 8 的表只需最多 ⌈log₂(8+1)⌉ = 4 次比较；干扰项 10、14 是把 mid 错取为 ⌈(low+high)/2⌉ 或下标从 0 计算的结果，务必按题目规定的取整与下标约定逐步计算。',
+    visual: {
+      kind: 'tree',
+      title: '折半查找判定树（n=8）与查找 12 的路径',
+      steps: [
+        {
+          nodes: [
+            { id: 'r', label: '8' },
+            { id: 'a', label: '4', parent: 'r' },
+            { id: 'b', label: '12', parent: 'r' },
+            { id: 'c', label: '2', parent: 'a' },
+            { id: 'd', label: '6', parent: 'a' },
+            { id: 'e', label: '10', parent: 'b' },
+            { id: 'f', label: '14', parent: 'b' },
+            { id: 'g', label: '16', parent: 'f' },
+          ],
+          note: '判定树：根为第 4 个元素 8（mid=⌊(1+8)/2⌋=4），树平衡',
+        },
+        {
+          nodes: [
+            { id: 'r', label: '8' },
+            { id: 'a', label: '4', parent: 'r' },
+            { id: 'b', label: '12', parent: 'r' },
+            { id: 'c', label: '2', parent: 'a' },
+            { id: 'd', label: '6', parent: 'a' },
+            { id: 'e', label: '10', parent: 'b' },
+            { id: 'f', label: '14', parent: 'b' },
+            { id: 'g', label: '16', parent: 'f' },
+          ],
+          highlight: ['r'],
+          note: '第 1 次：low=1、high=8，mid=4，与 8 比较，12>8 → low=5',
+        },
+        {
+          nodes: [
+            { id: 'r', label: '8' },
+            { id: 'a', label: '4', parent: 'r' },
+            { id: 'b', label: '12', parent: 'r' },
+            { id: 'c', label: '2', parent: 'a' },
+            { id: 'd', label: '6', parent: 'a' },
+            { id: 'e', label: '10', parent: 'b' },
+            { id: 'f', label: '14', parent: 'b' },
+            { id: 'g', label: '16', parent: 'f' },
+          ],
+          highlight: ['r', 'b'],
+          note: '第 2 次：low=5、high=8，mid=6，与 12 相等，查找成功，选 A',
+        },
+      ],
+    },
   },
   {
     id: 'q-2011-04',
@@ -135,6 +231,7 @@ export const y2011c1: Question[] = [
     topic: '循环队列',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'ds-loop-queue',
     score: 2,
     question:
       '循环队列存放在数组 Q[0..m−1] 中，front 指向队头元素，rear 指向队尾元素的下一位置，则队列中当前的元素个数为（ ）。',
@@ -158,6 +255,32 @@ export const y2011c1: Question[] = [
     answer: 'C',
     explanation:
       '每归并一趟，有序子段的长度加倍、段数减半，把 n 个初始段（每段 1 个记录）归并为 1 段需把规模缩小 2 的幂次，趟数为 ⌈log₂n⌉（n 不是 2 的幂时最后一趟不足两路仍算一趟），例如 n = 5 时过程为 5 段 → 3 段 → 2 段 → 1 段共 3 趟 = ⌈log₂5⌉。每趟最多比较约 n 次，总比较次数不超过 n⌈log₂n⌉，这与快速、堆排序同为 O(n log n) 量级，但归并排序还能稳定地保持次序不变。',
+    visual: {
+      kind: 'sort',
+      title: '2 路归并的趟数（示例 n=8，共 ⌈log₂8⌉=3 趟）',
+      frames: [
+        {
+          arr: [49, 38, 65, 97, 76, 13, 27, 50],
+          note: '初始：8 个长度 1 的有序段，相邻段两两归并',
+        },
+        {
+          arr: [38, 49, 65, 97, 13, 76, 27, 50],
+          range: [0, 7],
+          note: '第 1 趟：两两归并成 4 个长度 2 的有序段',
+        },
+        {
+          arr: [38, 49, 65, 97, 13, 27, 50, 76],
+          range: [0, 7],
+          note: '第 2 趟：归并成长度 4 的有序段，剩 2 段',
+        },
+        {
+          arr: [13, 27, 38, 49, 50, 65, 76, 97],
+          range: [0, 7],
+          settled: [0, 1, 2, 3, 4, 5, 6, 7],
+          note: '第 3 趟归并为 1 段；一般地 n 个记录共需 ⌈log₂n⌉ 趟，选 C',
+        },
+      ],
+    },
   },
   {
     id: 'q-2011-10',
@@ -227,6 +350,7 @@ export const y2011c1: Question[] = [
     topic: 'IEEE 754',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'co-ieee754',
     score: 2,
     question: '将十进制数 −12.75 表示成 IEEE 754 单精度浮点数，其十六进制形式是（ ）。',
     options: ['414C 0000H', 'C14B 0000H', '404C 0000H', 'C14C 0000H'],
@@ -243,6 +367,7 @@ export const y2011c1: Question[] = [
     topic: 'Cache 平均访问',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'co-cache-perf',
     score: 2,
     question:
       '某存储系统中，访问 Cache 需 20 ns，访问主存需 200 ns，Cache 命中率为 90%。CPU 访存时先访问 Cache，未命中再访问主存（未命中时 Cache 的访问时间不能省去）。则该存储系统一次访存的平均时间约为（ ）。',
@@ -250,6 +375,24 @@ export const y2011c1: Question[] = [
     answer: 'C',
     explanation:
       '平均访问时间 = 命中率 × 命中时间 + 未命中率 × (Cache 访问时间 + 主存访问时间) = 0.9 × 20 + 0.1 × (20 + 200) = 18 + 22 = 40 ns。此模型假定 Cache 与主存"串行"访问（先查 Cache 不中再访主存，Cache 时间不省略）；若题目声明"同时访问、命中即提前结束"，则应为 0.9 × 20 + 0.1 × 200 = 38 ns。审题时必须看清访问方式，这正是 22/38/40 三个干扰项的由来。',
+    visual: {
+      kind: 'flow',
+      title: 'Cache—主存串行访问流程（平均 40 ns）',
+      nodes: [
+        { id: 's', label: 'CPU 发出访存', type: 'start' },
+        { id: 'p1', label: '访问 Cache\n（20 ns）', type: 'proc' },
+        { id: 'c1', label: '命中？', type: 'cond' },
+        { id: 'p2', label: '访问主存\n（再 200 ns）', type: 'proc' },
+        { id: 'e1', label: '取到数据\n平均 40 ns：\n0.9×20+0.1×220', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'p1' },
+        { from: 'p1', to: 'c1' },
+        { from: 'c1', to: 'e1', label: '是（20 ns）' },
+        { from: 'c1', to: 'p2', label: '否' },
+        { from: 'p2', to: 'e1', label: '取数并调块' },
+      ],
+    },
   },
   {
     id: 'q-2011-15',

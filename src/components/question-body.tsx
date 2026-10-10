@@ -8,6 +8,7 @@ import { RichText } from '@/components/rich-text'
 import { letterOf, TYPE_LABEL } from '@/data/types'
 import type { Question } from '@/data/types'
 import { VisualPlayer } from '@/components/visuals/visual-player'
+import { SolutionTemplate } from '@/components/solution-template'
 import { useProgress } from '@/lib/store'
 import { cn } from '@/lib/utils'
 
@@ -218,6 +219,11 @@ export function QuestionBody({
             })}
           </div>
         </div>
+      )}
+
+      {/* 通用解题模板：这一类题的固定解法（单选答完 / 综合题看答案后显示） */}
+      {q.templateId && (answered || (q.type === 'application' && revealed)) && (
+        <SolutionTemplate id={q.templateId} />
       )}
 
       {/* 动画 / 图示讲解 */}

@@ -12,6 +12,7 @@ export const curatedCo2: Question[] = [
     topic: '指令流水线',
     difficulty: 3,
     source: 'curated',
+    templateId: 'co-pipeline',
     score: 2,
     question:
       '某 5 段指令流水线（每段 1 个时钟周期）执行 100 条指令，其中 20 条为转移指令，每次转移成功引起 3 个时钟周期的断流。则完成全部指令约需（　）个时钟周期。',
@@ -215,6 +216,7 @@ export const curatedCo2: Question[] = [
     topic: '总线带宽',
     difficulty: 2,
     source: 'curated',
+    templateId: 'co-bus-bandwidth',
     score: 2,
     question:
       '某同步总线时钟频率为 100MHz，数据线宽度 32 位，每个时钟周期的上升沿与下降沿各传送一次数据（DDR 方式）。该总线的数据传输率为（　）。',
@@ -228,6 +230,27 @@ export const curatedCo2: Question[] = [
     ],
     explanation:
       '总线带宽公式：带宽 = 频率 × 每周期传送次数 × 每次位数 ÷ 8。本题三个因子：100MHz、DDR 两次/周期、32 位 = 4 字节，得 100M×2×4 = 800MB/s。DDR（Double Data Rate）在时钟两个边沿各传一次是最常见的加难设置；另一变体是问「传送 2KB 数据需多少周期」的突发传送题，须把地址传送周期摊入。做题时先统一单位（位→字节），再按因子逐项相乘，可避免 A 类漏乘 2 的错误。',
+    visual: {
+      kind: 'flow',
+      title: 'DDR 总线带宽的计算链',
+      nodes: [
+        { id: 's', label: '同步总线\n100MHz、32 位', type: 'start' },
+        { id: 'a', label: 'DDR：上升沿与\n下降沿各传 1 次', type: 'proc' },
+        { id: 'b', label: '每周期传送 2 次', type: 'proc' },
+        { id: 'c', label: '每秒 100M×2\n= 200M 次', type: 'proc' },
+        { id: 'd', label: '每次 32 位\n= 4 字节', type: 'proc' },
+        { id: 'e', label: '带宽 = 200M×4B\n= 800MB/s', type: 'proc' },
+        { id: 't', label: '800MB/s（D）', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'a' },
+        { from: 'a', to: 'b' },
+        { from: 'b', to: 'c' },
+        { from: 'c', to: 'd' },
+        { from: 'd', to: 'e' },
+        { from: 'e', to: 't' },
+      ],
+    },
   },
   {
     id: 'cur-co-049',
@@ -537,6 +560,7 @@ export const curatedCo2: Question[] = [
     topic: '性能指标',
     difficulty: 1,
     source: 'curated',
+    templateId: 'co-performance',
     score: 2,
     question: '某计算机主频 2GHz，平均每条指令需要 4 个时钟周期，其运算速度约为（　）MIPS。',
     options: ['250', '2000', '50', '500'],
@@ -560,6 +584,7 @@ export const curatedCo2: Question[] = [
     topic: '性能指标',
     difficulty: 1,
     source: 'curated',
+    templateId: 'co-performance',
     score: 2,
     question: '某程序共含 4×10^9 条指令，平均 CPI 为 2，在主频 1.6GHz 的机器上执行，所需时间约为（　）。',
     options: ['5s', '2.5s', '10s', '8s'],
@@ -583,6 +608,7 @@ export const curatedCo2: Question[] = [
     topic: '性能指标',
     difficulty: 3,
     source: 'curated',
+    templateId: 'co-performance',
     score: 2,
     question:
       '某程序中 A 类指令占 60%（CPI = 2）、B 类占 30%（CPI = 3）、C 类占 10%（CPI = 4）。若增设运算部件使 A 类指令的 CPI 降为 1（其余不变），则程序的加速比约为（　）。',
@@ -596,6 +622,27 @@ export const curatedCo2: Question[] = [
     ],
     explanation:
       '加权 CPI 与加速比两步走：原 CPI = Σ 频率×CPI = 2.5；A 类 CPI 2→1 后新 CPI = 1.9；加速比 = 2.5/1.9 ≈ 1.32。用 Amdahl 定律复核：A 类原占时间比例 = 0.6×2/2.5 = 0.48，改进倍数 2，S = 1/((1−0.48)+0.48/2) = 1/0.76 ≈ 1.32，两法一致。注意区分「指令条数占比」与「时间占比」：Amdahl 定律中的 fe 是时间占比，直接把 60% 代入是常见错误。',
+    visual: {
+      kind: 'flow',
+      title: '加权 CPI 与加速比',
+      nodes: [
+        { id: 's', label: 'A 60% CPI=2\nB 30% CPI=3\nC 10% CPI=4', type: 'start' },
+        { id: 'a', label: '原 CPI =\n0.6×2+0.3×3\n+0.1×4 = 2.5', type: 'proc' },
+        { id: 'b', label: '增设运算部件\nA 类 CPI 2→1', type: 'proc' },
+        { id: 'c', label: '新 CPI =\n0.6×1+0.9+0.4\n= 1.9', type: 'proc' },
+        { id: 'd', label: '加速比 =\n原时间 ÷ 新时间', type: 'cond' },
+        { id: 'e', label: 'S = 2.5/1.9\n≈ 1.32', type: 'proc' },
+        { id: 't', label: '加速比 ≈ 1.32\n（选项 B）', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'a' },
+        { from: 'a', to: 'b' },
+        { from: 'b', to: 'c' },
+        { from: 'c', to: 'd' },
+        { from: 'd', to: 'e' },
+        { from: 'e', to: 't' },
+      ],
+    },
   },
   {
     id: 'cur-co-063',
@@ -658,6 +705,7 @@ export const curatedCo2: Question[] = [
     topic: 'Cache性能',
     difficulty: 2,
     source: 'curated',
+    templateId: 'co-cache-perf',
     score: 2,
     question:
       '某系统访问 Cache 需 15ns，访问主存需 150ns，Cache 命中率为 96%。CPU 先访问 Cache，缺失时再访问主存（串行方式）。则平均访问时间为（　）。',
@@ -682,6 +730,7 @@ export const curatedCo2: Question[] = [
     topic: 'Cache性能',
     difficulty: 3,
     source: 'curated',
+    templateId: 'co-cache-perf',
     score: 2,
     question:
       '某机基础 CPI 为 1（不含访存等待）。指令 Cache 命中率 98%，缺失代价 100 拍；每条指令 1 次取指；数据 Cache 命中率 94%，缺失代价 100 拍，平均每条指令 0.25 次数据访存。考虑取指与数据访存停顿后，实际 CPI 约为（　）。',
@@ -695,6 +744,27 @@ export const curatedCo2: Question[] = [
     ],
     explanation:
       '访存停顿 CPI 公式：实际 CPI = 基础 CPI + 取指次数×取指缺失率×代价 + 每指令访存次数×数据缺失率×代价。三个乘积因子缺一不可：取指每条指令恰 1 次；数据访存要乘平均 0.25 次/指令的频率；缺失率 = 1 − 命中率。本题 2 + 1.5 = 3.5 拍停顿使 CPI 从 1 涨到 4.5——存储器停顿对性能的影响常大于运算部件本身，这也是分离 I-Cache/D-Cache、加大块、预取等技术的动机。',
+    visual: {
+      kind: 'flow',
+      title: '访存停顿对 CPI 的贡献',
+      nodes: [
+        { id: 's', label: '基础 CPI = 1\n（不含访存停顿）', type: 'start' },
+        { id: 'a', label: '取指 1 次/指令\n缺失率 2%', type: 'proc' },
+        { id: 'b', label: '取指停顿\n1×2%×100 = 2 拍', type: 'proc' },
+        { id: 'c', label: '数据访存\n0.25 次/指令', type: 'proc' },
+        { id: 'd', label: '数据停顿\n0.25×6%×100\n= 1.5 拍', type: 'proc' },
+        { id: 'e', label: '实际 CPI\n1+2+1.5 = 4.5', type: 'proc' },
+        { id: 't', label: 'CPI = 4.5（B）', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'a' },
+        { from: 'a', to: 'b' },
+        { from: 'b', to: 'c' },
+        { from: 'c', to: 'd' },
+        { from: 'd', to: 'e' },
+        { from: 'e', to: 't' },
+      ],
+    },
   },
   {
     id: 'cur-co-067',
@@ -861,6 +931,7 @@ export const curatedCo2: Question[] = [
     topic: '补码运算',
     difficulty: 2,
     source: 'curated',
+    templateId: 'co-complement',
     score: 10,
     question:
       '某机字长 8 位（含 1 位符号位），整数采用补码表示。设 x = −78，y = +66。\n(1) 写出 [x]补、[y]补 与 [−y]补。（3分）\n(2) 用补码加法计算 x − y，写出运算过程，判断结果是否溢出，并说明机器结果与真实和的关系。（4分）\n(3) 用补码加法计算 x + y，写出运算过程并判断是否溢出。（3分）',
@@ -911,6 +982,33 @@ export const curatedCo2: Question[] = [
       '**(1) 机器数**\nx = 5.875 = 101.111B = 1.01111×2^2；阶码 = 2+127 = 129 = 1000 0001B。\n[x]机器 = 0 | 1000 0001 | 0111 1000…0 = **40BC0000H**。\ny = −2.75 = −10.11B = −1.011×2^1；阶码 = 1+127 = 128 = 1000 0000B。\n[y]机器 = 1 | 1000 0000 | 011 0000…0 = **C0300000H**。\n\n**(2) x + y 的计算过程**\n① 对阶：|2 − 1| = 1，y 阶码小，将 y 的尾数右移 1 位（数值位 1.011 → 0.1011，符号位保持负），阶码加 1 变为 2；移出位为 0，无精度丢失。\n② 尾数运算（按绝对值列式）：x 尾数绝对值 1.01111，y 对阶后绝对值 0.10110；结果绝对值 = 1.01111 − 0.10110 = 0.11001，数符取绝对值大者（x）的符号，为正。\n③ 规格化：0.11001×2^2 不是规格化数，左规 1 位得 1.1001×2^1，阶码 = 1+127 = 128。\n④ 舍入：尾数 1001 后补 0 至 23 位，无丢失。\n结果机器数 = 0 | 1000 0000 | 1001 0000…0 = **40480000H**，真值 1.1001B×2 = 11.001B = **3.125**。\n验算：5.875 − 2.75 = 3.125 ✓。\n\n**(3) 精确性**\n3.125 = 11.001B 是有限位二进制小数，有效尾数仅 4 位，远少于 23 位，**单精度即可精确表示**；改用双精度（52 位尾数）同样精确，结果不变。一个十进制小数能否精确表示，只取决于它是否可写成 2 的负幂的有限和（如 0.5、0.125），与格式宽度只要容纳得下这些位即可。',
     explanation:
       'IEEE 754 加减五步法：对阶（小阶向大阶）→ 尾数加减（先把隐含的 1 还原）→ 规格化（左规/右规）→ 舍入 → 判阶码溢出（本题阶码 128 远未越界）。两个高频失分点：① 对阶只能移动阶小的一方且只能右移；② 尾数运算必须带隐含位（1.01111 而非 0.01111），否则结果整体差一位。第 (3) 问引出「0.1 无法精确表示」的原理判断：分母含 2 以外质因子的十进制小数都是二进制无限小数。',
+    visual: {
+      kind: 'flow',
+      title: 'IEEE 754 加减五步法：5.875 + (−2.75)',
+      nodes: [
+        { id: 's', label: 'x = 5.875\ny = −2.75', type: 'start' },
+        { id: 'a', label: 'x = 101.111B\n= 1.01111×2^2\n机器数 40BC0000H', type: 'proc' },
+        { id: 'b', label: 'y = −10.11B\n= −1.011×2^1\n机器数 C0300000H', type: 'proc' },
+        { id: 'c', label: '对阶：小阶向大阶\ny 尾数右移 1 位', type: 'proc' },
+        { id: 'd', label: 'y 对阶后\n0.1011×2^2', type: 'proc' },
+        { id: 'e', label: '尾数绝对值相减\n1.01111\n− 0.10110\n= 0.11001', type: 'proc' },
+        { id: 'f', label: '数符取大者\n（x 为正）', type: 'proc' },
+        { id: 'g', label: '左规 1 位\n1.1001×2^1', type: 'proc' },
+        { id: 'h', label: '舍入：尾数补 0\n无精度丢失', type: 'proc' },
+        { id: 't', label: '结果 40480000H\n真值 3.125', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'a' },
+        { from: 'a', to: 'b' },
+        { from: 'b', to: 'c' },
+        { from: 'c', to: 'd' },
+        { from: 'd', to: 'e' },
+        { from: 'e', to: 'f' },
+        { from: 'f', to: 'g' },
+        { from: 'g', to: 'h' },
+        { from: 'h', to: 't' },
+      ],
+    },
   },
   {
     id: 'cur-co-075',
@@ -922,6 +1020,7 @@ export const curatedCo2: Question[] = [
     topic: 'Cache设计',
     difficulty: 3,
     source: 'curated',
+    templateId: 'co-cache-split',
     score: 13,
     question:
       '某计算机主存地址 32 位，按字节编址。Cache 数据区容量 16KB，块大小 32B，采用 2 路组相联映射。\n(1) 写出主存地址划分（Tag、组号、块内偏移各多少位），并求 Cache 共分多少组。（4分）\n(2) CPU 共访存 2500 次，其中命中 2450 次。Cache 访问时间 5ns，缺失后访问主存需 100ns（先查 Cache 再访主存的串行方式），求平均访问时间。（5分）\n(3) 若每行设 1 位有效位，求该 Cache 的总存储位数（含数据、Tag 与有效位）。（4分）',
@@ -929,6 +1028,37 @@ export const curatedCo2: Question[] = [
       '**(1) 地址划分与组数**\n块大小 32B = 2^5 → 块内偏移 **5 位**。\nCache 行数 = 16KB/32B = 512 行；2 路组相联 → 组数 = 512/2 = **256 组 = 2^8**，组号 **8 位**。\nTag = 32 − 8 − 5 = **19 位**。\n主存地址结构：`Tag(19) | 组号(8) | 块内偏移(5)`。\n\n**(2) 平均访问时间**\n命中率 h = 2450/2500 = 0.98。\n串行访问模型：T = h×tc + (1−h)×(tc+tm) = 0.98×5 + 0.02×(5+100) = 4.9 + 2.1 = **7.0ns**。\n（若采用 Cache 与主存同时访问的模型则为 0.98×5+0.02×100 = 6.9ns；本题按题面串行口径。）\n\n**(3) 总存储位数**\n每行存储位 = 数据 32×8 + Tag 19 + 有效位 1 = 256 + 20 = 276 bit。\n共 512 行：总位数 = 512×276 = **141312 bit**（= 17664B，比 16KB 数据多出的 2048B 即 Tag 与状态位开销）。',
     explanation:
       '组相联地址划分三步走：块内偏移 = log2(块大小)；组号 = log2(行数÷路数)；其余位全给 Tag。平均访问时间须先声明访问模型——串行口径的缺失代价是 5+100 = 105ns 而非 100ns，这是最常见的扣分点。存储位数计算别漏每行 1 位有效位；若采用写回法还须加脏位、实现 LRU 的 2 路组相联每行还须 1 位替换信息，题目未要求则不计。验算习惯：2450/2500 = 0.98 为整数比，可快速心算复核。',
+    visual: {
+      kind: 'flow',
+      title: '组相联地址划分与平均访问时间',
+      nodes: [
+        { id: 's', label: '主存 32 位地址\n按字节编址', type: 'start' },
+        { id: 'a', label: '块 32B = 2^5\n块内偏移 5 位', type: 'proc' },
+        { id: 'b', label: '行数 16KB/32B\n= 512 行', type: 'proc' },
+        { id: 'c', label: '2 路组相联\n组数 512/2 = 256', type: 'proc' },
+        { id: 'd', label: '组号 8 位', type: 'proc' },
+        { id: 'e', label: 'Tag = 32−8−5\n= 19 位', type: 'proc' },
+        { id: 'f', label: '地址结构\nTag19|组8|块内5', type: 'proc' },
+        { id: 'g', label: '命中率\n2450/2500\n= 0.98', type: 'proc' },
+        { id: 'h', label: 'T = 0.98×5\n+0.02×105\n= 7.0ns', type: 'proc' },
+        { id: 'i', label: '每行 256+19+1\n= 276 位', type: 'proc' },
+        { id: 'j', label: '512 行合计\n141312 位', type: 'proc' },
+        { id: 't', label: '三问：19|8|5\n7.0ns、141312 位', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'a' },
+        { from: 'a', to: 'b' },
+        { from: 'b', to: 'c' },
+        { from: 'c', to: 'd' },
+        { from: 'd', to: 'e' },
+        { from: 'e', to: 'f' },
+        { from: 'f', to: 'g' },
+        { from: 'g', to: 'h' },
+        { from: 'h', to: 'i' },
+        { from: 'i', to: 'j' },
+        { from: 'j', to: 't' },
+      ],
+    },
   },
   {
     id: 'cur-co-076',
@@ -940,6 +1070,7 @@ export const curatedCo2: Question[] = [
     topic: '指令格式',
     difficulty: 2,
     source: 'curated',
+    templateId: 'co-relative',
     score: 12,
     question:
       '某计算机字长 16 位，主存 64KB，按字节编址（主存地址 16 位）。指令字长 16 位，格式为：OP（5 位）｜M（3 位）｜A（8 位），M 为寻址方式字段。\n(1) 若采用定长操作码，该指令系统最多有多少条指令？A 字段直接寻址时能访问的主存单元数是多少？说明为何还需要其他寻址方式。（4分）\n(2) 设 M = 001 为一次间接寻址（EA = (A)）。说明其寻址范围，并计算从取出该指令到取得操作数共需访问主存的次数。（4分）\n(3) 设 M = 011 为相对寻址（转移指令）。某转移指令存放在主存 2A00H 处，A 字段（补码位移量）为 60H，求转移目标地址。（4分）',
@@ -976,6 +1107,7 @@ export const curatedCo2: Question[] = [
     topic: '指令流水线',
     difficulty: 3,
     source: 'curated',
+    templateId: 'co-pipeline',
     score: 13,
     question:
       '某按序发射的 5 段指令流水线分为 IF、ID、EX、MEM、WB，每段 1 个时钟周期。流水线具备前递（旁路）通路：ALU 指令的结果在 EX 段末产生，可前递到后继指令的 EX 段入口；load 指令的结果在 MEM 段末产生，可经 MEM/WB 前递。执行以下指令序列：\n`I1: lw  R2, 0(R1)`\n`I2: or  R3, R2, R4`\n`I3: and R6, R5, R4`\n`I4: add R7, R3, R6`\n`I5: sw  R7, 4(R1)`\n(1) 指出指令间的数据相关，说明哪一处必须插入停顿（气泡），其余相关为何可由前递解决。（4分）\n(2) 写出每条指令进入 IF 的拍号（0 起、含停顿），并计算执行完 5 条指令共需的时钟周期数。（4分）\n(3) 编译器能否通过指令调度消除该气泡？给出调度后的指令序列并计算新拍数，再求调度后相对完全串行执行（每条指令 5 拍）的加速比。（5分）',
@@ -1006,6 +1138,7 @@ export const curatedCo2: Question[] = [
     topic: '存储器扩展',
     difficulty: 2,
     source: 'curated',
+    templateId: 'co-chip-extend',
     score: 12,
     question:
       '某 CPU 地址线 16 根（A15～A0）、数据线 8 根。现要求构成存储系统：系统程序区用 ROM 共 16KB，安排在从最低地址开始的连续区域；用户程序区用 SRAM 共 32KB，紧接 ROM 之后；其余空间保留。\n(1) 选用 8K×8 位的 ROM 芯片与 8K×8 位的 SRAM 芯片，写出 ROM 与 RAM 各需多少片，以及每组芯片的地址范围（高位地址 A15A14A13A12 经译码产生片选）。（6分）\n(2) 写出各组芯片的片选与 A15A14A13A12 取值的对应关系。（2分）\n(3) 若要求 RAM 扩大到 64KB 且保留全部 ROM，在现有 16 位地址线下能否实现？说明理由。（4分）',
@@ -1013,6 +1146,33 @@ export const curatedCo2: Question[] = [
       '**(1) 芯片数与地址范围**\n8K = 2^13，片内地址用 A12～A0，高位 A15A14A13A12 共 4 位译码，每组 8KB。\nROM 16KB：需 8K×8 ROM **2 片**，占最低地址区 0000H~3FFFH：\n- ROM1：0000H~1FFFH（A15～A12 = 0000）\n- ROM2：2000H~3FFFH（A15～A12 = 0001）\nRAM 32KB：需 8K×8 SRAM **4 片**，紧接其后 4000H~BFFFH：\n- RAM1：4000H~5FFFH（0100）\n- RAM2：6000H~7FFFH（0101）\n- RAM3：8000H~9FFFH（0110）\n- RAM4：A000H~BFFFH（0111）\nC000H~FFFFH（对应 1110、1111 两组）保留。\n\n**(2) 片选对应关系**\n译码器对 A15A14A13A12 译码（输出低电平有效）：0000 → ROM1，0001 → ROM2，0100 → RAM1，0101 → RAM2，0110 → RAM3，0111 → RAM4；0010、0011 未定义（本题 ROM 恰用最低两组，无冲突）。\n\n**(3) 扩容可行性**\nRAM 扩到 64KB 需 8K×8 芯片 64KB/8K = 8 片；加上 ROM 16KB，总容量 80KB > 2^16 = 64KB 的寻址空间，**无法实现**。解决办法：压缩 RAM 需求或减少 ROM，或采用地址扩展技术（如体选法/段寄存器）突破 16 位地址线限制。',
     explanation:
       '存储扩展设计四步：算片内地址位数 → 划分地址组并译码 → 数芯片（字扩展组数 × 位扩展片数）→ 校验总容量不超过寻址空间。本题数据线 8 位与芯片字长一致，无位扩展，片数即组数。第 (3) 问是常见可行性陷阱：芯片买得起、地址装不下——「总容量 ≤ 2^地址线数」是硬约束。写地址范围时用「组号前缀 + 000H~FFFH」模板可避免逐位换算出错；片选低有效与 MREQ 配合的门电路细节在大题中常要求文字说明。',
+    visual: {
+      kind: 'flow',
+      title: 'ROM/RAM 存储扩展与地址分配',
+      nodes: [
+        { id: 's', label: '16 位地址线\n8 位数据线', type: 'start' },
+        { id: 'a', label: '寻址空间\n2^16 = 64KB', type: 'proc' },
+        { id: 'b', label: 'ROM 16KB\n需 8K×8 芯片 2 片', type: 'proc' },
+        { id: 'c', label: 'ROM 区（最低）\n0000H～3FFFH', type: 'proc' },
+        { id: 'd', label: 'RAM 32KB\n需 8K×8 芯片 4 片', type: 'proc' },
+        { id: 'e', label: 'RAM 区（紧接）\n4000H～BFFFH', type: 'proc' },
+        { id: 'f', label: 'C000H～FFFFH\n保留两组', type: 'proc' },
+        { id: 'g', label: 'RAM 扩到 64KB？\n共 16+64 = 80KB', type: 'cond' },
+        { id: 'h', label: '80KB > 64KB\n超出寻址空间', type: 'proc' },
+        { id: 't', label: '不能实现\n（需体选/分段）', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'a' },
+        { from: 'a', to: 'b' },
+        { from: 'b', to: 'c' },
+        { from: 'c', to: 'd' },
+        { from: 'd', to: 'e' },
+        { from: 'e', to: 'f' },
+        { from: 'f', to: 'g' },
+        { from: 'g', to: 'h', label: '是' },
+        { from: 'h', to: 't' },
+      ],
+    },
   },
   {
     id: 'cur-co-080',

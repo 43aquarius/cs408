@@ -11,6 +11,7 @@ export const y2010c2: Question[] = [
     topic: '总线带宽',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'co-bus-bandwidth',
     score: 2,
     question:
       '某同步总线的工作频率为 100 MHz，每个时钟周期可并行传送 4 个字节的数据，则该总线的数据传输率（带宽）为（ ）。',
@@ -235,12 +236,30 @@ export const y2010c2: Question[] = [
     topic: '子网掩码',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'cn-vlsm',
     score: 2,
     question: '某网络的子网掩码为 255.255.255.240，则该网络（一个子网）内最多可接入的主机数是（ ）。',
     options: ['14', '16', '30', '62'],
     answer: 'A',
     explanation:
       '255.255.255.240 = /28，主机号占 32 − 28 = 4 位，共 2^4 = 16 个地址，扣除全 0 的网络地址与全 1 的广播地址，可分配给主机的最多 14 个。若忘记扣除两个保留地址会误选 16；30 与 62 对应 /27 与 /26 的可用数，属于掩码位数计算错误。主机位位数 = 32 − 前缀长度，是子网类计算题的第一步。',
+    visual: {
+      kind: 'flow',
+      title: '由掩码 255.255.255.240 求最多主机数',
+      nodes: [
+        { id: 's', label: '子网掩码 /28', type: 'start' },
+        { id: 'p1', label: '主机号占\n32-28 = 4 位', type: 'proc' },
+        { id: 'p2', label: '共 2^4 = 16 个地址', type: 'proc' },
+        { id: 'p3', label: '扣除全 0 网络地址\n与全 1 广播地址', type: 'proc' },
+        { id: 'e', label: '最多 14 台主机', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'p1' },
+        { from: 'p1', to: 'p2' },
+        { from: 'p2', to: 'p3' },
+        { from: 'p3', to: 'e' },
+      ],
+    },
   },
   {
     id: 'q-2010-34',

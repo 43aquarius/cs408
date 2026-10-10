@@ -280,6 +280,7 @@ export const curatedDs1: Question[] = [
     topic: '栈与队列',
     difficulty: 2,
     source: 'curated',
+    templateId: 'ds-stack-sim',
     score: 2,
     question: '栈 S 的容量足够大。元素 1、2、3、4、5 按编号次序依次进栈，除进栈外可随时弹出栈顶元素。全部操作结束后，下列出栈序列中不可能出现的是（　）。',
     options: ['3 2 1 5 4', '3 1 2 5 4', '1 3 2 5 4', '2 3 4 5 1'],
@@ -303,6 +304,7 @@ export const curatedDs1: Question[] = [
     topic: '栈与队列',
     difficulty: 2,
     source: 'curated',
+    templateId: 'ds-stack-sim',
     score: 2,
     question: '设栈的输入序列为 1、2、3、4、5、6（依次进栈，进栈与出栈操作可交替进行）。若得到的出栈序列为 2、3、6、5、4、1，则该栈的容量至少为（　）。',
     options: ['3', '5', '6', '4'],
@@ -315,6 +317,19 @@ export const curatedDs1: Question[] = [
     ],
     explanation:
       '求栈的最小容量就是求「给定操作序列下栈内元素个数的最大值」。按序列 2、3、6、5、4、1 逐步模拟：输出 2 前压入 1、2（2 个），弹出 2；输出 3 前压入 3（2 个），弹出 3；输出 6 前须把 4、5、6 依次压入，此时栈内为 1、4、5、6，达到峰值 4；此后依次弹出 6、5、4、1。峰值为 4，故容量至少为 4。这类题目与「输出受限双端队列」「栈和队列混合输出」同属一类，唯一可靠的方法就是老老实实模拟每一步的栈状态。',
+    visual: {
+      kind: 'sort',
+      title: '出栈序列 2,3,6,5,4,1 的栈模拟（自底向顶）',
+      frames: [
+        { arr: [1, 2], settled: [1], note: '输出 2 前：依次压入 1、2（栈深 2），再弹出 2' },
+        { arr: [1, 3], settled: [1], note: '输出 3 前：压入 3（栈深 2），再弹出 3' },
+        { arr: [1, 4, 5, 6], compared: [0, 1, 2, 3], note: '输出 6 前：连续压入 4、5、6，栈内 1、4、5、6 共 4 个——全程峰值' },
+        { arr: [1, 4, 5], note: '弹出 6（输出 6），栈深回到 3' },
+        { arr: [1, 4], note: '弹出 5（输出 5）' },
+        { arr: [1], note: '弹出 4（输出 4）' },
+        { arr: ['—'], note: '弹出 1（输出 1），栈空；栈内元素峰值 4，故容量至少为 4' },
+      ],
+    },
   },
   {
     id: 'cur-ds-014',
@@ -354,6 +369,7 @@ export const curatedDs1: Question[] = [
     topic: '循环队列',
     difficulty: 2,
     source: 'curated',
+    templateId: 'ds-loop-queue',
     score: 2,
     question: '循环队列存放在容量为 8 的数组 Q[0..7] 中，约定 front 指向队头元素，rear 指向队尾元素的下一个位置。若当前 front = 5、rear = 2，则队列中的元素个数为（　）。',
     options: ['4 个', '5 个', '6 个', '3 个'],
@@ -377,6 +393,7 @@ export const curatedDs1: Question[] = [
     topic: '循环队列',
     difficulty: 2,
     source: 'curated',
+    templateId: 'ds-loop-queue',
     score: 2,
     question: '循环队列存放在数组 Q[0..m−1] 中，front 指向队头元素，rear 指向队尾元素的下一个位置，采用「牺牲一个存储单元」的方式区分队空与队满。则队满的判断条件以及队列中最多能存放的元素个数分别为（　）。',
     options: [
@@ -405,6 +422,7 @@ export const curatedDs1: Question[] = [
     topic: '循环队列',
     difficulty: 2,
     source: 'curated',
+    templateId: 'ds-loop-queue',
     score: 2,
     question: '若改用「设置计数器 count」的方案区分队空与队满（数组容量为 m，front、rear 约定同前），则队空、队满的判断条件分别为（　）。',
     options: [
@@ -484,6 +502,7 @@ export const curatedDs1: Question[] = [
     topic: '串与KMP',
     difficulty: 2,
     source: 'curated',
+    templateId: 'ds-kmp',
     score: 2,
     question: '模式串 t = "abcabd" 采用如下约定的 next 函数：next[1] = 0；对 j ≥ 2，next[j] 取使 p₁…p_{k−1} = p_{j−k+1}…p_{j−1} 成立的最大 k，不存在相等前后缀时取 1。则 t 的 next 函数值依次为（　）。',
     options: ['0 1 1 1 2 3', '0 1 1 2 2 3', '0 1 2 3 4 5', '0 0 1 1 1 2'],
@@ -496,6 +515,18 @@ export const curatedDs1: Question[] = [
     ],
     explanation:
       '求 next 数组即对每个位置 j 求「j−1 前串的最长相等真前后缀长度 + 1」。对 "abcabd"：j=2 前串 "a" 无真前后缀 → 1；j=3 前串 "ab" 前后缀不等 → 1；j=4 前串 "abc" → 1；j=5 前串 "abca" 相等前后缀 "a"（长 1）→ 2；j=6 前串 "abcab" 相等前后缀 "ab"（长 2）→ 3。故 next = 0 1 1 1 2 3。注意教材约定的差异：有的教材定义为「最长相等前后缀长度」（无 +1），两套约定的数组整体差 1，做题先看题干约定再动笔。',
+    visual: {
+      kind: 'sort',
+      title: '模式串 abcabd 的 next 数组逐位求解',
+      frames: [
+        { arr: ['0', '—', '—', '—', '—', '—'], settled: [0], note: '约定 next[1] = 0；j ≥ 2 时 next[j] = 前 j−1 个字符的最长相等前后缀长度 + 1' },
+        { arr: ['0', '1', '—', '—', '—', '—'], settled: [1], note: 'j=2：前串 a 无真前后缀 → next[2] = 1' },
+        { arr: ['0', '1', '1', '—', '—', '—'], settled: [2], note: 'j=3：前串 ab，前缀 a 与后缀 b 不等 → next[3] = 1' },
+        { arr: ['0', '1', '1', '1', '—', '—'], settled: [3], note: 'j=4：前串 abc 无相等前后缀 → next[4] = 1' },
+        { arr: ['0', '1', '1', '1', '2', '—'], settled: [4], note: 'j=5：前串 abca，最长相等前后缀 a（长 1）→ next[5] = 1+1 = 2' },
+        { arr: ['0', '1', '1', '1', '2', '3'], settled: [5], note: 'j=6：前串 abcab，最长相等前后缀 ab（长 2）→ next[6] = 2+1 = 3，即 0 1 1 1 2 3' },
+      ],
+    },
   },
   {
     id: 'cur-ds-021',
@@ -558,6 +589,7 @@ export const curatedDs1: Question[] = [
     topic: '二叉树遍历',
     difficulty: 2,
     source: 'curated',
+    templateId: 'ds-traversal-restore',
     score: 2,
     question: '已知一棵二叉树的中序遍历序列为 B D A E C F，后序遍历序列为 D B E F C A，则其先序遍历序列为（　）。',
     options: ['A B D C E F', 'A B D C F E', 'A D B C E F', 'A B C D E F'],
@@ -581,6 +613,7 @@ export const curatedDs1: Question[] = [
     topic: '二叉树遍历',
     difficulty: 2,
     source: 'curated',
+    templateId: 'ds-traversal-restore',
     score: 2,
     question: '已知一棵二叉树的层序遍历序列为 A B C D E，中序遍历序列为 D B E A C，则其后序遍历序列为（　）。',
     options: ['D B E C A', 'D E B C A', 'B D E C A', 'D E B A C'],
@@ -604,6 +637,7 @@ export const curatedDs1: Question[] = [
     topic: '二叉树遍历',
     difficulty: 1,
     source: 'curated',
+    templateId: 'ds-traversal-restore',
     score: 2,
     question: '下列遍历序列的组合中，不能唯一确定一棵二叉树的是（　）。',
     options: [
@@ -632,6 +666,7 @@ export const curatedDs1: Question[] = [
     topic: '完全二叉树',
     difficulty: 1,
     source: 'curated',
+    templateId: 'ds-tree-count',
     score: 2,
     question: '一棵完全二叉树共有 520 个结点，则其中叶结点的个数为（　）。',
     options: ['259', '260', '261', '250'],
@@ -655,6 +690,7 @@ export const curatedDs1: Question[] = [
     topic: '完全二叉树',
     difficulty: 2,
     source: 'curated',
+    templateId: 'ds-tree-count',
     score: 2,
     question: '一棵含有 1000 个结点的完全二叉树的高度为（　）（只有一个结点的树高度为 1）。',
     options: ['10', '9', '11', '12'],
@@ -764,6 +800,67 @@ export const curatedDs1: Question[] = [
     ],
     explanation:
       'BST 查找序列合法性的判定法则：维护当前可能区间 (low, high)，初始为 (−∞, +∞)。每比较一个关键字 k：若待查值大于 k，则进入 k 的右子树，low 更新为 k；若小于 k，进入左子树，high 更新为 k。序列中后续每个关键字都必须落在当前 (low, high) 之内，一旦越界即非法。C 项逐步验证：初始区间为 (−∞,+∞)，经 50 → (50,+∞)，80 → (50,80)，60 → (60,80)，65 → (65,80)，75 → (65,75)，每项均在区间内，最终命中 70，合法。该题型逆向考查 BST 查找路径的「区间收缩」本质，是历年高频考法。',
+    visual: {
+      kind: 'tree',
+      title: '选项 C 的 BST 查找路径（查 70）',
+      steps: [
+        {
+          nodes: [{ id: 'n50', label: '50' }],
+          highlight: ['n50'],
+          note: '与 50 比较：70 > 50，进入右子树，可行区间由 (−∞,+∞) 收缩为 (50,+∞)',
+        },
+        {
+          nodes: [
+            { id: 'n50', label: '50' },
+            { id: 'n80', label: '80', parent: 'n50' },
+          ],
+          highlight: ['n80'],
+          note: '与 80 比较：70 < 80，进入左子树，区间收缩为 (50,80)',
+        },
+        {
+          nodes: [
+            { id: 'n50', label: '50' },
+            { id: 'n80', label: '80', parent: 'n50' },
+            { id: 'n60', label: '60', parent: 'n80' },
+          ],
+          highlight: ['n60'],
+          note: '与 60 比较：70 > 60，进入右子树，区间收缩为 (60,80)',
+        },
+        {
+          nodes: [
+            { id: 'n50', label: '50' },
+            { id: 'n80', label: '80', parent: 'n50' },
+            { id: 'n60', label: '60', parent: 'n80' },
+            { id: 'n65', label: '65', parent: 'n60' },
+          ],
+          highlight: ['n65'],
+          note: '与 65 比较：70 > 65，进入右子树，区间收缩为 (65,80)',
+        },
+        {
+          nodes: [
+            { id: 'n50', label: '50' },
+            { id: 'n80', label: '80', parent: 'n50' },
+            { id: 'n60', label: '60', parent: 'n80' },
+            { id: 'n65', label: '65', parent: 'n60' },
+            { id: 'n75', label: '75', parent: 'n65' },
+          ],
+          highlight: ['n75'],
+          note: '与 75 比较：70 < 75，进入左子树，区间收缩为 (65,75)',
+        },
+        {
+          nodes: [
+            { id: 'n50', label: '50' },
+            { id: 'n80', label: '80', parent: 'n50' },
+            { id: 'n60', label: '60', parent: 'n80' },
+            { id: 'n65', label: '65', parent: 'n60' },
+            { id: 'n75', label: '75', parent: 'n65' },
+            { id: 'n70', label: '70', parent: 'n75' },
+          ],
+          highlight: ['n70'],
+          note: '与 70 相等，查找成功；每一步都落在当前区间内，序列 C 合法。选项 A、B、D 分别在 40、90、55 处越出区间，不可能出现',
+        },
+      ],
+    },
   },
   {
     id: 'cur-ds-032',
@@ -775,6 +872,7 @@ export const curatedDs1: Question[] = [
     topic: '平衡二叉树',
     difficulty: 2,
     source: 'curated',
+    templateId: 'ds-avl-rotate',
     score: 2,
     question: '将关键字 50、40、35 依次插入初始为空的平衡二叉树（AVL 树）中，插入完成后发生失衡的结点与应进行的调整是（　）。',
     options: [
@@ -839,6 +937,33 @@ export const curatedDs1: Question[] = [
     ],
     explanation:
       '高度为 h 的 AVL 最少结点数满足递推 N(h) = N(h−1) + N(h−2) + 1：根结点占 1 个，其左、右子树高度分别为 h−1 与 h−2 时总和最小（两子树都取最少结点形态，且高度差恰为 1 以满足平衡）。逐层计算：N(1) = 1，N(2) = 2，N(3) = 4，N(4) = 7，N(5) = 12，N(6) = 20，N(7) = 33。该数列与斐波那契数列关系为 N(h) = F(h+2) − 1（F(1) = F(2) = 1），可作快速验算：F(9) = 34，N(7) = 33。这类「最少结点」树形正是不断向一边倾斜、子树高度差恒为 1 的临界形态，反推「n 个结点的 AVL 最大高度」时同样使用此递推。',
+    visual: {
+      kind: 'flow',
+      title: 'AVL 最少结点数递推链',
+      nodes: [
+        { id: 's', label: '高度 h 的 AVL 树\n最少结点 N(h)', type: 'start' },
+        { id: 'w', label: '根 1 个 + 两棵\n最少子树（h−1、h−2）', type: 'proc' },
+        { id: 'r', label: 'N(h)=N(h−1)\n+N(h−2)+1', type: 'proc' },
+        { id: 'a', label: 'N(1)=1，N(2)=2', type: 'proc' },
+        { id: 'b', label: 'N(3)=2+1+1=4', type: 'proc' },
+        { id: 'c', label: 'N(4)=4+2+1=7', type: 'proc' },
+        { id: 'd', label: 'N(5)=7+4+1=12', type: 'proc' },
+        { id: 'e', label: 'N(6)=12+7+1=20', type: 'proc' },
+        { id: 'f', label: 'N(7)=20+12+1\n=33', type: 'proc' },
+        { id: 'g', label: '高度7最少33个结点', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'w' },
+        { from: 'w', to: 'r' },
+        { from: 'r', to: 'a' },
+        { from: 'a', to: 'b' },
+        { from: 'b', to: 'c' },
+        { from: 'c', to: 'd' },
+        { from: 'd', to: 'e' },
+        { from: 'e', to: 'f' },
+        { from: 'f', to: 'g' },
+      ],
+    },
   },
   {
     id: 'cur-ds-034',
@@ -850,6 +975,7 @@ export const curatedDs1: Question[] = [
     topic: '哈夫曼树',
     difficulty: 2,
     source: 'curated',
+    templateId: 'ds-huffman',
     score: 2,
     question: '以权值集合 {3, 6, 9, 15, 27} 构造哈夫曼树，其带权路径长度 WPL 为（　）。',
     options: ['108', '132', '144', '120'],
@@ -913,6 +1039,60 @@ export const curatedDs1: Question[] = [
     ],
     explanation:
       '判断一组编码是否可能为哈夫曼编码，看两个必要条件：① 是前缀码（任一码字不是另一码字的前缀），对应树中每个码字恰为一个叶结点；② 对应的二叉树是严格的（每个非叶结点都有两个孩子），等价于 Kraft 和 Σ2^(−码长) = 1，因为哈夫曼树每次合并两棵树、不存在度为 1 的结点。C 项编码虽满足前缀性，但 Kraft 和为 7/8 < 1，树中存在只有一个孩子的结点——这种编码不是最优的（可把最长的码字截短一位仍保持前缀性），因此不可能是哈夫曼编码。快速算法：把各码长代入 2 的负幂求和，恰等于 1 才有可能。',
+    visual: {
+      kind: 'tree',
+      title: '选项 C 编码组对应的前缀树（残缺）',
+      steps: [
+        {
+          nodes: [
+            { id: 'root', label: '根' },
+            { id: 'c0', label: '0', parent: 'root' },
+          ],
+          highlight: ['c0'],
+          note: '码字 0 长度 1：根的左分支直达叶结点',
+        },
+        {
+          nodes: [
+            { id: 'root', label: '根' },
+            { id: 'c0', label: '0', parent: 'root' },
+            { id: 'c1', label: '1', parent: 'root' },
+            { id: 'c11', label: '11', parent: 'c1' },
+            { id: 'c110', label: '110', parent: 'c11' },
+            { id: 'c111', label: '111', parent: 'c11' },
+          ],
+          highlight: ['c110', 'c111'],
+          note: '码字 110、111 长度 3：1 与 11 均有左右两个孩子，结构完整',
+        },
+        {
+          nodes: [
+            { id: 'root', label: '根' },
+            { id: 'c0', label: '0', parent: 'root' },
+            { id: 'c1', label: '1', parent: 'root' },
+            { id: 'c10', label: '10', parent: 'c1' },
+            { id: 'c101', label: '101', parent: 'c10' },
+            { id: 'c11', label: '11', parent: 'c1' },
+            { id: 'c110', label: '110', parent: 'c11' },
+            { id: 'c111', label: '111', parent: 'c11' },
+          ],
+          highlight: ['c101'],
+          note: '码字 101 挂在 10 的右孩子位；结点 10 的左孩子（对应码字 100）空缺',
+        },
+        {
+          nodes: [
+            { id: 'root', label: '根' },
+            { id: 'c0', label: '0', parent: 'root' },
+            { id: 'c1', label: '1', parent: 'root' },
+            { id: 'c10', label: '10', parent: 'c1' },
+            { id: 'c101', label: '101', parent: 'c10' },
+            { id: 'c11', label: '11', parent: 'c1' },
+            { id: 'c110', label: '110', parent: 'c11' },
+            { id: 'c111', label: '111', parent: 'c11' },
+          ],
+          highlight: ['c10'],
+          note: '结点 10 只有 1 个孩子——哈夫曼树是严格二叉树，不允许度为 1 的结点；Kraft 和 = 1/2+3×1/8 = 7/8 < 1，树形残缺，故不可能是哈夫曼编码',
+        },
+      ],
+    },
   },
   {
     id: 'cur-ds-037',
@@ -936,6 +1116,56 @@ export const curatedDs1: Question[] = [
     ],
     explanation:
       '5 阶 B 树中，除根外的结点至少含 ⌈5/2⌉ − 1 = 2 个关键字、至多 4 个关键字，含 k 个关键字恰有 k+1 棵子树。求最少关键字应自顶向下按「最少子树」铺开：根至少 1 个关键字 → 2 棵子树；第 2 层 2 个结点，每个至少 2 个关键字（共 4 个）→ 各 3 棵子树共 6 棵；第 3 层 6 个结点，每个至少 2 个关键字（共 12 个）。合计 1 + 4 + 12 = 17 个。注意根结点下限特殊（1 个关键字即可），以及「高度为 3」指含关键字的结点有 3 层，失败结点在第 4 层，不要把失败结点计入层数与关键字数。',
+    visual: {
+      kind: 'tree',
+      title: '高度 3 的 5 阶 B 树最少形态',
+      steps: [
+        {
+          nodes: [{ id: 'r', label: '1键' }],
+          highlight: ['r'],
+          note: '5 阶 B 树：根至少 1 个关键字、2 棵子树；其余结点至少 ⌈5/2⌉−1 = 2 个关键字',
+        },
+        {
+          nodes: [
+            { id: 'r', label: '1键' },
+            { id: 'a', label: '2键', parent: 'r' },
+            { id: 'b', label: '2键', parent: 'r' },
+          ],
+          highlight: ['a', 'b'],
+          note: '第 2 层 2 个结点：各至少 2 个关键字（共 4 个），含 2 个关键字恰引出 3 棵子树',
+        },
+        {
+          nodes: [
+            { id: 'r', label: '1键' },
+            { id: 'a', label: '2键', parent: 'r' },
+            { id: 'b', label: '2键', parent: 'r' },
+            { id: 'a1', label: '2键', parent: 'a' },
+            { id: 'a2', label: '2键', parent: 'a' },
+            { id: 'a3', label: '2键', parent: 'a' },
+            { id: 'b1', label: '2键', parent: 'b' },
+            { id: 'b2', label: '2键', parent: 'b' },
+            { id: 'b3', label: '2键', parent: 'b' },
+          ],
+          highlight: ['a1', 'a2', 'a3', 'b1', 'b2', 'b3'],
+          note: '第 3 层 2×3 = 6 个结点：各至少 2 个关键字（共 12 个）；失败结点位于第 4 层，不计入',
+        },
+        {
+          nodes: [
+            { id: 'r', label: '1键' },
+            { id: 'a', label: '2键', parent: 'r' },
+            { id: 'b', label: '2键', parent: 'r' },
+            { id: 'a1', label: '2键', parent: 'a' },
+            { id: 'a2', label: '2键', parent: 'a' },
+            { id: 'a3', label: '2键', parent: 'a' },
+            { id: 'b1', label: '2键', parent: 'b' },
+            { id: 'b2', label: '2键', parent: 'b' },
+            { id: 'b3', label: '2键', parent: 'b' },
+          ],
+          highlight: ['r', 'a', 'b', 'a1', 'a2', 'a3', 'b1', 'b2', 'b3'],
+          note: '关键字总数至少 = 1 + 2×2 + 6×2 = 17 个，选 D',
+        },
+      ],
+    },
   },
   {
     id: 'cur-ds-038',

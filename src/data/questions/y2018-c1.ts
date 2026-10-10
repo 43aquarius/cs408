@@ -45,6 +45,7 @@ export const y2018c1: Question[] = [
     topic: '完全二叉树',
     difficulty: 3,
     source: 'real',
+    templateId: 'ds-tree-count',
     score: 2,
     question:
       '已知一棵完全二叉树的第 6 层（设根为第 1 层）有 8 个叶结点，则该完全二叉树最多有（ ）个结点（此时树共 7 层）。',
@@ -52,6 +53,25 @@ export const y2018c1: Question[] = [
     answer: 'C',
     explanation:
       '第 6 层有叶结点说明树高至少为 6；若要结点最多，应让树高为 7 层，此时完全二叉树的第 6 层必须排满，共 2^5 = 32 个结点。其中 8 个是叶结点，其余 24 个结点各有 2 个孩子，第 7 层最多有 24 × 2 = 48 个结点。前 5 层共 2^5 − 1 = 31 个结点，总结点数最多为 31 + 32 + 48 = 111。选 63 是漏算了第 7 层，选 39 是误以为第 6 层只有 8 个结点。',
+    visual: {
+      kind: 'flow',
+      title: '完全二叉树最多结点数：31+32+48=111',
+      nodes: [
+        { id: 's', label: '完全二叉树\n第 6 层 8 个叶结点', type: 'start' },
+        { id: 'p1', label: '树高取 7 层\n（结点最多）', type: 'proc' },
+        { id: 'p2', label: '前 5 层全满\n2^5−1=31', type: 'proc' },
+        { id: 'p3', label: '第 6 层全满 32\n8 叶 + 24 分支', type: 'proc' },
+        { id: 'p4', label: '第 7 层=24×2\n=48', type: 'proc' },
+        { id: 'e', label: '总=31+32+48\n=111（选 C）', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'p1' },
+        { from: 'p1', to: 'p2' },
+        { from: 'p2', to: 'p3' },
+        { from: 'p3', to: 'p4' },
+        { from: 'p4', to: 'e' },
+      ],
+    },
   },
   {
     id: 'q-2018-04',
@@ -78,6 +98,7 @@ export const y2018c1: Question[] = [
     topic: '二叉树遍历',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'ds-traversal-restore',
     score: 2,
     question:
       '某二叉树的先序遍历序列为 ABDECF，中序遍历序列为 DBEACF，则其后序遍历序列是（ ）。',
@@ -95,12 +116,41 @@ export const y2018c1: Question[] = [
     topic: 'B 树',
     difficulty: 3,
     source: 'real',
+    templateId: 'ds-btree-overflow',
     score: 2,
     question: '在一棵高度为 2 的 5 阶 B 树中，所含关键字的个数至少是（ ）。',
     options: ['5', '7', '12', '15'],
     answer: 'A',
     explanation:
       '5 阶 B 树中每个结点最多 5 棵子树；除根结点外的所有非终端（非叶）结点至少有 ⌈5/2⌉ = 3 棵子树，即至少 2 个关键字；根结点至少 2 棵子树，即至少 1 个关键字。高度为 2 时（根为第 1 层，其孩子为第 2 层），第 2 层至少有 2 个结点，每个至少 2 个关键字，故关键字总数至少为 1 + 2 × 2 = 5。选 15 是把各结点关键字按最多计算，方向弄反。',
+    visual: {
+      kind: 'tree',
+      title: '高度 2 的 5 阶 B 树最少关键字：1+2×2=5',
+      steps: [
+        {
+          nodes: [{ id: 'r', label: '根' }],
+          note: '高度 2（根为第 1 层，孩子为第 2 层）：根结点至少 2 棵子树，即至少 1 个关键字',
+        },
+        {
+          nodes: [
+            { id: 'r', label: '1键' },
+            { id: 'c1', label: '2键', parent: 'r' },
+            { id: 'c2', label: '2键', parent: 'r' },
+          ],
+          highlight: ['r'],
+          note: '第 2 层至少 2 个结点；5 阶 B 树除根外每个结点至少 ⌈5/2⌉−1=2 个关键字（如根 50，孩子 {20,35} 与 {60,80}）',
+        },
+        {
+          nodes: [
+            { id: 'r', label: '1键' },
+            { id: 'c1', label: '2键', parent: 'r' },
+            { id: 'c2', label: '2键', parent: 'r' },
+          ],
+          highlight: ['r', 'c1', 'c2'],
+          note: '关键字总数下界 = 1 + 2×2 = 5，选 A；方向弄反按“最多”算就会误选 D（15）',
+        },
+      ],
+    },
   },
   {
     id: 'q-2018-07',
@@ -123,6 +173,44 @@ export const y2018c1: Question[] = [
     answer: 'A',
     explanation:
       'A[i][j] 表示从 i 到 j 长度为 1 的路径条数。按矩阵乘法，A²[i][j] = Σ A[i][m]·A[m][j]，恰统计了经过任一中间点 m 的长度为 2 的路径条数；归纳可得 A^k[i][j] 是从 i 到 j 长度为 k 的路径（通路，允许顶点重复）条数。A 不含最短路径信息；回路是 i = j 的特例；度数则由行、列元素之和给出，均与题意不符。',
+    visual: {
+      kind: 'graph',
+      title: '邻接矩阵 A^k：长度为 k 的路径条数',
+      nodes: [
+        { id: 'n1', x: 12, y: 50 },
+        { id: 'n2', x: 88, y: 20 },
+        { id: 'n3', x: 58, y: 85 },
+      ],
+      edges: [
+        { from: 'n1', to: 'n2', directed: true },
+        { from: 'n2', to: 'n3', directed: true },
+        { from: 'n3', to: 'n1', directed: true },
+        { from: 'n1', to: 'n3', directed: true },
+      ],
+      steps: [
+        {
+          note: '有向图 G：弧 n1→n2、n2→n3、n3→n1、n1→n3；A[i][j]=1 表示 i 到 j 有 1 条长度为 1 的路径',
+        },
+        {
+          activeNodes: ['n1', 'n2'],
+          activeEdges: ['n1-n2'],
+          labels: { n2: 'A¹:1' },
+          note: 'A¹[n1][n2]=1：n1 到 n2 的直达弧，即长度为 1 的路径 1 条',
+        },
+        {
+          activeNodes: ['n1', 'n3'],
+          activeEdges: ['n1-n3', 'n3-n1'],
+          labels: { n2: 'A²:0' },
+          note: 'A²[n1][n2]=0：长度恰为 2 的 n1→?→n2 路径不存在（A²=A·A，元素=经任一中间点的路径条数）',
+        },
+        {
+          activeNodes: ['n1', 'n2', 'n3'],
+          activeEdges: ['n1-n3', 'n3-n1', 'n1-n2'],
+          labels: { n2: 'A³:1' },
+          note: 'A³[n1][n2]=1：n1→n3→n1→n2，顶点 n1 重复出现（通路允许顶点重复）——A^k 不含最短路径信息，选 A',
+        },
+      ],
+    },
   },
   {
     id: 'q-2018-08',
@@ -196,6 +284,83 @@ export const y2018c1: Question[] = [
     answer: 'C',
     explanation:
       '败者树是一棵完全二叉树，k 个归并段的当前记录作为叶子，两两比较的“败者”留在内部结点、胜者继续向上。败者树建好后，每输出一个最小记录，只需用新进入的叶结点沿双亲路径向上重新比较，路径长度为树高 ⌈log₂k⌉，故每选一个最小记录最多比较 ⌈log₂k⌉ 次。k − 1 是简单选择（顺序比较）的次数；2k − 1 是建树时的比较量级，都不是“选出最小记录”的每趟开销。',
+    visual: {
+      kind: 'tree',
+      title: '败者树（k=4）：每选最小最多 ⌈log₂k⌉ 次比较',
+      steps: [
+        {
+          nodes: [
+            { id: 'fa', label: '9' },
+            { id: 'fb', label: '3' },
+            { id: 'fc', label: '7' },
+            { id: 'fd', label: '5' },
+          ],
+          note: '4 路归并：败者树是含 k 个叶子的完全二叉树，叶子=各归并段当前最前记录 9、3、7、5',
+        },
+        {
+          nodes: [
+            { id: 'i1', label: '败:9' },
+            { id: 'fa', label: '9', parent: 'i1' },
+            { id: 'fb', label: '3', parent: 'i1' },
+            { id: 'fc', label: '7' },
+            { id: 'fd', label: '5' },
+          ],
+          highlight: ['i1', 'fa', 'fb'],
+          note: '第 1 次比较 9 vs 3：败者 9 存入内部结点，胜者 3 向上继续',
+        },
+        {
+          nodes: [
+            { id: 'i1', label: '败:9' },
+            { id: 'fa', label: '9', parent: 'i1' },
+            { id: 'fb', label: '3', parent: 'i1' },
+            { id: 'i2', label: '败:7' },
+            { id: 'fc', label: '7', parent: 'i2' },
+            { id: 'fd', label: '5', parent: 'i2' },
+          ],
+          highlight: ['i2', 'fc', 'fd'],
+          note: '第 2 次比较 7 vs 5：败者 7 存入内部结点，胜者 5 向上继续',
+        },
+        {
+          nodes: [
+            { id: 'iw', label: '败:5' },
+            { id: 'i1', label: '败:9', parent: 'iw' },
+            { id: 'fa', label: '9', parent: 'i1' },
+            { id: 'fb', label: '3', parent: 'i1' },
+            { id: 'i2', label: '败:7', parent: 'iw' },
+            { id: 'fc', label: '7', parent: 'i2' },
+            { id: 'fd', label: '5', parent: 'i2' },
+          ],
+          highlight: ['iw'],
+          note: '第 3 次（决赛）3 vs 5：败者 5 存根，冠军 3 即全局最小被输出——建树共 k−1=3 次比较',
+        },
+        {
+          nodes: [
+            { id: 'iw', label: '败:5' },
+            { id: 'i1', label: '败:9', parent: 'iw' },
+            { id: 'fa', label: '9', parent: 'i1' },
+            { id: 'fb', label: '6', parent: 'i1' },
+            { id: 'i2', label: '败:7', parent: 'iw' },
+            { id: 'fc', label: '7', parent: 'i2' },
+            { id: 'fd', label: '5', parent: 'i2' },
+          ],
+          highlight: ['fb', 'i1'],
+          note: '段 B 输出 3 后补新头记录 6：新叶 6 沿双亲链向上重赛——第 1 次比较 6 vs 9，胜者 6 继续',
+        },
+        {
+          nodes: [
+            { id: 'iw', label: '败:5' },
+            { id: 'i1', label: '败:9', parent: 'iw' },
+            { id: 'fa', label: '9', parent: 'i1' },
+            { id: 'fb', label: '6', parent: 'i1' },
+            { id: 'i2', label: '败:7', parent: 'iw' },
+            { id: 'fc', label: '7', parent: 'i2' },
+            { id: 'fd', label: '5', parent: 'i2' },
+          ],
+          highlight: ['iw', 'fb'],
+          note: '第 2 次比较 6 vs 5：5 更小，6 作为败者改存根，新冠军 5 被输出——本次选择共 2 次=⌈log₂4⌉；推广为 k 路即 ⌈log₂k⌉，选 C（k−1 是建树次数，2k−1 是干扰项）',
+        },
+      ],
+    },
   },
   {
     id: 'q-2018-12',
@@ -206,6 +371,7 @@ export const y2018c1: Question[] = [
     topic: 'CPU 性能',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'co-performance',
     score: 2,
     question:
       '程序 P 编译后在计算机 M1 上需执行 4×10⁸ 条指令，M1 主频为 2.0 GHz，P 在 M1 上的平均 CPI 为 2.0；实现同一功能的另一编译版本在计算机 M2 上需执行 5×10⁸ 条指令，M2 主频为 1.6 GHz，平均 CPI 为 1.2。下列结论正确的是（ ）。',
@@ -223,6 +389,7 @@ export const y2018c1: Question[] = [
     topic: '补码表示',
     difficulty: 3,
     source: 'real',
+    templateId: 'co-complement',
     score: 2,
     question:
       '由 3 个 1 和 5 个 0 组成的 8 位二进制补码（最高位为符号位），能表示的最小整数是（ ）。',
@@ -240,6 +407,7 @@ export const y2018c1: Question[] = [
     topic: 'IEEE 754',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'co-ieee754',
     score: 2,
     question: '将十进制数 −40.0 表示成 IEEE 754 单精度浮点数，其十六进制形式是（ ）。',
     options: ['C220 0000H', '4220 0000H', 'C228 0000H', 'C120 0000H'],
@@ -256,6 +424,7 @@ export const y2018c1: Question[] = [
     topic: '溢出判断',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'co-complement',
     score: 2,
     question:
       '某机字长 8 位（含 1 位符号位），机器数采用补码表示。x = 72，y = 96，则用补码加法计算 x + y 的结果及溢出判断结论是（ ）。',
@@ -285,6 +454,29 @@ export const y2018c1: Question[] = [
     answer: 'B',
     explanation:
       '低位交叉编址把连续地址分布在不同存储体中，4 个体可以错开 100 ns 轮流启动：第 1 个字经 400 ns 存取周期后读出，此后每隔 100 ns 读出一个字。总时间 = 存取周期 + (字数 − 1) × 总线传送周期 = 400 + 3 × 100 = 700 ns。选 1600 ns 是误以为 4 次访问必须串行各占一个完整存取周期；顺序（高位交叉）存储器才需要 4 × 400 = 1600 ns。',
+    visual: {
+      kind: 'flow',
+      title: '多体交叉存储：流水读 4 字 700 ns vs 串行 1600 ns',
+      nodes: [
+        { id: 's', label: '4 体主存\n低位交叉编址', type: 'start' },
+        { id: 'p1', label: '连续地址\n分居 4 个体', type: 'proc' },
+        { id: 'p2', label: '错开 100 ns\n流水启动', type: 'proc' },
+        { id: 'p3', label: 'T=400+3×100\n=700 ns', type: 'proc' },
+        { id: 'c1', label: '若改为高位\n（顺序）编址？', type: 'cond' },
+        { id: 'p4', label: '连续字同体\n4×400=1600 ns', type: 'proc' },
+        { id: 'e1', label: '低位交叉\n700 ns（选 B）', type: 'end' },
+        { id: 'e2', label: '高位串行\n1600 ns（选 A）', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'p1' },
+        { from: 'p1', to: 'p2' },
+        { from: 'p2', to: 'p3' },
+        { from: 'p3', to: 'c1' },
+        { from: 'c1', to: 'e1', label: '否' },
+        { from: 'c1', to: 'p4', label: '是' },
+        { from: 'p4', to: 'e2' },
+      ],
+    },
   },
   {
     id: 'q-2018-17',
@@ -295,6 +487,7 @@ export const y2018c1: Question[] = [
     topic: 'Cache 映射',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'co-cache-split',
     score: 2,
     question:
       '某计算机按字节编址，主存地址为 32 位。若数据 Cache 的容量为 64 KB，块大小为 128 B，采用 4 路组相联映射，则主存地址中标记（Tag）字段的位数为（ ）。',
@@ -319,6 +512,29 @@ export const y2018c1: Question[] = [
     answer: 'B',
     explanation:
       '三地址指令的操作码占 4 位，最多 16 种编码，用 15 种后留下 1111 作为扩展标志；二地址指令的操作码实际为 1111 + 4 位，共 16 种组合，用 15 种后留下 1111 1111 再扩展。一地址指令的操作码为 1111 1111 + 4 位，该 4 位可全部用于操作码，故最多还可定义 2^4 = 16 条一地址指令。若误以为还要为下一层留 1 个标志位，会错算成 15 条。',
+    visual: {
+      kind: 'flow',
+      title: '扩展操作码：一地址指令最多 16 条',
+      nodes: [
+        { id: 's', label: '指令字 16 位\n地址字段 4 位×3', type: 'start' },
+        { id: 'p1', label: '三地址：OP 4 位\n15 条，留 1111', type: 'proc' },
+        { id: 'p2', label: '二地址 1111+4 位\n15 条，留 8 个 1', type: 'proc' },
+        { id: 'p3', label: '一地址 1111 1111\n+4 位：16 码点', type: 'proc' },
+        { id: 'c1', label: '还向下扩展\n（零地址层）？', type: 'cond' },
+        { id: 'p4', label: '再留 1 个标志\n码点少 1', type: 'proc' },
+        { id: 'e1', label: '16 码点全用\n最多 16 条（选 B）', type: 'end' },
+        { id: 'e2', label: '误留标志\n→ 15 条（错选 A）', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'p1' },
+        { from: 'p1', to: 'p2' },
+        { from: 'p2', to: 'p3' },
+        { from: 'p3', to: 'c1' },
+        { from: 'c1', to: 'e1', label: '否' },
+        { from: 'c1', to: 'p4', label: '是' },
+        { from: 'p4', to: 'e2' },
+      ],
+    },
   },
   {
     id: 'q-2018-19',

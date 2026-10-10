@@ -34,6 +34,7 @@ for (int i = 1; i <= n; i *= 2)
     topic: '栈与队列',
     difficulty: 2,
     source: 'real',
+    templateId: 'ds-stack-sim',
     score: 2,
     question:
       '若元素 a、b、c、d 依次进入初始为空的栈 S，入栈与出栈操作可交替进行（每个元素最多入栈一次、出栈一次），则下列出栈序列中，不可能出现的是（ ）。',
@@ -41,6 +42,43 @@ for (int i = 1; i <= n; i *= 2)
     answer: 'D',
     explanation:
       '序列 D 要求 c 第一个出栈，此时 a、b 仍压在栈内且 b 位于 a 之上，下一个出栈的只能是 b，而 D 给出的是 a，与栈"后进先出"的性质矛盾，故 D 不可能。A：push a、push b 后弹出 b、a，再依次处理 c、d；B：弹出 b 后 c 直接入栈即弹，再弹栈底的 a；C：a、b、c 依次入栈后按 c、b、a 弹出——三者均可实现。',
+    visual: {
+      kind: 'sort',
+      title: '出栈序列 D 的模拟（arr 为栈，右端为栈顶）',
+      frames: [
+        {
+          arr: ['—'],
+          note: '目标序列 D：c、a、d、b。元素按 a、b、c、d 顺序到达，随时可出栈',
+        },
+        {
+          arr: ['a'],
+          note: 'D 首元素是 c，而 c 尚未到达：只能先入栈 a',
+        },
+        {
+          arr: ['a', 'b'],
+          note: '继续入栈 b（c 仍未到达，栈深 2）',
+        },
+        {
+          arr: ['a', 'b', 'c'],
+          settled: [2],
+          note: 'c 到达并入栈：栈顶恰为 c，D 的第 1 个元素可交付',
+        },
+        {
+          arr: ['a', 'b'],
+          note: 'c 出栈，栈内剩 a、b：D 的第 1 个元素达成',
+        },
+        {
+          arr: ['a', 'b'],
+          compared: [1],
+          note: 'D 第 2 个元素要求 a，但栈顶是 b——b 压在 a 之上',
+        },
+        {
+          arr: ['a', 'b'],
+          compared: [1],
+          note: '后进先出使 a 无法先出：D 不可能（A、B、C 均可模拟实现，选 D）',
+        },
+      ],
+    },
   },
   {
     id: 'q-2026-03',
@@ -68,6 +106,7 @@ for (int i = 1; i <= n; i *= 2)
     topic: '哈夫曼树',
     difficulty: 2,
     source: 'real',
+    templateId: 'ds-huffman',
     score: 2,
     question:
       '对 5 个字符 a、b、c、d、e（其出现次数依次为 1、3、6、9、11）进行哈夫曼编码，其带权路径长度（WPL）为（ ）。',
@@ -75,6 +114,66 @@ for (int i = 1; i <= n; i *= 2)
     answer: 'B',
     explanation:
       '哈夫曼构造：1+3=4，再 4+6=10，再 9+10=19，最后 11+19=30；WPL 等于所有内部结点权值之和，即 4 + 10 + 19 + 30 = 63。用"叶权 × 深度"验证：11 在第 1 层、9 在第 2 层、6 在第 3 层、1 与 3 在第 4 层，WPL = 11×1 + 9×2 + 6×3 + 1×4 + 3×4 = 63，两种算法互相印证。60、66、69 分别对应构造中"先合并 9 与 10""把 11 放到深层"等错误合并次序的结果。',
+    visual: {
+      kind: 'tree',
+      title: '哈夫曼树 {1,3,6,9,11} 构造与 WPL=63',
+      steps: [
+        {
+          nodes: [
+            { id: 'h1', label: '1' }, { id: 'h3', label: '3' }, { id: 'h6', label: '6' },
+            { id: 'h9', label: '9' }, { id: 'h11', label: '11' },
+          ],
+          note: '初始森林：5 棵只有根结点的树，权值集合 {1,3,6,9,11}',
+        },
+        {
+          nodes: [
+            { id: 'n1', label: '4' },
+            { id: 'h1', label: '1', parent: 'n1' }, { id: 'h3', label: '3', parent: 'n1' },
+            { id: 'h6', label: '6' }, { id: 'h9', label: '9' }, { id: 'h11', label: '11' },
+          ],
+          highlight: ['n1', 'h1', 'h3'],
+          note: '第 1 次合并：最小两权 1 与 3 → 新树 4（WPL 贡献 4）',
+        },
+        {
+          nodes: [
+            { id: 'n2', label: '10' },
+            { id: 'n1', label: '4', parent: 'n2' },
+            { id: 'h1', label: '1', parent: 'n1' }, { id: 'h3', label: '3', parent: 'n1' },
+            { id: 'h6', label: '6', parent: 'n2' },
+            { id: 'h9', label: '9' }, { id: 'h11', label: '11' },
+          ],
+          highlight: ['n2', 'n1', 'h6'],
+          note: '第 2 次合并：{4,6,9,11} 中取最小两权 4 与 6 → 新树 10（累计 4+10=14）',
+        },
+        {
+          nodes: [
+            { id: 'n3', label: '19' },
+            { id: 'n2', label: '10', parent: 'n3' },
+            { id: 'n1', label: '4', parent: 'n2' },
+            { id: 'h1', label: '1', parent: 'n1' }, { id: 'h3', label: '3', parent: 'n1' },
+            { id: 'h6', label: '6', parent: 'n2' },
+            { id: 'h9', label: '9', parent: 'n3' },
+            { id: 'h11', label: '11' },
+          ],
+          highlight: ['n3', 'n2', 'h9'],
+          note: '第 3 次合并：{9,10,11} 中取 9 与 10 → 新树 19（累计 4+10+19=33）',
+        },
+        {
+          nodes: [
+            { id: 'r', label: '30' },
+            { id: 'h11', label: '11', parent: 'r' },
+            { id: 'n3', label: '19', parent: 'r' },
+            { id: 'h9', label: '9', parent: 'n3' },
+            { id: 'n2', label: '10', parent: 'n3' },
+            { id: 'n1', label: '4', parent: 'n2' },
+            { id: 'h1', label: '1', parent: 'n1' }, { id: 'h3', label: '3', parent: 'n1' },
+            { id: 'h6', label: '6', parent: 'n2' },
+          ],
+          highlight: ['r', 'h11', 'n3'],
+          note: '第 4 次合并：11 与 19 → 根 30；WPL=4+10+19+30=63（11 深 1、9 深 2、6 深 3、1 与 3 深 4）',
+        },
+      ],
+    },
   },
   {
     id: 'q-2026-05',
@@ -85,6 +184,7 @@ for (int i = 1; i <= n; i *= 2)
     topic: '二叉树遍历',
     difficulty: 1,
     source: 'real',
+    templateId: 'ds-traversal-restore',
     score: 2,
     question:
       '已知某二叉树的先序遍历序列为 A、B、D、E、C、F、G，中序遍历序列为 D、B、E、A、F、C、G，则其后序遍历序列是（ ）。',
@@ -97,6 +197,45 @@ for (int i = 1; i <= n; i *= 2)
     answer: 'A',
     explanation:
       '先序第一个字母 A 为根；在中序中 A 左侧的 D、B、E 构成左子树、右侧的 F、C、G 构成右子树。左子树先序为 B、D、E，结合其中序 D、B、E 得 B 为左子树根、D 为其左孩子、E 为其右孩子；同理 C 为右子树根、F、G 分别为其左右孩子。后序为"左、右、根"：D、E、B、F、G、C、A。选项 B 把 C 的两个孩子次序弄反，选项 C 把 B 的两个孩子弄反，选项 D 的最后一个字母不是根 A。',
+    visual: {
+      kind: 'tree',
+      title: '先序+中序还原二叉树（后序 D、E、B、F、G、C、A）',
+      steps: [
+        {
+          nodes: [{ id: 'A', label: 'A' }],
+          highlight: ['A'],
+          note: '先序首元素 A 为根；中序 D,B,E,A,F,C,G 中 A 左侧 D,B,E 为左子树、右侧 F,C,G 为右子树',
+        },
+        {
+          nodes: [
+            { id: 'A', label: 'A' },
+            { id: 'B', label: 'B', parent: 'A' }, { id: 'C', label: 'C', parent: 'A' },
+          ],
+          highlight: ['B', 'C'],
+          note: '左子树先序 B,D,E → B 为左子树根；右子树先序 C,F,G → C 为右子树根',
+        },
+        {
+          nodes: [
+            { id: 'A', label: 'A' },
+            { id: 'B', label: 'B', parent: 'A' }, { id: 'C', label: 'C', parent: 'A' },
+            { id: 'D', label: 'D', parent: 'B' }, { id: 'E', label: 'E', parent: 'B' },
+            { id: 'F', label: 'F', parent: 'C' }, { id: 'G', label: 'G', parent: 'C' },
+          ],
+          highlight: ['D', 'E', 'F', 'G'],
+          note: 'B 的中序 D,B,E：D 为左孩子、E 为右孩子；C 的中序 F,C,G：F 左 G 右',
+        },
+        {
+          nodes: [
+            { id: 'A', label: 'A' },
+            { id: 'B', label: 'B', parent: 'A' }, { id: 'C', label: 'C', parent: 'A' },
+            { id: 'D', label: 'D', parent: 'B' }, { id: 'E', label: 'E', parent: 'B' },
+            { id: 'F', label: 'F', parent: 'C' }, { id: 'G', label: 'G', parent: 'C' },
+          ],
+          highlight: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
+          note: '还原完成；后序=左、右、根：D、E、B、F、G、C、A（选 A）',
+        },
+      ],
+    },
   },
   {
     id: 'q-2026-06',
@@ -107,6 +246,7 @@ for (int i = 1; i <= n; i *= 2)
     topic: '完全二叉树',
     difficulty: 3,
     source: 'real',
+    templateId: 'ds-tree-count',
     score: 2,
     question:
       '若一棵完全二叉树（根为第 1 层）的第 6 层上恰有 8 个叶结点，则该完全二叉树的结点总数最多是（ ）。',
@@ -114,6 +254,31 @@ for (int i = 1; i <= n; i *= 2)
     answer: 'C',
     explanation:
       '结点最多时第 6 层应放满 32 个结点，其中最右 8 个是叶子、最左 24 个各带 2 个孩子（这些孩子只能落在第 7 层，且按完全二叉树的次序最靠左），故第 7 层有 24×2 = 48 个结点。又第 1～5 层全满共 31 个结点，总数 = 31 + 32 + 48 = 111。39 是结点最少的情况（只有 6 层且第 6 层仅 8 个结点，31 + 8）；63 对应"第 6 层 32 个结点全是叶子"，与"恰有 8 个叶结点"矛盾；127 是 7 层全满的情形，此时第 6 层没有叶结点。',
+    visual: {
+      kind: 'flow',
+      title: '第 6 层恰有 8 个叶结点：总数最多 111',
+      nodes: [
+        { id: 's', label: '根为第 1 层\n第 6 层恰 8 叶', type: 'start' },
+        { id: 'c1', label: '求最多还是\n最少？', type: 'cond' },
+        { id: 'p1', label: '第 1~5 层全满\n共 2^5−1=31 个', type: 'proc' },
+        { id: 'p2', label: '第 6 层放满 32\n最左 24 个分支', type: 'proc' },
+        { id: 'p3', label: '第 7 层=24×2\n=48 个', type: 'proc' },
+        { id: 'p4', label: '层 7 仅 48<64\n不可能有第 8 层', type: 'proc' },
+        { id: 'p5', label: '最少：只到第 6 层\n且仅 8 个结点', type: 'proc' },
+        { id: 'e1', label: '最多=31+32+48\n=111', type: 'end' },
+        { id: 'e2', label: '最少=31+8\n=39', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'c1' },
+        { from: 'c1', to: 'p1', label: '最多' },
+        { from: 'c1', to: 'p5', label: '最少' },
+        { from: 'p1', to: 'p2' },
+        { from: 'p2', to: 'p3' },
+        { from: 'p3', to: 'p4' },
+        { from: 'p4', to: 'e1' },
+        { from: 'p5', to: 'e2' },
+      ],
+    },
   },
   {
     id: 'q-2026-07',
@@ -124,6 +289,7 @@ for (int i = 1; i <= n; i *= 2)
     topic: '拓扑排序',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'ds-topo-aoe',
     score: 2,
     question:
       '已知有向无环图 G 的顶点集为 {1, 2, 3, 4, 5}，边集为 {(1→2), (1→3), (2→4), (3→5)}。（原题带图，此处以顶点集合与边集合描述。）下列序列中，不是 G 的拓扑序列的是（ ）。',
@@ -158,6 +324,7 @@ for (int i = 1; i <= n; i *= 2)
     topic: '散列表',
     difficulty: 2,
     source: 'real',
+    templateId: 'ds-hash-asl',
     score: 2,
     question:
       '将关键字序列 4、15、26、37 依次插入表长为 11 的散列表，散列函数为 H(key) = key mod 11，用线性探测法处理冲突。则等概率下查找成功时的平均比较次数为（ ）。',
@@ -165,6 +332,45 @@ for (int i = 1; i <= n; i *= 2)
     answer: 'C',
     explanation:
       '四个关键字的散列值均为 4 mod 11 = 4，属同义词：4 探测 1 次存入 4 号单元；15 探测 4 号（占用）后 1 次就到 5 号，共 2 次；26 再往后到 6 号，共 3 次；37 到 7 号，共 4 次。查找成功的 ASL = (1 + 2 + 3 + 4) / 4 = 2.5。选 2 是把探测次数当成 1、2、2、3 之类的误加；线性探测会使同义词"抱团"占据连续单元，插入越晚探测越长，这正是聚集现象的体现。',
+    visual: {
+      kind: 'sort',
+      title: '线性探测：4、15、26、37 的插入与聚集',
+      frames: [
+        {
+          arr: ['—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—'],
+          compared: [4],
+          note: '表长 11，H(key)=key mod 11：四个关键字的散列值都是 4',
+        },
+        {
+          arr: ['—', '—', '—', '—', '4', '—', '—', '—', '—', '—', '—'],
+          settled: [4],
+          note: '插入 4：探测 4 号空位，1 次比较存入',
+        },
+        {
+          arr: ['—', '—', '—', '—', '4', '15', '—', '—', '—', '—', '—'],
+          compared: [4],
+          settled: [5],
+          note: '插入 15：4 号被占 → 5 号空位，共 2 次',
+        },
+        {
+          arr: ['—', '—', '—', '—', '4', '15', '26', '—', '—', '—', '—'],
+          compared: [4, 5],
+          settled: [6],
+          note: '插入 26：探测 4、5 号（占用）→ 6 号，共 3 次',
+        },
+        {
+          arr: ['—', '—', '—', '—', '4', '15', '26', '37', '—', '—', '—'],
+          compared: [4, 5, 6],
+          settled: [7],
+          note: '插入 37：探测 4、5、6 号 → 7 号，共 4 次',
+        },
+        {
+          arr: ['—', '—', '—', '—', '4', '15', '26', '37', '—', '—', '—'],
+          settled: [4, 5, 6, 7],
+          note: '成功 ASL=(1+2+3+4)÷4=2.5：同义词越晚插入探测越长（聚集现象）',
+        },
+      ],
+    },
   },
   {
     id: 'q-2026-10',
@@ -217,6 +423,7 @@ for (int i = 1; i <= n; i *= 2)
     topic: 'IEEE 754',
     difficulty: 2,
     source: 'real',
+    templateId: 'co-ieee754',
     score: 2,
     question:
       '按 IEEE 754 单精度（1 位符号、8 位阶码、23 位尾数）格式解释，十六进制数 C0A0 0000H 表示的十进制数是（ ）。',
@@ -234,6 +441,7 @@ for (int i = 1; i <= n; i *= 2)
     topic: '补码溢出',
     difficulty: 2,
     source: 'real',
+    templateId: 'co-complement',
     score: 2,
     question:
       '某机字长 8 位，整数用补码表示。执行加法：0110 1100 + 0011 0101（两个数均为 8 位补码），下列关于该运算的叙述中正确的是（ ）。',
@@ -256,6 +464,7 @@ for (int i = 1; i <= n; i *= 2)
     topic: 'Cache映射',
     difficulty: 2,
     source: 'real',
+    templateId: 'co-cache-split',
     score: 2,
     question:
       '某计算机主存地址为 32 位，按字节编址；Cache 数据区容量为 32 KB，块大小 16 B，采用 4 路组相联映射。主存地址划分为"标记 | 组号 | 块内地址"，则各字段的位数依次为（ ）。',
@@ -263,6 +472,25 @@ for (int i = 1; i <= n; i *= 2)
     answer: 'A',
     explanation:
       '块大小 16 B = 2^4 B，块内地址占 4 位；Cache 数据区 32 KB / 16 B = 2048 块，4 路一组得 2048 / 4 = 512 组 = 2^9，组号占 9 位；其余高位作标记，32 − 9 − 4 = 19 位。选项 B 对应按 2 路组相联计算（1024 组），选项 D 对应 8 路，选项 C 把块内地址误按 8 B 计。组相联地址划分的口诀是"先定块内位数，再由组数定组号，剩下全给标记"。',
+    visual: {
+      kind: 'flow',
+      title: '4 路组相联：地址三段拆分（19|9|4）',
+      nodes: [
+        { id: 's', label: '主存 32 位按字节\n块 16B · 4 路', type: 'start' },
+        { id: 'p1', label: '块内 b=log₂16\n=4 位', type: 'proc' },
+        { id: 'p2', label: '行数=32KB÷16B\n=2048 行', type: 'proc' },
+        { id: 'p3', label: '组数=2048÷4\n=512=2^9', type: 'proc' },
+        { id: 'p4', label: '组号 s=9 位', type: 'proc' },
+        { id: 'e', label: 'tag=32−9−4\n=19 位（选 A）', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'p1' },
+        { from: 'p1', to: 'p2' },
+        { from: 'p2', to: 'p3' },
+        { from: 'p3', to: 'p4' },
+        { from: 'p4', to: 'e' },
+      ],
+    },
   },
   {
     id: 'q-2026-15',
@@ -366,6 +594,7 @@ for (int i = 1; i <= n; i *= 2)
     topic: '指令流水线',
     difficulty: 2,
     source: 'real',
+    templateId: 'co-pipeline',
     score: 2,
     question:
       '某指令流水线分为取指、译码、执行、访存、写回 5 个功能段，各功能段的耗时依次为 2 ns、3 ns、2 ns、4 ns、3 ns。流水线方式连续执行 20 条指令，所需总时间为（ ）。',

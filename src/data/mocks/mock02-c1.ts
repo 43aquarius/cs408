@@ -87,6 +87,7 @@ export const mock02c1: Question[] = [
     topic: '拓扑排序',
     difficulty: 2,
     source: 'mock',
+    templateId: 'ds-topo-aoe',
     score: 2,
     question:
       '有向图 G 的弧集为 {(A,B), (A,C), (B,C), (B,D), (C,D), (D,E)}，则下列顶点序列中，是 G 的一个拓扑序列的是（　）。',
@@ -111,6 +112,7 @@ export const mock02c1: Question[] = [
     topic: 'KMP',
     difficulty: 3,
     source: 'mock',
+    templateId: 'ds-kmp',
     score: 2,
     question:
       '设模式串 t = “abcabcab”。按约定 next[1] = 0、next[2] = 1，当 j ≥ 3 时 next[j] 等于 t 前 j−1 个字符中最长相等前后缀的长度加 1。则 t 的 next 数组为（　）。',
@@ -129,6 +131,46 @@ export const mock02c1: Question[] = [
     ],
     explanation:
       '求 next 数组的要点：next[j] 只由模式串前 j−1 个字符自身决定，与主串无关；先写出前 j−1 个字符，找「开头一段与结尾一段相等」的最长长度 k，next[j] = k + 1。周期性强的串（如 abcabcab）前后缀逐级递增，逐项多写几个字符即可避免跳算出错。',
+    visual: {
+      kind: 'sort',
+      title: '模式串 abcabcab 的 next 数组逐位求解',
+      frames: [
+        {
+          arr: ['0', '1', '—', '—', '—', '—', '—', '—'],
+          note: '约定 next[1]=0、next[2]=1；j≥3 时看前 j−1 个字符的最长相等前后缀',
+        },
+        {
+          arr: ['0', '1', '1', '—', '—', '—', '—', '—'],
+          settled: [2],
+          note: 'j=3：前缀 ab 无相等前后缀（长 0），next[3]=0+1=1',
+        },
+        {
+          arr: ['0', '1', '1', '1', '—', '—', '—', '—'],
+          settled: [3],
+          note: 'j=4：abc 无相等前后缀（长 0），next[4]=1',
+        },
+        {
+          arr: ['0', '1', '1', '1', '2', '—', '—', '—'],
+          settled: [4],
+          note: 'j=5：abca 的最长相等前后缀为 a（长 1），next[5]=1+1=2',
+        },
+        {
+          arr: ['0', '1', '1', '1', '2', '3', '—', '—'],
+          settled: [5],
+          note: 'j=6：abcab 的最长相等前后缀为 ab（长 2），next[6]=2+1=3',
+        },
+        {
+          arr: ['0', '1', '1', '1', '2', '3', '4', '—'],
+          settled: [6],
+          note: 'j=7：abcabc 的最长相等前后缀为 abc（长 3），next[7]=3+1=4',
+        },
+        {
+          arr: ['0', '1', '1', '1', '2', '3', '4', '5'],
+          settled: [7],
+          note: 'j=8：abcabca 的最长相等前后缀为 abca（长 4），next[8]=5；全数组 0,1,1,1,2,3,4,5，选 D',
+        },
+      ],
+    },
   },
   {
     id: 'mock02-06',
@@ -140,6 +182,7 @@ export const mock02c1: Question[] = [
     topic: '完全二叉树',
     difficulty: 2,
     source: 'mock',
+    templateId: 'ds-tree-count',
     score: 2,
     question: '若一棵完全二叉树共有 2019 个结点，则其中叶结点的个数是（　）。',
     options: ['1009', '1011', '1010', '1346'],
@@ -163,6 +206,7 @@ export const mock02c1: Question[] = [
     topic: '二叉树遍历',
     difficulty: 3,
     source: 'mock',
+    templateId: 'ds-traversal-restore',
     score: 2,
     question:
       '某二叉树的先序遍历序列为 M N P Q O R，中序遍历序列为 P N Q M R O，则其后序遍历序列为（　）。',
@@ -176,6 +220,60 @@ export const mock02c1: Question[] = [
     ],
     explanation:
       '由先序 + 中序还原二叉树的递归步骤：先序第一个字母定根 → 在中序中定位根、划分左右子树区间 → 对两个子区间递归。本题还原结果：M 为根，左孩子 N（N 的孩子 P、Q），右孩子 O（O 的左孩子 R）。再按「左右根」写出后序 P Q N R O M。注意还原完成后务必用先序或中序回代检查。',
+    visual: {
+      kind: 'tree',
+      title: '先序 MNPQOR + 中序 PNQMRO 还原二叉树',
+      steps: [
+        {
+          nodes: [{ id: 'm', label: 'M' }],
+          note: '先序首字符 M 为根；中序中 M 左侧的 P N Q 是左子树、右侧的 R O 是右子树',
+        },
+        {
+          nodes: [
+            { id: 'm', label: 'M' },
+            { id: 'n', label: 'N', parent: 'm' },
+            { id: 'o', label: 'O', parent: 'm' },
+          ],
+          highlight: ['n', 'o'],
+          note: '左子树先序 N P Q → N 为左孩子；右子树先序 O R → O 为右孩子',
+        },
+        {
+          nodes: [
+            { id: 'm', label: 'M' },
+            { id: 'n', label: 'N', parent: 'm' },
+            { id: 'p', label: 'P', parent: 'n' },
+            { id: 'q', label: 'Q', parent: 'n' },
+            { id: 'o', label: 'O', parent: 'm' },
+          ],
+          highlight: ['p', 'q'],
+          note: 'N 的中序为 P N Q：P 是 N 的左孩子、Q 是 N 的右孩子',
+        },
+        {
+          nodes: [
+            { id: 'm', label: 'M' },
+            { id: 'n', label: 'N', parent: 'm' },
+            { id: 'p', label: 'P', parent: 'n' },
+            { id: 'q', label: 'Q', parent: 'n' },
+            { id: 'o', label: 'O', parent: 'm' },
+            { id: 'r', label: 'R', parent: 'o' },
+          ],
+          highlight: ['r'],
+          note: 'O 的中序为 R O：R 是 O 的左孩子，O 无右孩子，还原完成',
+        },
+        {
+          nodes: [
+            { id: 'm', label: 'M⑥' },
+            { id: 'n', label: 'N③', parent: 'm' },
+            { id: 'p', label: 'P①', parent: 'n' },
+            { id: 'q', label: 'Q②', parent: 'n' },
+            { id: 'o', label: 'O⑤', parent: 'm' },
+            { id: 'r', label: 'R④', parent: 'o' },
+          ],
+          highlight: ['m', 'n', 'p', 'q', 'o', 'r'],
+          note: '按后序（左右根）输出：P Q N R O M，与选项 A 一致',
+        },
+      ],
+    },
   },
   {
     id: 'mock02-08',
@@ -187,6 +285,7 @@ export const mock02c1: Question[] = [
     topic: '哈夫曼树',
     difficulty: 2,
     source: 'mock',
+    templateId: 'ds-huffman',
     score: 2,
     question: '以权值集合 {1, 3, 6, 9, 10} 构造哈夫曼树，其带权路径长度 WPL 为（　）。',
     options: ['58', '62', '63', '67'],
@@ -268,6 +367,7 @@ export const mock02c1: Question[] = [
     topic: '最短路径',
     difficulty: 3,
     source: 'mock',
+    templateId: 'ds-dijkstra',
     score: 2,
     question:
       '无向带权图 G 的顶点集为 {A, B, C, D, E}，边集为 {(A,B,6), (A,C,2), (B,C,1), (B,D,3), (C,D,7), (B,E,9), (D,E,2)}（(u,v,w) 表示 u 与 v 之间有带权 w 的边）。用 Dijkstra 算法求源点 A 到其余各顶点的最短路径，则到 E 的最短路径长度为（　）。',
@@ -334,6 +434,7 @@ export const mock02c1: Question[] = [
     topic: '折半查找',
     difficulty: 2,
     source: 'mock',
+    templateId: 'ds-bsearch-asl',
     score: 2,
     question:
       '对有序表 {2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44}（元素下标 1～15，mid 取 ⌊(low+high)/2⌋）进行折半查找，查找关键字 17 时依次与待查关键字比较的元素是（　）。',
@@ -358,6 +459,7 @@ export const mock02c1: Question[] = [
     topic: '堆',
     difficulty: 2,
     source: 'mock',
+    templateId: 'ds-heap-op',
     score: 2,
     question:
       '将顺序存储的完全二叉树（关键字依次为 24, 18, 53, 47, 36, 30, 61，下标从 1 开始编号）用自底向上的筛选法建成大根堆后，数组中关键字的序列是（　）。',
@@ -440,6 +542,7 @@ export const mock02c1: Question[] = [
     topic: 'IEEE 754',
     difficulty: 2,
     source: 'mock',
+    templateId: 'co-ieee754',
     score: 2,
     question: '按 IEEE 754 单精度浮点数格式，十六进制机器数 C2200000H 表示的真值是（　）。',
     options: ['−20', '−80', '+40', '−40'],
@@ -519,6 +622,7 @@ export const mock02c1: Question[] = [
     topic: 'Cache 映射',
     difficulty: 3,
     source: 'mock',
+    templateId: 'co-cache-split',
     score: 2,
     question:
       '某机主存地址 32 位，按字节编址；Cache 数据区容量 16KB，块大小 32B，采用 4 路组相联映射。主存地址划分为「标记 | 组号 | 块内偏移」，则标记字段与组号字段分别为（　）。',

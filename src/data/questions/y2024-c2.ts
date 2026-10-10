@@ -134,6 +134,29 @@ export const y2024c2: Question[] = [
     answer: 'C',
     explanation:
       '最坏情形是每个进程都已获得 3 个资源（各差 1 个即可完成），共占用 5×3 = 15 个。此时只要再有 1 个资源，无论分给哪个进程，该进程都能完成并释放全部 4 个资源，进而使所有进程依次完成，故 5×(4−1) + 1 = 16 个资源可保证无死锁（一般公式 n(m−1)+1）。若只有 15 个，每个进程恰得 3 个而无剩余资源，将陷入互相等待的死锁状态。',
+    visual: {
+      kind: 'flow',
+      title: '同类资源死锁上界：n(m−1)+1 = 5×3+1 = 16',
+      nodes: [
+        { id: 's', label: '5 个进程\n各最多需 4 个资源', type: 'start' },
+        { id: 'p1', label: '最坏：每进程\n各得 3 个（差 1）', type: 'proc' },
+        { id: 'p2', label: '已配 5×3 = 15 个', type: 'proc' },
+        { id: 'c1', label: '还有剩余资源？', type: 'cond' },
+        { id: 'd1', label: '无剩余：互相等待\n→ 死锁', type: 'end' },
+        { id: 'p3', label: '任一进程再得 1 个\n即可完成并释放', type: 'proc' },
+        { id: 'p4', label: '15 + 1 = 16 个\n保证绝不死锁', type: 'proc' },
+        { id: 'e', label: '一般式 n(m−1)+1\n= 16（选 C）', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'p1' },
+        { from: 'p1', to: 'p2' },
+        { from: 'p2', to: 'c1' },
+        { from: 'c1', to: 'd1', label: '否（恰 15 个）' },
+        { from: 'c1', to: 'p3', label: '是（≥16 个）' },
+        { from: 'p3', to: 'p4' },
+        { from: 'p4', to: 'e' },
+      ],
+    },
   },
   {
     id: 'q-2024-28',
@@ -144,6 +167,7 @@ export const y2024c2: Question[] = [
     topic: '分页地址变换',
     difficulty: 2,
     source: 'real',
+    templateId: 'os-paging-translate',
     score: 2,
     question:
       '某分页存储管理系统页面大小为 4 KB，进程 P 的页表为：0 号页→5 号页框，1 号页→7 号页框，2 号页→3 号页框。P 的逻辑地址 2A58H 对应的物理地址是（ ）。',
@@ -151,6 +175,25 @@ export const y2024c2: Question[] = [
     answer: 'B',
     explanation:
       '页面 4 KB = 2^12 B，逻辑地址的低 12 位（即低 3 个十六进制位）为页内偏移，高位为页号。2A58H 拆分为页号 2、页内偏移 A58H；查页表得页号 2 对应 3 号页框，物理地址 = 页框号与偏移拼接 = 3A58H。选项 A 相当于认为地址不需要变换；C、D 分别误用了 0 号页、1 号页的页框号。',
+    visual: {
+      kind: 'flow',
+      title: '逻辑地址 2A58H → 物理地址 3A58H（页大小 4 KB）',
+      nodes: [
+        { id: 's', label: '页面 4KB = 2^12\n逻辑地址 2A58H', type: 'start' },
+        { id: 'p1', label: '低 12 位 A58H\n为页内偏移', type: 'proc' },
+        { id: 'p2', label: '高位 2 → 页号 2\n（高 3 个十六进制位）', type: 'proc' },
+        { id: 'p3', label: '查页表：2 号页\n→ 3 号页框', type: 'proc' },
+        { id: 'p4', label: '页框号 3 拼偏移\n物理地址 3A58H', type: 'proc' },
+        { id: 'e', label: '选 B：3A58H', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'p1' },
+        { from: 'p1', to: 'p2' },
+        { from: 'p2', to: 'p3' },
+        { from: 'p3', to: 'p4' },
+        { from: 'p4', to: 'e' },
+      ],
+    },
   },
   {
     id: 'q-2024-29',
@@ -265,6 +308,7 @@ export const y2024c2: Question[] = [
     topic: '停止等待协议',
     difficulty: 2,
     source: 'real',
+    templateId: 'cn-latency',
     score: 2,
     question:
       '主机甲通过一条链路向主机乙发送数据，采用停止—等待协议：数据帧长 1000 bit，链路速率 100 kb/s，单程传播时延 250 ms，忽略确认帧的发送时间与处理时延，则该信道的利用率约为（ ）。',
@@ -272,6 +316,23 @@ export const y2024c2: Question[] = [
     answer: 'B',
     explanation:
       '发送一帧的发送时延 = 1000 / 100k = 10 ms；从开始发送到收到确认需经历发送时延与两个单程传播时延，共 10 + 2×250 = 510 ms，此期间信道每 510 ms 才能发送一帧，利用率 = 10 / 510 ≈ 2%。停止—等待协议在长传播时延链路上效率极低，这正是回退 N 帧（GBN）、选择重传（SR）等连续 ARQ 协议引入发送窗口机制的原因。',
+    visual: {
+      kind: 'flow',
+      title: '停止—等待：发送时延 10 ms，周期 510 ms，利用率≈2%',
+      nodes: [
+        { id: 's', label: 'L=1000bit\nR=100kb/s\nt_p=250ms（单程）', type: 'start' },
+        { id: 'p1', label: '发送时延 1000/100k\n= 10 ms', type: 'proc' },
+        { id: 'p2', label: '一帧周期 10+2×250\n= 510 ms', type: 'proc' },
+        { id: 'p3', label: '利用率 = 10/510\n≈ 1.96% ≈ 2%', type: 'proc' },
+        { id: 'e', label: '选 B：约 2%', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'p1' },
+        { from: 'p1', to: 'p2' },
+        { from: 'p2', to: 'p3' },
+        { from: 'p3', to: 'e' },
+      ],
+    },
   },
   {
     id: 'q-2024-36',
@@ -282,6 +343,7 @@ export const y2024c2: Question[] = [
     topic: '以太网',
     difficulty: 2,
     source: 'real',
+    templateId: 'cn-minframe',
     score: 2,
     question: '传统 10 Mb/s 共享式以太网的争用期（冲突窗口）为 51.2 μs。为保证冲突检测有效，其最小帧长为（ ）。',
     options: ['64 B', '128 B', '512 B', '1500 B'],
@@ -298,6 +360,7 @@ export const y2024c2: Question[] = [
     topic: 'IPv4 分片',
     difficulty: 2,
     source: 'real',
+    templateId: 'cn-fragment',
     score: 2,
     question:
       '一个总长度为 1500 B 的 IP 数据报（首部 20 B，无选项字段）需要经过最大传输单元 MTU = 620 B 的网络。分片后第 2 片所携带的数据长度与片偏移字段的值分别是（ ）。',
@@ -305,6 +368,31 @@ export const y2024c2: Question[] = [
     answer: 'A',
     explanation:
       '每个分片最多携带 620 − 20 = 600 B 数据，600 恰为 8 的倍数（600/8 = 75），无需回退。原数据报共 1480 B 数据，分成 600 + 600 + 280 三片；第 2 片携带 600 B 数据，其数据在原数据报中的起始字节为 600，片偏移 = 600 / 8 = 75（片偏移以 8 B 为基本单位）。第 1、2 片的 MF 标志为 1，第 3 片为 0。B、D 是对"8 的倍数"做了多余的回退，C 忘记将字节偏移除以 8。',
+    visual: {
+      kind: 'flow',
+      title: 'MTU 620B 的分片：600+600+280，第 2 片偏移 75',
+      nodes: [
+        { id: 's', label: '数据报总长 1500B\n数据 1480B', type: 'start' },
+        { id: 'p1', label: '每片最多数据\n620−20 = 600B', type: 'proc' },
+        { id: 'c1', label: '600 是 8 的倍数？', type: 'cond' },
+        { id: 'p2', label: '是：600=8×75\n无需回退', type: 'proc' },
+        { id: 'n1', label: '否则数据量需\n向下取 8 的倍数', type: 'end' },
+        { id: 'p3', label: '分片 600+600+280\n共 3 片', type: 'proc' },
+        { id: 'p4', label: '第 2 片数据 600B\n起始字节 600', type: 'proc' },
+        { id: 'p5', label: '片偏移 = 600/8\n= 75（选 A）', type: 'proc' },
+        { id: 'e', label: '第 1、2 片 MF=1\n第 3 片 MF=0', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'p1' },
+        { from: 'p1', to: 'c1' },
+        { from: 'c1', to: 'p2', label: '是' },
+        { from: 'c1', to: 'n1', label: '否（本题用不到）' },
+        { from: 'p2', to: 'p3' },
+        { from: 'p3', to: 'p4' },
+        { from: 'p4', to: 'p5' },
+        { from: 'p5', to: 'e' },
+      ],
+    },
   },
   {
     id: 'q-2024-38',
@@ -315,6 +403,7 @@ export const y2024c2: Question[] = [
     topic: '路由聚合',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'cn-vlsm',
     score: 2,
     question:
       '某路由器的路由表中含有两个表项：目的网络 192.168.4.0/24 与 192.168.5.0/24，二者的下一跳相同。现将它们聚合为一条路由，聚合后得到的网络地址/前缀长度是（ ）。',
@@ -332,6 +421,7 @@ export const y2024c2: Question[] = [
     topic: '拥塞控制',
     difficulty: 2,
     source: 'real',
+    templateId: 'cn-cwnd',
     score: 2,
     question:
       'TCP 拥塞控制中，拥塞窗口 cwnd 的初始值为 1 MSS，慢开始门限 ssthresh 为 8 MSS。若拥塞控制过程中始终未发生超时和三个冗余 ACK（即未进入新一轮慢启动），则第 5 个 RTT 结束时 cwnd 的大小为（ ）。',
@@ -339,6 +429,17 @@ export const y2024c2: Question[] = [
     answer: 'C',
     explanation:
       '慢启动阶段 cwnd 每个 RTT 加倍：1 → 2 → 4 → 8，第 3 个 RTT 结束时 cwnd 达到 ssthresh = 8，转入拥塞避免阶段；此后每个 RTT cwnd 线性加 1 MSS，第 4 个 RTT 结束时为 9，第 5 个 RTT 结束时为 10 MSS。慢启动指数增长、拥塞避免线性增长，分界点就是 ssthresh；16 是误以为一直保持指数增长的结果。',
+    visual: {
+      kind: 'cwnd',
+      title: 'cwnd 演化（初值 1，ssthresh=8，无超时/3-ACK）',
+      points: [
+        { round: 1, cwnd: 2, ssthresh: 8, event: '慢开始：每轮 ×2' },
+        { round: 2, cwnd: 4, ssthresh: 8 },
+        { round: 3, cwnd: 8, ssthresh: 8, event: '达 ssthresh，转拥塞避免' },
+        { round: 4, cwnd: 9, ssthresh: 8 },
+        { round: 5, cwnd: 10, ssthresh: 8, event: '第 5 个 RTT 结束：10 MSS' },
+      ],
+    },
   },
   {
     id: 'q-2024-40',

@@ -124,6 +124,7 @@ export const mock03c2: Question[] = [
     topic: '调度算法',
     difficulty: 3,
     source: 'mock',
+    templateId: 'os-schedule-metrics',
     score: 2,
     question:
       '单道批处理系统采用高响应比优先（HRRN）调度。作业 P1、P2、P3 的到达时间与估计运行时间分别为：P1（0 时刻到达，需 8 个时间单位）、P2（2 时刻到达，需 4）、P3（5 时刻到达，需 9）。P1 先投入运行；在时刻 8（P1 完成）进行调度决策。此时应选择的作业及其响应比为（　）。',
@@ -142,6 +143,30 @@ export const mock03c2: Question[] = [
     ],
     explanation:
       'HRRN 是 FCFS 与 SJF 的折中：响应比 Rp = (等待时间 + 要求服务时间)/要求服务时间，每次调度时对全部就绪作业计算并取最大者。本题两步推理：先分别算 P2 的 2.5 与 P3 的 1.33，再比较选大。响应比随等待时间上升，长作业最终也能等到高比值，从而避免饥饿——这正是该算法的设计初衷。',
+    visual: {
+      kind: 'flow',
+      title: 'HRRN：时刻 8 的响应比计算与决策',
+      nodes: [
+        { id: 's', label: '开始\n时刻 8 调度', type: 'start' },
+        { id: 'a', label: '响应比 =\n(等待+服务)/服务', type: 'proc' },
+        { id: 'b', label: 'P2 等待 8−2=6\n(6+4)/4 = 2.5', type: 'proc' },
+        { id: 'c', label: 'P3 等待 8−5=3\n(3+9)/9 ≈ 1.33', type: 'proc' },
+        { id: 'd', label: '2.5 > 1.33 ？', type: 'cond' },
+        { id: 'e', label: '选 P2 运行\n响应比 2.5 最大', type: 'proc' },
+        { id: 'f', label: '（否则应\n选 P3）', type: 'proc' },
+        { id: 'g', label: '结束', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'a' },
+        { from: 'a', to: 'b' },
+        { from: 'b', to: 'c' },
+        { from: 'c', to: 'd' },
+        { from: 'd', to: 'e', label: '是' },
+        { from: 'd', to: 'f', label: '否' },
+        { from: 'e', to: 'g' },
+        { from: 'f', to: 'g' },
+      ],
+    },
   },
   {
     id: 'mock03-26',
@@ -228,6 +253,19 @@ export const mock03c2: Question[] = [
     ],
     explanation:
       '三种放置策略的判定口径：最佳适应选「满足要求的最小分区」、首次适应选「地址最低的能容纳分区」、最坏适应选「最大分区」。本题最佳适应把两次小请求都塞进小分区（25→5、20→5），保住了 50KB 与 90KB 大分区，代价是留下两个 5KB 的小碎片——「碎片多而小」正是最佳适应的典型特征。',
+    visual: {
+      kind: 'sort',
+      title: '最佳适应：空闲分区演变（单位 KB）',
+      frames: [
+        { arr: [50, 120, 25, 90], note: '初始空闲分区（按地址从低到高）：50、120、25、90' },
+        { arr: [50, 120, 25, 90], compared: [2], note: '申请 20KB：满足要求的最小分区是 25KB' },
+        { arr: [50, 120, 5, 90], settled: [2], note: '切走 20KB 后剩 5KB，50KB 与 120KB 大分区保住' },
+        { arr: [50, 120, 5, 90], compared: [1], note: '申请 100KB：只有 120KB 分区容纳得下' },
+        { arr: [50, 20, 5, 90], settled: [1], note: '120KB 切走 100KB 后剩 20KB' },
+        { arr: [50, 20, 5, 90], compared: [1], note: '申请 15KB：满足要求的最小分区是 20KB' },
+        { arr: [50, 5, 5, 90], settled: [1], note: '20KB 剩 5KB；最终按地址序 50、5、5、90，90KB 大分区未被切割' },
+      ],
+    },
   },
   {
     id: 'mock03-29',
@@ -239,6 +277,7 @@ export const mock03c2: Question[] = [
     topic: '快表与EAT',
     difficulty: 2,
     source: 'mock',
+    templateId: 'os-paging-translate',
     score: 2,
     question:
       '某分页系统配置快表 TLB。访问 TLB 需 10ns，访问一次内存需 100ns；TLB 命中率为 90%（未命中时页一定在内存，不发生缺页，但需先访问内存中的页表）。一次访存的平均有效访问时间 EAT 为（　）。',
@@ -285,6 +324,7 @@ export const mock03c2: Question[] = [
     topic: '页面置换',
     difficulty: 3,
     source: 'mock',
+    templateId: 'os-page-replace',
     score: 2,
     question:
       '某请求分页系统为进程分配 4 个页框（初始全空，首次调入也计缺页），页面访问序列为：3、4、2、1、4、5、4、3、2、5、4、3。采用 LRU 置换算法，该过程发生的缺页次数为（　）。',
@@ -413,6 +453,34 @@ export const mock03c2: Question[] = [
     ],
     explanation:
       '有噪声信道的实际极限 = min(奈氏值, 香农值)。两步推理：先把 30dB 换算成 1000 倍，再算 C = 3000×log2(1001) ≈ 29.9kbps，与奈氏的 36kbps 比较取小。结论也说明：在噪声受限信道上单纯增加码元状态数（QAM 阶数）无法突破香农极限——这正是调制技术再强也救不了劣质线路的原因。',
+    visual: {
+      kind: 'flow',
+      title: '奈氏与香农双算取小',
+      nodes: [
+        { id: 's', label: '开始\nW=3kHz，30dB', type: 'start' },
+        { id: 'a', label: '奈氏（无噪声）\n2W·log2 64', type: 'proc' },
+        { id: 'b', label: '2×3000×6\n= 36kbps', type: 'proc' },
+        { id: 'c', label: '30dB → S/N\n= 10^3 = 1000', type: 'proc' },
+        { id: 'd', label: '香农：3000×\nlog2(1+1000)', type: 'proc' },
+        { id: 'e', label: '≈ 29.9kbps', type: 'proc' },
+        { id: 'f', label: '香农更小？', type: 'cond' },
+        { id: 'g', label: '实际极限 ≈ 30kbps\n噪声是短板', type: 'proc' },
+        { id: 'h', label: '（若奈氏更小\n则受带宽限制）', type: 'proc' },
+        { id: 'i', label: '结束', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'a' },
+        { from: 'a', to: 'b' },
+        { from: 'b', to: 'c' },
+        { from: 'c', to: 'd' },
+        { from: 'd', to: 'e' },
+        { from: 'e', to: 'f' },
+        { from: 'f', to: 'g', label: '是' },
+        { from: 'f', to: 'h', label: '否' },
+        { from: 'g', to: 'i' },
+        { from: 'h', to: 'i' },
+      ],
+    },
   },
   {
     id: 'mock03-35',
@@ -424,6 +492,7 @@ export const mock03c2: Question[] = [
     topic: 'CSMA/CD',
     difficulty: 3,
     source: 'mock',
+    templateId: 'cn-minframe',
     score: 2,
     question:
       '某采用 CSMA/CD 协议的网络，数据传输速率为 100Mbps，信号传播速率为 2×10^8 m/s，两站点间最大距离为 400m（忽略设备处理时延）。为保证发送方在发送结束前能检测到冲突（帧的发送时延不小于争用期），最小帧长为（　）。',
@@ -459,6 +528,7 @@ export const mock03c2: Question[] = [
     topic: 'IP分片',
     difficulty: 3,
     source: 'mock',
+    templateId: 'cn-fragment',
     score: 2,
     question:
       '一个总长度为 4200B（含 20B 固定 IP 首部）的 IP 数据报，DF = 0，经过一条 MTU = 1500B 的链路时需要分片。第 3 片（最后一片）的片偏移字段值、MF 标志与该分片的总长度分别为（　）。',
@@ -511,6 +581,7 @@ export const mock03c2: Question[] = [
     topic: '子网划分',
     difficulty: 2,
     source: 'mock',
+    templateId: 'cn-vlsm',
     score: 2,
     question:
       '某单位获得地址块 172.18.0.0/16，要求划分成若干定长子网，每个子网至少容纳 500 台主机，且在满足该前提下子网数量尽可能多。子网掩码应为（　）。',
@@ -563,6 +634,7 @@ export const mock03c2: Question[] = [
     topic: 'TCP确认',
     difficulty: 2,
     source: 'mock',
+    templateId: 'cn-tcp-seq',
     score: 2,
     question:
       '主机甲向主机乙发送 TCP 数据。第一个段的 seq = 1000，携带 120B 数据；第二个段的 seq = 1120，携带 80B。乙正确收到第一个段（第二个段尚未到达）后立即发回确认，确认号为（　）。',

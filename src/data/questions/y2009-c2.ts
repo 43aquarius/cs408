@@ -11,6 +11,7 @@ export const y2009c2: Question[] = [
     topic: '相对寻址',
     difficulty: 2,
     source: 'real',
+    templateId: 'co-relative',
     score: 2,
     question:
       '某计算机按字节编址，转移指令采用相对寻址，由两个字节组成：第一字节为操作码，第二字节为相对位移量（补码表示）。假定取指令时每取一个字节 PC 自动加 1。若某转移指令所在主存地址为 2000H，相对位移量字段的内容为 06H，则该转移指令成功转移后的目标地址是（ ）。',
@@ -18,6 +19,25 @@ export const y2009c2: Question[] = [
     answer: 'C',
     explanation:
       '关键在于"基准是执行时的 PC 值而非指令地址"：该指令占 2 字节，取完指令后 PC 已从 2000H 自动增到 2002H。目标地址 = PC + 位移量 = 2002H + 06H = 2008H。常见错误是忘掉取指阶段 PC 的自动增量而选 2006H，或按 3 字节指令误算成 2009H。相对寻址便于程序整体浮动（重定位），位移量用补码表示可向前也可向后转移。',
+    visual: {
+      kind: 'flow',
+      title: '相对寻址：目标地址 = 执行时的 PC + 位移量',
+      nodes: [
+        { id: 's', label: '转移指令在 2000H\n指令长 2 字节', type: 'start' },
+        { id: 'a', label: '取第 1 字节\nPC 变为 2001H', type: 'proc' },
+        { id: 'b', label: '取第 2 字节\nPC 变为 2002H', type: 'proc' },
+        { id: 'c', label: '基准是执行时的 PC\n而不是指令地址', type: 'proc' },
+        { id: 'd', label: 'EA = PC + 位移量\n= 2002H + 06H', type: 'proc' },
+        { id: 'e', label: '目标地址 2008H\n常见错误: 2006H', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'a' },
+        { from: 'a', to: 'b' },
+        { from: 'b', to: 'c' },
+        { from: 'c', to: 'd' },
+        { from: 'd', to: 'e' },
+      ],
+    },
   },
   {
     id: 'q-2009-22',
@@ -129,6 +149,7 @@ export const y2009c2: Question[] = [
     topic: '分页地址转换',
     difficulty: 2,
     source: 'real',
+    templateId: 'os-paging-translate',
     score: 2,
     question:
       '某分页存储管理系统中页面大小为 4 KB，某进程逻辑地址（十六进制）为 3A7CH，则其页号与页内偏移分别是（ ）。',
@@ -141,6 +162,23 @@ export const y2009c2: Question[] = [
     answer: 'A',
     explanation:
       '页面大小 4 KB = 2^12 B = 1000H，故页内偏移占低 12 位（低 3 个十六进制位），页号占其余高位。逻辑地址 3A7CH 拆分为：页号 = 3H，页内偏移 = A7CH。地址转换时以页号 3 查页表得物理块号，再与偏移 A7CH 拼接成物理地址。十六进制下每 3 位十六进制数对应 12 位二进制，即一页。',
+    visual: {
+      kind: 'flow',
+      title: '分页逻辑地址拆分（3A7CH，页大小 4KB）',
+      nodes: [
+        { id: 's', label: '逻辑地址 3A7CH', type: 'start' },
+        { id: 'a', label: '4KB = 2^12B\n偏移占低 12 位', type: 'proc' },
+        { id: 'b', label: '3A7CH 二进制\n0011 1010\n0111 1100B', type: 'proc' },
+        { id: 'c', label: '高 4 位 = 3H\n低 12 位 = A7CH', type: 'proc' },
+        { id: 'd', label: '页号 3，偏移 A7CH\n查页表拼接物理地址', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'a' },
+        { from: 'a', to: 'b' },
+        { from: 'b', to: 'c' },
+        { from: 'c', to: 'd' },
+      ],
+    },
   },
   {
     id: 'q-2009-29',
@@ -236,6 +274,7 @@ export const y2009c2: Question[] = [
     topic: '子网划分',
     difficulty: 2,
     source: 'real',
+    templateId: 'cn-vlsm',
     score: 2,
     question:
       '某网络的 IP 地址空间为 192.168.5.0/24，采用长度为 27 位的子网掩码进行子网划分，则最多可划分出的子网数与每个子网内可用的 IP 地址数分别是（ ）。',
@@ -314,6 +353,16 @@ export const y2009c2: Question[] = [
     answer: 'C',
     explanation:
       '三次握手的报文标志依次为：客户端 SYN = 1（seq = x）；服务器回复 SYN = 1、ACK = 1（seq = y，ack = x + 1），既确认了客户端的连接请求，又同步了服务器方向的初始序号；客户端再回 ACK = 1（ack = y + 1）。第二个报文段身兼"确认"与"请求"两职，因此两个标志位同时置 1。只有 ACK 的报文出现在握手完成后的数据传输阶段。',
+    visual: {
+      kind: 'seq',
+      title: 'TCP 三次握手',
+      actors: ['客户', '服务器'],
+      messages: [
+        { from: '客户', to: '服务器', label: '第一次握手: SYN=1, seq=x' },
+        { from: '服务器', to: '客户', label: '第二次: SYN=1, ACK=1, seq=y, ack=x+1' },
+        { from: '客户', to: '服务器', label: '第三次: ACK=1, seq=x+1, ack=y+1' },
+      ],
+    },
   },
   {
     id: 'q-2009-39',

@@ -35,6 +35,7 @@ while (x < n)
     topic: '栈与队列',
     difficulty: 2,
     source: 'real',
+    templateId: 'ds-stack-sim',
     score: 2,
     question:
       '设栈 S 和队列 Q 的初始状态均为空，元素 1、2、3、4 依次通过栈 S（入栈后可在任意时刻出栈），一个元素出栈后立即进入队列 Q。若 4 个元素出队的顺序是 2、4、3、1，则栈 S 的容量至少是（ ）。',
@@ -42,6 +43,48 @@ while (x < n)
     answer: 'C',
     explanation:
       '要求先输出 2：需压入 1、2（深 2）后弹出 2，栈中剩 1；接着要输出 4，而 3、4 都在其后输入，必须先把 3、4 压入，此刻栈内为 1、3、4，深度达 3；随后 4、3、1 相继出栈。整个过程栈深最大为 3，故容量至少为 3。容量 2 时压入 4 之前（栈内 1、3 再压 4）就会溢出；容量 4 虽能完成但不是"至少"。',
+    visual: {
+      kind: 'sort',
+      title: '栈容量模拟：出队序列 2、4、3、1（arr 为栈，右端为栈顶）',
+      frames: [
+        {
+          arr: ['—'],
+          note: '栈 S 与队列 Q 初始均为空，目标是 1、2、3、4 依次通过栈后按 2、4、3、1 出队',
+        },
+        {
+          arr: [1],
+          note: '1 入栈（深度 1）：下一个要交付的是 2，1 只能先压在栈底',
+        },
+        {
+          arr: [1, 2],
+          note: '2 入栈（深度 2）：栈顶恰为 2，可立即出栈',
+        },
+        {
+          arr: [1],
+          note: '2 出栈并立即入队 Q：出队序列第 1 个元素 2 达成',
+        },
+        {
+          arr: [1, 3],
+          note: '下一个要交付 4，而 3、4 都在其后输入：先送 3 入栈（深度 2）',
+        },
+        {
+          arr: [1, 3, 4],
+          note: '4 入栈：栈内自底向顶为 1、3、4，深度达 3，为全程最大',
+        },
+        {
+          arr: [1, 3],
+          note: '4 出栈入队：出队序列推进为 2、4',
+        },
+        {
+          arr: [1],
+          note: '3 出栈入队：出队序列推进为 2、4、3',
+        },
+        {
+          arr: ['—'],
+          note: '1 出栈入队：2、4、3、1 全部达成，最大栈深 3，容量至少为 3（选 C）',
+        },
+      ],
+    },
   },
   {
     id: 'q-2020-03',
@@ -52,6 +95,7 @@ while (x < n)
     topic: '循环队列',
     difficulty: 2,
     source: 'real',
+    templateId: 'ds-loop-queue',
     score: 2,
     question:
       '循环队列存放在数组 A[0..m−1] 中，队头指针 front 指向队头元素，队尾指针 rear 指向队尾元素的下一个位置。经过若干入队、出队操作后，当前队列中元素个数的计算式为（ ）。',
@@ -74,12 +118,98 @@ while (x < n)
     topic: '哈夫曼树',
     difficulty: 2,
     source: 'real',
+    templateId: 'ds-huffman',
     score: 2,
     question: '对于给定的 5 个权值 {2, 3, 4, 7, 8}，构造相应的哈夫曼树，其带权路径长度（WPL）为（ ）。',
     options: ['53', '59', '62', '71'],
     answer: 'A',
     explanation:
       '每次合并两个最小的权值：2+3=5，4+5=9，7+8=15，9+15=24。WPL 等于所有非叶（合并）结点权值之和 = 5+9+15+24 = 53。也可按深度验算：4 在第 2 层、2 与 3 在第 3 层、7 与 8 在第 2 层，WPL = 4×2 + 2×3 + 3×3 + 7×2 + 8×2 = 8+6+9+14+16 = 53。选项 B、C 是把 2、3 放错层深或漏并一层得到的错值。',
+    visual: {
+      kind: 'tree',
+      title: '哈夫曼树 {2,3,4,7,8} 构造过程（WPL = 53）',
+      steps: [
+        {
+          nodes: [
+            { id: 'w2', label: '2' },
+            { id: 'w3', label: '3' },
+            { id: 'w4', label: '4' },
+            { id: 'w7', label: '7' },
+            { id: 'w8', label: '8' },
+          ],
+          note: '初始森林：5 棵只有根结点的树，权值集合 {2,3,4,7,8}',
+        },
+        {
+          nodes: [
+            { id: 'n1', label: '5' },
+            { id: 'w2', label: '2', parent: 'n1' },
+            { id: 'w3', label: '3', parent: 'n1' },
+            { id: 'w4', label: '4' },
+            { id: 'w7', label: '7' },
+            { id: 'w8', label: '8' },
+          ],
+          highlight: ['n1', 'w2', 'w3'],
+          note: '第 1 次合并：取最小两权 2 与 3，生成权值为 5 的新树（WPL 累计 5）',
+        },
+        {
+          nodes: [
+            { id: 'n2', label: '9' },
+            { id: 'w4', label: '4', parent: 'n2' },
+            { id: 'n1', label: '5', parent: 'n2' },
+            { id: 'w2', label: '2', parent: 'n1' },
+            { id: 'w3', label: '3', parent: 'n1' },
+            { id: 'w7', label: '7' },
+            { id: 'w8', label: '8' },
+          ],
+          highlight: ['n2', 'w4', 'n1'],
+          note: '第 2 次合并：{4,5,7,8} 中取最小两权 4 与 5 合并成 9（累计 5+9=14）',
+        },
+        {
+          nodes: [
+            { id: 'n3', label: '15' },
+            { id: 'w7', label: '7', parent: 'n3' },
+            { id: 'w8', label: '8', parent: 'n3' },
+            { id: 'n2', label: '9' },
+            { id: 'w4', label: '4', parent: 'n2' },
+            { id: 'n1', label: '5', parent: 'n2' },
+            { id: 'w2', label: '2', parent: 'n1' },
+            { id: 'w3', label: '3', parent: 'n1' },
+          ],
+          highlight: ['n3', 'w7', 'w8'],
+          note: '第 3 次合并：7 与 8 合并成 15（累计 14+15=29）',
+        },
+        {
+          nodes: [
+            { id: 'r', label: '24' },
+            { id: 'n2', label: '9', parent: 'r' },
+            { id: 'n3', label: '15', parent: 'r' },
+            { id: 'w4', label: '4', parent: 'n2' },
+            { id: 'n1', label: '5', parent: 'n2' },
+            { id: 'w2', label: '2', parent: 'n1' },
+            { id: 'w3', label: '3', parent: 'n1' },
+            { id: 'w7', label: '7', parent: 'n3' },
+            { id: 'w8', label: '8', parent: 'n3' },
+          ],
+          highlight: ['r', 'n2', 'n3'],
+          note: '第 4 次合并：9 与 15 合并成根 24，构造完成，共 n−1 = 4 次合并',
+        },
+        {
+          nodes: [
+            { id: 'r', label: '24' },
+            { id: 'n2', label: '9', parent: 'r' },
+            { id: 'n3', label: '15', parent: 'r' },
+            { id: 'w4', label: '4', parent: 'n2' },
+            { id: 'n1', label: '5', parent: 'n2' },
+            { id: 'w2', label: '2', parent: 'n1' },
+            { id: 'w3', label: '3', parent: 'n1' },
+            { id: 'w7', label: '7', parent: 'n3' },
+            { id: 'w8', label: '8', parent: 'n3' },
+          ],
+          highlight: ['w2', 'w3', 'w4', 'w7', 'w8'],
+          note: 'WPL = 各新根权值之和 5+9+15+24 = 53；按深度验算 4×2+2×3+3×3+7×2+8×2 = 53（选 A）',
+        },
+      ],
+    },
   },
   {
     id: 'q-2020-05',
@@ -145,6 +275,7 @@ while (x < n)
     topic: 'B 树',
     difficulty: 2,
     source: 'real',
+    templateId: 'ds-btree-overflow',
     score: 2,
     question: '在一棵 5 阶 B 树中，除根结点以外的任何结点至少含有的关键字个数是（ ）。',
     options: ['1', '2', '3', '4'],
@@ -228,6 +359,7 @@ while (x < n)
     topic: '补码表示',
     difficulty: 2,
     source: 'real',
+    templateId: 'co-complement',
     score: 2,
     question: '设机器字长 16 位，x 的补码表示为 FFFBH（十六进制），则 x 的十进制真值是（ ）。',
     options: ['−5', '5', '−65531', '−10'],
@@ -244,12 +376,34 @@ while (x < n)
     topic: 'IEEE 754',
     difficulty: 2,
     source: 'real',
+    templateId: 'co-ieee754',
     score: 2,
     question: 'IEEE 754 单精度浮点数 41360000H 所表示的十进制数是（ ）。',
     options: ['11.375', '−11.375', '22.75', '9.375'],
     answer: 'A',
     explanation:
       '41360000H 展开为 0 10000010 01101100000000000000000：符号位为 0（正数）；阶码 1000 0010B = 130，指数 e = 130 − 127 = 3；尾数含隐藏位为 1.011011B。数值 = 1.011011B × 2^3 = 1011.011B = 8 + 2 + 1 + 0.25 + 0.125 = 11.375。选项 C 相当于把阶码多算了 1（当成 2^4）；选项 B 符号位判断错误；选项 D 是尾数装配错误。',
+    visual: {
+      kind: 'flow',
+      title: '41360000H 的 IEEE 754 单精度转换',
+      nodes: [
+        { id: 's', label: '机器数\n41360000H', type: 'start' },
+        { id: 'p1', label: '二进制 0 10000010\n011011000…0', type: 'proc' },
+        { id: 'p2', label: '符号 0（正数）\n阶码 1000 0010B\n=130', type: 'proc' },
+        { id: 'p3', label: '指数 e=130−127\n=3', type: 'proc' },
+        { id: 'p4', label: '尾数含隐藏位\n1.011011B', type: 'proc' },
+        { id: 'p5', label: '1.011011×2³\n=1011.011B', type: 'proc' },
+        { id: 'e', label: '8+2+1+0.25\n+0.125=11.375', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'p1' },
+        { from: 'p1', to: 'p2' },
+        { from: 'p2', to: 'p3' },
+        { from: 'p3', to: 'p4' },
+        { from: 'p4', to: 'p5' },
+        { from: 'p5', to: 'e' },
+      ],
+    },
   },
   {
     id: 'q-2020-15',
@@ -297,6 +451,7 @@ while (x < n)
     topic: 'Cache 映射',
     difficulty: 2,
     source: 'real',
+    templateId: 'co-cache-split',
     score: 2,
     question:
       '某计算机主存容量 256 MB（按字节编址），Cache 数据区 64 KB，行长 16 B，采用 4 路组相联映射。主存地址中标记（Tag）字段的位数为（ ）。',
@@ -304,6 +459,25 @@ while (x < n)
     answer: 'B',
     explanation:
       '块内地址 log₂16 = 4 位；Cache 行数 = 64 KB / 16 B = 4096 行，4 路组相联的组数 = 4096 / 4 = 1024，组号占 10 位；主存 256 MB = 2^28 B，地址 28 位，标记 = 28 − 10 − 4 = 14 位。选项 A 是直接映射（行号 12 位）的标记位数；选项 C 是 8 路组相联（组号 9 位）的结果；选项 D 是全相联映射（28 − 4 = 24 位）的结果。',
+    visual: {
+      kind: 'flow',
+      title: '4 路组相联 Cache 的主存地址拆分（Tag = 14 位）',
+      nodes: [
+        { id: 's', label: '主存 256MB=2²⁸\n按字节编址', type: 'start' },
+        { id: 'p1', label: '块内地址\nlog₂16=4 位', type: 'proc' },
+        { id: 'p2', label: '行数=64KB/16B\n=4096 行', type: 'proc' },
+        { id: 'p3', label: '4 路 → 组数\n4096/4=1024', type: 'proc' },
+        { id: 'p4', label: '组号 log₂1024\n=10 位', type: 'proc' },
+        { id: 'e', label: 'tag=28−10−4\n=14 位', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'p1' },
+        { from: 'p1', to: 'p2' },
+        { from: 'p2', to: 'p3' },
+        { from: 'p3', to: 'p4' },
+        { from: 'p4', to: 'e' },
+      ],
+    },
   },
   {
     id: 'q-2020-18',
@@ -480,6 +654,27 @@ while (x < n)
     answer: 'B',
     explanation:
       '最坏情形是每个进程都持有 3 台并等待第 4 台：若系统只有 9 台，三者相互等待、谁都差一台，恰好构成死锁。配置 10 台时，至少有一个进程能凑足 4 台并完成任务，随后归还 4 台即可解除其余进程的等待。一般公式为 n(k−1)+1 = 3×(4−1)+1 = 10。选项 9 恰落在死锁的临界点上；11、12 也能保证但不是"至少"。',
+    visual: {
+      kind: 'flow',
+      title: '打印机死锁的最坏情形与最少台数',
+      nodes: [
+        { id: 's', label: '3 个进程\n各需 4 台打印机', type: 'start' },
+        { id: 'p1', label: '最坏：各持 3 台\n都在等第 4 台', type: 'proc' },
+        { id: 'c1', label: '系统共几台？', type: 'cond' },
+        { id: 'e1', label: '9 台：三者互等\n死锁', type: 'end' },
+        { id: 'p2', label: '10 台：多出 1 台\n补足某一进程', type: 'proc' },
+        { id: 'p3', label: '完成后归还 4 台\n其余进程依次解围', type: 'proc' },
+        { id: 'e2', label: '公式 n(k−1)+1\n=3×3+1=10 台', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'p1' },
+        { from: 'p1', to: 'c1' },
+        { from: 'c1', to: 'e1', label: '9 台（恰临界）' },
+        { from: 'c1', to: 'p2', label: '10 台' },
+        { from: 'p2', to: 'p3' },
+        { from: 'p3', to: 'e2' },
+      ],
+    },
   },
   {
     id: 'q-2020-27',
@@ -511,6 +706,7 @@ while (x < n)
     topic: '段页式',
     difficulty: 2,
     source: 'real',
+    templateId: 'os-paging-translate',
     score: 2,
     question:
       '采用段页式存储管理（无快表）的系统上，进程存取一次已调入内存的数据，最多需要的访存次数是（ ）。',
@@ -619,6 +815,7 @@ while (x < n)
     topic: '子网划分',
     difficulty: 1,
     source: 'real',
+    templateId: 'cn-vlsm',
     score: 2,
     question: 'IP 地址块 192.168.100.0/26 可分配给主机的 IP 地址数是（ ）。',
     options: ['64', '62', '30', '126'],
@@ -657,6 +854,7 @@ while (x < n)
     topic: '以太网',
     difficulty: 2,
     source: 'real',
+    templateId: 'cn-minframe',
     score: 2,
     question:
       '传统 10 Mb/s 以太网最小帧长 64 B（争用期 51.2 μs）。若把数据率提高到 100 Mb/s 并保持最小帧长不变，则网段内最大端到端单程传播时延约缩小为原来的（ ）。',
@@ -664,6 +862,23 @@ while (x < n)
     answer: 'C',
     explanation:
       '最小帧长 = 2τ × 数据率（τ 为单程传播时延）。数据率提高 10 倍而帧长保持不变，则 2τ 必须缩小为 1/10，τ 由 25.6 μs 降为 2.56 μs，即缩小为原来的 1/10，网段最大跨度随之缩短，C 正确。选项 A 方向相反；数据率与传播时延无直接因果，B 错；选项 D 把往返与单程多除了一次 10。',
+    visual: {
+      kind: 'flow',
+      title: '数据率提高 10 倍时争用期与传播时延的变化',
+      nodes: [
+        { id: 's', label: '10Mb/s 以太网\n最小帧 64B', type: 'start' },
+        { id: 'p1', label: '最小帧长\n=2τ×数据率', type: 'proc' },
+        { id: 'p2', label: '数据率 ×10\n帧长不变', type: 'proc' },
+        { id: 'p3', label: '2τ 缩为 1/10\nτ：25.6→2.56μs', type: 'proc' },
+        { id: 'e', label: '端到端单程\n传播时延缩至\n原来的 1/10', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'p1' },
+        { from: 'p1', to: 'p2' },
+        { from: 'p2', to: 'p3' },
+        { from: 'p3', to: 'e' },
+      ],
+    },
   },
   {
     id: 'q-2020-37',
@@ -674,6 +889,7 @@ while (x < n)
     topic: 'IP 分片',
     difficulty: 2,
     source: 'real',
+    templateId: 'cn-fragment',
     score: 2,
     question:
       '一个总长度 4000 B（含 20 B 固定首部）的 IP 数据报需经 MTU = 1500 B 的链路转发，分片后最后一片的片偏移字段值为（ ）。',
@@ -681,6 +897,25 @@ while (x < n)
     answer: 'B',
     explanation:
       '每个分片最多携带 1500 − 20 = 1480 B 数据（1480 恰为 8 的倍数）。前两片各携带 1480 B，共 2960 B，最后一片的数据从原数据报的第 2960 字节开始；片偏移以 8 B 为单位，故最后一片的片偏移 = 2960 / 8 = 370。选项 A 是字节数未除以 8；选项 C（1480/8 = 185）是第二片的片偏移；选项 D 是第一片的偏移。',
+    visual: {
+      kind: 'flow',
+      title: '4000 B 数据报经 MTU=1500 B 链路的分片',
+      nodes: [
+        { id: 's', label: '数据报 4000B\n含首部 20B', type: 'start' },
+        { id: 'p1', label: '数据部分\n4000−20=3980B', type: 'proc' },
+        { id: 'p2', label: '每片数据≤\n1500−20=1480B', type: 'proc' },
+        { id: 'p3', label: '片数\n⌈3980/1480⌉=3', type: 'proc' },
+        { id: 'p4', label: '前两片各 1480B\n末片始于 2960B', type: 'proc' },
+        { id: 'e', label: '片偏移=2960/8\n=370', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'p1' },
+        { from: 'p1', to: 'p2' },
+        { from: 'p2', to: 'p3' },
+        { from: 'p3', to: 'p4' },
+        { from: 'p4', to: 'e' },
+      ],
+    },
   },
   {
     id: 'q-2020-38',

@@ -50,6 +50,7 @@ while (x < n / 2)
     topic: '栈与队列',
     difficulty: 2,
     source: 'real',
+    templateId: 'ds-stack-sim',
     score: 2,
     question:
       '设栈 S 和队列 Q 的初始状态均为空，元素 e1、e2、e3、e4、e5、e6 依次通过栈 S，一个元素出栈后即进入队列 Q。若 6 个元素出队的顺序是 e2、e4、e3、e6、e5、e1，则栈 S 的容量至少是（ ）。',
@@ -67,12 +68,57 @@ while (x < n / 2)
     topic: '二叉树性质',
     difficulty: 2,
     source: 'real',
+    templateId: 'ds-tree-count',
     score: 2,
     question: '一棵完全二叉树上共有 1001 个结点，则其中叶结点的个数是（ ）。',
     options: ['250', '500', '501', '502'],
     answer: 'C',
     explanation:
       '完全二叉树中度为 1 的结点数 n₁ 只可能为 0 或 1。总结点数 n = 1001 为奇数，而 n = n₀ + n₁ + n₂ = 2n₂ + n₁ + 1（由 n₀ = n₂ + 1 代入），奇数意味着 n₁ = 0。于是 1001 = n₀ + n₂ = 2n₂ + 1，解得 n₂ = 500，n₀ = 501。也可以直接用编号规律验证：⌈1001/2⌉ = 501 个编号大于 500 的结点全部是叶子。',
+    visual: {
+      kind: 'tree',
+      title: '完全二叉树：编号大于 ⌊n/2⌋ 的结点全是叶子',
+      steps: [
+        {
+          nodes: [
+            { id: 'n1', label: '1' },
+            { id: 'n2', label: '2', parent: 'n1' },
+            { id: 'n3', label: '3', parent: 'n1' },
+            { id: 'n4', label: '4', parent: 'n2' },
+            { id: 'n5', label: '5', parent: 'n2' },
+            { id: 'n6', label: '6', parent: 'n3' },
+            { id: 'n7', label: '7', parent: 'n3' },
+          ],
+          note: '以 7 个结点的完全二叉树为例：结点按层序编号 1～7',
+        },
+        {
+          nodes: [
+            { id: 'n1', label: '1' },
+            { id: 'n2', label: '2', parent: 'n1' },
+            { id: 'n3', label: '3', parent: 'n1' },
+            { id: 'n4', label: '4', parent: 'n2' },
+            { id: 'n5', label: '5', parent: 'n2' },
+            { id: 'n6', label: '6', parent: 'n3' },
+            { id: 'n7', label: '7', parent: 'n3' },
+          ],
+          highlight: ['n1', 'n2', 'n3'],
+          note: '分支结点的编号都不超过 ⌊7/2⌋ = 3，即 1、2、3 号结点',
+        },
+        {
+          nodes: [
+            { id: 'n1', label: '1' },
+            { id: 'n2', label: '2', parent: 'n1' },
+            { id: 'n3', label: '3', parent: 'n1' },
+            { id: 'n4', label: '4', parent: 'n2' },
+            { id: 'n5', label: '5', parent: 'n2' },
+            { id: 'n6', label: '6', parent: 'n3' },
+            { id: 'n7', label: '7', parent: 'n3' },
+          ],
+          highlight: ['n4', 'n5', 'n6', 'n7'],
+          note: '编号大于 3 的结点全是叶子，共 4 个。推广到本题：⌊1001/2⌋ = 500，编号 501～1001 全是叶子，共 1001 − 500 = 501 个；又 1001 为奇数 → n₁ = 0，n₀ = (1001+1)/2 = 501，两种算法一致',
+        },
+      ],
+    },
   },
   {
     id: 'q-2009-05',
@@ -128,6 +174,41 @@ while (x < n / 2)
     answer: 'B',
     explanation:
       '森林转二叉树采用"左孩子、右兄弟"规则：结点的第一个孩子成为其左孩子，其右兄弟成为其右孩子。森林中的叶结点就是没有孩子的结点，转换后在 T 中必然没有左孩子；反之，T 中左孩子为空的结点在 F 中也没有孩子，是叶结点。两者一一对应。注意 T 中右孩子为空的结点对应 F 中"没有右兄弟"的结点，与叶结点无必然联系。',
+    visual: {
+      kind: 'tree',
+      title: '森林 F 转二叉树 T（孩子—兄弟表示法）',
+      steps: [
+        {
+          nodes: [
+            { id: 'a', label: 'A' },
+            { id: 'b', label: 'B', parent: 'a' },
+            { id: 'c', label: 'C', parent: 'a' },
+            { id: 'd', label: 'D' },
+          ],
+          note: '森林 F（以两棵树为例）：T1 的根 A 有孩子 B、C；T2 只有根 D。F 的叶结点是没有孩子的 B、C、D',
+        },
+        {
+          nodes: [
+            { id: 'a', label: 'A' },
+            { id: 'b', label: 'B', parent: 'a' },
+            { id: 'd', label: 'D', parent: 'a' },
+            { id: 'c', label: 'C', parent: 'b' },
+          ],
+          highlight: ['a', 'b', 'c', 'd'],
+          note: '转换规则「左孩子、右兄弟」：第一个孩子作左孩子（A 的左孩子是 B），右兄弟作右孩子（B 的右孩子是 C），下一棵树的根 D 挂在 A 的右链上',
+        },
+        {
+          nodes: [
+            { id: 'a', label: 'A' },
+            { id: 'b', label: 'B', parent: 'a' },
+            { id: 'd', label: 'D', parent: 'a' },
+            { id: 'c', label: 'C', parent: 'b' },
+          ],
+          highlight: ['b', 'c', 'd'],
+          note: 'T 中左孩子指针为空的结点恰是 B、C、D——与 F 的叶结点一一对应（F 中无孩子 → T 中无左孩子），故 F 的叶结点数 = T 中左孩子指针为空的结点数',
+        },
+      ],
+    },
   },
   {
     id: 'q-2009-08',
@@ -145,6 +226,55 @@ while (x < n / 2)
     answer: 'C',
     explanation:
       '大根堆要求任一结点的关键字不小于其孩子：k_i ≥ k_2i 且 k_i ≥ k_2i+1。选项 C 中 9≥8、9≥7，8≥5、8≥6，全部满足。选项 A 中 5 < 6 违反；选项 B 中第二个元素 5 的孩子是 8、7，5 < 8 违反；选项 D 中第二个元素 7 的孩子是 8、5，7 < 8 违反。',
+    visual: {
+      kind: 'tree',
+      title: '选项 C 的完全二叉树检验（对照反例 D）',
+      steps: [
+        {
+          nodes: [
+            { id: 'n1', label: '9' },
+            { id: 'n2', label: '8', parent: 'n1' },
+            { id: 'n3', label: '7', parent: 'n1' },
+            { id: 'n4', label: '5', parent: 'n2' },
+            { id: 'n5', label: '6', parent: 'n2' },
+          ],
+          note: '把选项 C 的序列 9,8,7,5,6 按完全二叉树层序摆放（下标从 1 起）',
+        },
+        {
+          nodes: [
+            { id: 'n1', label: '9' },
+            { id: 'n2', label: '8', parent: 'n1' },
+            { id: 'n3', label: '7', parent: 'n1' },
+            { id: 'n4', label: '5', parent: 'n2' },
+            { id: 'n5', label: '6', parent: 'n2' },
+          ],
+          highlight: ['n1', 'n2', 'n3'],
+          note: '检查 1 号结点 9：孩子为 2 号 8 与 3 号 7，均 ≤ 9，通过',
+        },
+        {
+          nodes: [
+            { id: 'n1', label: '9' },
+            { id: 'n2', label: '8', parent: 'n1' },
+            { id: 'n3', label: '7', parent: 'n1' },
+            { id: 'n4', label: '5', parent: 'n2' },
+            { id: 'n5', label: '6', parent: 'n2' },
+          ],
+          highlight: ['n2', 'n4', 'n5'],
+          note: '检查 2 号结点 8：孩子为 4 号 5 与 5 号 6，均 ≤ 8；3～5 号是叶子无需检查，选项 C 是大根堆',
+        },
+        {
+          nodes: [
+            { id: 'm1', label: '9' },
+            { id: 'm2', label: '7', parent: 'm1' },
+            { id: 'm3', label: '6', parent: 'm1' },
+            { id: 'm4', label: '8', parent: 'm2' },
+            { id: 'm5', label: '5', parent: 'm2' },
+          ],
+          highlight: ['m2', 'm4'],
+          note: '反例选项 D（9,7,6,8,5）：2 号结点 7 的左孩子 8 > 7，违反大根堆定义，D 不是堆——A、B 也可同法排除',
+        },
+      ],
+    },
   },
   {
     id: 'q-2009-09',
@@ -204,6 +334,38 @@ while (x < n / 2)
     answer: 'C',
     explanation:
       '先序为"根、左、右"，中序为"左、根、右"。若任一结点都没有右子树（树呈向左延伸的单支形态），先序访问顺序是自根向下，中序是自最深结点向上回溯，两者恰好互为逆序。反之若存在右子树，逆序关系被破坏。可用两三个结点的例子验证：根 A、左孩子 B，先序为 A B，中序为 B A，正好相反。"无左子树"对应的是先序与中序相同的情形。',
+    visual: {
+      kind: 'tree',
+      title: '先序与中序相反：每个结点均无右子树',
+      steps: [
+        {
+          nodes: [
+            { id: 'a', label: 'A' },
+            { id: 'b', label: 'B', parent: 'a' },
+            { id: 'c', label: 'C', parent: 'b' },
+          ],
+          note: '一棵每个结点都只有左孩子的单支树（以 3 个结点 A、B、C 为例）',
+        },
+        {
+          nodes: [
+            { id: 'a', label: 'A' },
+            { id: 'b', label: 'B', parent: 'a' },
+            { id: 'c', label: 'C', parent: 'b' },
+          ],
+          highlight: ['a', 'b', 'c'],
+          note: '先序（根→左→右）：A、B、C——访问顺序自根向下一路走左链',
+        },
+        {
+          nodes: [
+            { id: 'a', label: 'A' },
+            { id: 'b', label: 'B', parent: 'a' },
+            { id: 'c', label: 'C', parent: 'b' },
+          ],
+          highlight: ['c', 'b', 'a'],
+          note: '中序（左→根→右）：C、B、A——自最深结点回溯向上，与先序恰好互为逆序。只要任何结点出现右子树，这一逆序关系就被破坏，故选「任一结点均无右子树」',
+        },
+      ],
+    },
   },
   {
     id: 'q-2009-12',
@@ -231,6 +393,7 @@ while (x < n / 2)
     topic: '定点数表示',
     difficulty: 1,
     source: 'real',
+    templateId: 'co-complement',
     score: 2,
     question: '在补码表示的机器中，8 位二进制代码 1000 0000 表示的十进制数是（ ）。',
     options: ['-128', '-0', '+0', '+128'],
@@ -247,6 +410,7 @@ while (x < n / 2)
     topic: 'IEEE 754',
     difficulty: 2,
     source: 'real',
+    templateId: 'co-ieee754',
     score: 2,
     question: '将十进制数 −0.75 表示成 IEEE 754 单精度浮点数，其十六进制形式是（ ）。',
     options: ['BF40 0000H', 'BF40 8000H', '3F40 0000H', 'BE40 0000H'],
@@ -284,6 +448,7 @@ while (x < n / 2)
     topic: '溢出判断',
     difficulty: 2,
     source: 'real',
+    templateId: 'co-complement',
     score: 2,
     question:
       '采用双符号位（变形补码）进行补码加减运算，若运算结果的双符号位为 01，则表示结果（ ）。',
@@ -359,6 +524,7 @@ while (x < n / 2)
     topic: '指令流水线',
     difficulty: 2,
     source: 'real',
+    templateId: 'co-pipeline',
     score: 2,
     question:
       '某指令流水线由 5 个功能段组成，每个功能段耗时 1 个时钟周期。若连续输入 8 条指令，则完成这 8 条指令至少需要（ ）个时钟周期。',
@@ -366,5 +532,20 @@ while (x < n / 2)
     answer: 'C',
     explanation:
       '流水线建立期：第 1 条指令流过全部 5 段需 5 个周期；此后每个周期从末段流出一条指令，剩余 7 条只需再等 7 个周期。总时间 = 5 + (8 − 1) = 12 个时钟周期。一般公式为 T = k + (n − 1)，其中 k 为段数、n 为指令条数。该公式是后续计算流水线吞吐率、加速比的基础。',
+    visual: {
+      kind: 'pipeline',
+      title: '5 段流水线连续执行 8 条指令（12 个时钟周期）',
+      stages: ['IF', 'ID', 'EX', 'MEM', 'WB'],
+      instrs: [
+        { name: 'I1', delay: 0, note: '第 1 条指令流过全部 5 段，建立期占 5 拍' },
+        { name: 'I2', delay: 1 },
+        { name: 'I3', delay: 2 },
+        { name: 'I4', delay: 3 },
+        { name: 'I5', delay: 4 },
+        { name: 'I6', delay: 5 },
+        { name: 'I7', delay: 6 },
+        { name: 'I8', delay: 7, note: '建立期后每拍从末段流出一条，总时间 = 5 + (8−1) = 12 拍' },
+      ],
+    },
   },
 ]

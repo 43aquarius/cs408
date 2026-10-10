@@ -136,6 +136,7 @@ export const mock07c2: Question[] = [
     topic: 'HRRN',
     difficulty: 2,
     source: 'mock',
+    templateId: 'os-schedule-metrics',
     score: 2,
     question:
       '单道批处理系统采用高响应比优先（HRRN）调度（非抢占）。作业到达时间与估计运行时间分别为：J1（0 时刻到达，需 3）、J2（1 时刻到达，需 5）、J3（2 时刻到达，需 2）、J4（4 时刻到达，需 1）。则四个作业的执行顺序为（　）。',
@@ -208,6 +209,7 @@ export const mock07c2: Question[] = [
     topic: '改进CLOCK',
     difficulty: 3,
     source: 'mock',
+    templateId: 'os-page-replace',
     score: 2,
     question:
       '某请求分页系统为进程分配 4 个页框，页面访问序列为 1、2、3、4、1、2、5、1、2、3、4、5，所有页面均为只读（修改位 M 恒为 0）。采用改进型 CLOCK 算法（按「访问位 A、修改位 M」四轮扫描：第 1 轮找 (0,0)，第 2 轮找 (0,1) 并将扫过页面的 A 清 0，第 3 轮再找 (0,0)，第 4 轮找 (0,1)）。则访问页 5 引发第 5 次缺页时，被淘汰的页面及该页在第几轮扫描中被选中为（　）。',
@@ -257,6 +259,27 @@ export const mock07c2: Question[] = [
     ],
     explanation:
       '自映射（递归页表）的思想：让目录项 s 指向目录自己，则 (s, j, 偏移) 的第二次查表落在目录的第 j 项上，取出的是第 j 号页表的页框号——虚地址因此直接「看到」第 j 号页表。(s, s, 偏移) 则两次都命中目录，看到目录本身；(s, j, 偏移) 与 (s, s, 偏移) 组合即可不借助内核特权接口访问全部页表结构。判断技巧：沿「第一级索引→第二级索引」逐步代入，注意第二次查的表已被自映射偷换成目录。',
+    visual: {
+      kind: 'flow',
+      title: '页目录自映射：虚地址 (s, j, 偏移) 的变换路径',
+      nodes: [
+        { id: 's', label: '虚地址 (s, j, 偏移)', type: 'start' },
+        { id: 'a', label: '一级查表：索引 s\n查页目录表', type: 'proc' },
+        { id: 'b', label: '目录项 s 是自映射项\n内容=目录自身页框号', type: 'proc' },
+        { id: 'c', label: '二级查表被偷换\n在目录中查第 j 项', type: 'proc' },
+        { id: 'd', label: '取出第 j 号页表\n所在的页框号', type: 'proc' },
+        { id: 'e', label: '当作数据页框号\n与页内偏移拼接', type: 'proc' },
+        { id: 'f', label: '映射到第 j 号页表\n所在的物理页（选 D）', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'a' },
+        { from: 'a', to: 'b' },
+        { from: 'b', to: 'c' },
+        { from: 'c', to: 'd' },
+        { from: 'd', to: 'e' },
+        { from: 'e', to: 'f' },
+      ],
+    },
   },
   {
     id: 'mock07-30',
@@ -430,6 +453,7 @@ export const mock07c2: Question[] = [
     topic: 'CSMA/CD',
     difficulty: 2,
     source: 'mock',
+    templateId: 'cn-minframe',
     score: 2,
     question:
       '某 100Mb/s 以太网采用 CSMA/CD 协议，两站点间单向传播时延为 25μs（含中继器时延）。为保证冲突能被检测到，该网络的最短帧长为（　）。',
@@ -483,6 +507,7 @@ export const mock07c2: Question[] = [
     topic: 'IP分片',
     difficulty: 2,
     source: 'mock',
+    templateId: 'cn-fragment',
     score: 2,
     question:
       '一个总长度为 3200B（含 20B 固定 IP 首部）的 IP 数据报，DF = 0，经过一条 MTU = 800B 的链路时被分片。则最后一片（第 4 片）的片偏移字段值与该片的总长度分别为（　）。',
@@ -559,6 +584,7 @@ export const mock07c2: Question[] = [
     topic: '快速重传',
     difficulty: 2,
     source: 'mock',
+    templateId: 'cn-cwnd',
     score: 2,
     question:
       'TCP Reno 拥塞控制中，发送方连续收到 3 个对同一报文段的冗余 ACK（重复确认）。此时发送方应采取的动作是（　）。',

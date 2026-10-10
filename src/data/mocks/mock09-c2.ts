@@ -134,6 +134,7 @@ export const mock09c2: Question[] = [
     topic: '作业调度',
     difficulty: 3,
     source: 'mock',
+    templateId: 'os-schedule-metrics',
     score: 2,
     question:
       '某单道批处理系统按先来先服务（FCFS）调度三个作业：作业 1 到达时刻为 0，需运行 3 小时；作业 2 到达时刻为 1，需运行 3 小时；作业 3 到达时刻为 2，需运行 3 小时。全部作业完成后，平均周转时间与平均带权周转时间分别约为（　）。',
@@ -147,6 +148,27 @@ export const mock09c2: Question[] = [
     ],
     explanation:
       '考点是周转时间与带权周转时间的计算。时间线：作业 1 运行 0～3，作业 2 排队至 3 才开始、6 完成，作业 3 至 6 开始、9 完成。周转 = 完成 − 到达，得 3、5、7，平均 5.0 小时；带权 = 周转 ÷ 运行，得 1、5/3、7/3，平均 5/3 ≈ 1.67。单道系统中长作业挡住后到作业会显著拉高带权值，这正是 SJF 平均意义下优于 FCFS 的场景。',
+    visual: {
+      kind: 'flow',
+      title: 'FCFS 三作业时间线与周转指标',
+      nodes: [
+        { id: 's', label: '三作业 FCFS\n单道批处理', type: 'start' },
+        { id: 'a', label: 'J1 到达 0\n运行 0~3', type: 'proc' },
+        { id: 'b', label: 'J2 到达 1 排队 2h\n运行 3~6', type: 'proc' },
+        { id: 'c', label: 'J3 到达 2 排队 4h\n运行 6~9', type: 'proc' },
+        { id: 'd', label: '周转 3/5/7\n平均 5.0h', type: 'proc' },
+        { id: 'e', label: '带权 1/1.67/2.33\n平均 1.67', type: 'proc' },
+        { id: 'f', label: '带权恒 ≥ 1\n短作业受拖累', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'a' },
+        { from: 'a', to: 'b' },
+        { from: 'b', to: 'c' },
+        { from: 'c', to: 'd' },
+        { from: 'd', to: 'e' },
+        { from: 'e', to: 'f' },
+      ],
+    },
   },
   {
     id: 'mock09-26',
@@ -210,6 +232,7 @@ export const mock09c2: Question[] = [
     topic: '请求分页',
     difficulty: 2,
     source: 'mock',
+    templateId: 'os-page-replace',
     score: 2,
     question:
       '某请求分页系统为进程分配 3 个页框（初始全空），采用 FIFO 页面置换算法，页面访问序列为 1、3、2、4、1、5。已知页面 2 在驻留内存期间被写入修改（修改位为 1），重新装入的页面 1 与页面 4 的修改位均为 0。访问页面 5 产生缺页时，被淘汰的页面及其处理方式是（　）。',
@@ -355,6 +378,7 @@ export const mock09c2: Question[] = [
     topic: '时延计算',
     difficulty: 3,
     source: 'mock',
+    templateId: 'cn-latency',
     score: 2,
     question:
       '主机甲经一条长度为 100 km 的链路向主机乙发送一个长度为 1000 B 的分组。链路数据率为 10 Mb/s，信号在链路上的传播速率为 2×10^8 m/s。忽略处理时延与排队时延，从甲开始发送到乙完全收到该分组所需的时间是（　）。',
@@ -368,6 +392,31 @@ export const mock09c2: Question[] = [
     ],
     explanation:
       '考点是发送时延与传播时延的构成。总时延 = 发送时延（分组长度 ÷ 发送速率）+ 传播时延（链路长度 ÷ 传播速率）：前者由「链路两端的收发能力」决定，后者由「链路本身的物理长度」决定，二者相互独立、缺一不可。本题 0.8 ms + 0.5 ms = 1.3 ms。',
+    visual: {
+      kind: 'flow',
+      title: '发送时延 + 传播时延 = 1.3ms',
+      nodes: [
+        { id: 's', label: '主机甲发 1000B\n链路 100km', type: 'start' },
+        { id: 'a', label: '①发送时延', type: 'proc' },
+        { id: 'b', label: '8000 bit\n÷ 10 Mb/s', type: 'proc' },
+        { id: 'c', label: 'Td = 0.8 ms', type: 'proc' },
+        { id: 'd', label: '②传播时延', type: 'proc' },
+        { id: 'e', label: '100 km\n÷ 2×10^8 m/s', type: 'proc' },
+        { id: 'f', label: 'Tp = 0.5 ms', type: 'proc' },
+        { id: 'g', label: '总时延\n0.8+0.5=1.3ms', type: 'proc' },
+        { id: 'h', label: '乙完全收到分组\n需 1.3 ms', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'a' },
+        { from: 'a', to: 'b' },
+        { from: 'b', to: 'c' },
+        { from: 'c', to: 'd' },
+        { from: 'd', to: 'e' },
+        { from: 'e', to: 'f' },
+        { from: 'f', to: 'g' },
+        { from: 'g', to: 'h' },
+      ],
+    },
   },
   {
     id: 'mock09-34',
@@ -431,6 +480,7 @@ export const mock09c2: Question[] = [
     topic: '子网划分',
     difficulty: 2,
     source: 'mock',
+    templateId: 'cn-vlsm',
     score: 2,
     question: '主机的 IP 地址为 192.168.1.100，子网掩码为 255.255.255.240（/28）。该主机所在子网的网络地址与直接广播地址分别是（　）。',
     options: [
@@ -480,6 +530,7 @@ export const mock09c2: Question[] = [
     topic: '子网掩码',
     difficulty: 1,
     source: 'mock',
+    templateId: 'cn-vlsm',
     score: 2,
     question:
       '把网络 192.168.1.0/24 用掩码 255.255.255.240 划分为若干子网，则划分出的子网数量与每个子网内可分配给主机的 IP 地址数量分别是（　）。',
@@ -592,6 +643,7 @@ export const mock09c2: Question[] = [
     topic: 'TCP确认',
     difficulty: 3,
     source: 'mock',
+    templateId: 'cn-tcp-seq',
     score: 2,
     question:
       '主机甲向主机乙发送 TCP 数据，先后发出三个报文段：段 1（seq = 100，携带 100 B 数据）、段 2（seq = 200，携带 200 B 数据）、段 3（seq = 400，携带 300 B 数据）。乙正确收到了段 1 和段 3，段 2 在网络中丢失。采用累积确认时，乙发往甲的确认报文段中的确认号是（　）。',

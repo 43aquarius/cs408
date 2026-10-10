@@ -129,6 +129,7 @@ export const y2014c2: Question[] = [
     topic: '快表与访存',
     difficulty: 2,
     source: 'real',
+    templateId: 'os-paging-translate',
     score: 2,
     question:
       '某页式存储管理系统设置快表 TLB，查一次 TLB 需 20 ns，访问一次主存需 100 ns（页表也存放在主存中）。系统先查 TLB：命中则由物理地址直接访存取数；未命中则先访问主存中的页表得到页框号，再访存取数。若 TLB 命中率为 90%，则一次取数操作的平均有效访问时间约为（ ）。',
@@ -146,6 +147,7 @@ export const y2014c2: Question[] = [
     topic: '页面置换',
     difficulty: 1,
     source: 'real',
+    templateId: 'os-page-replace',
     score: 2,
     question:
       '下列页面置换算法中，可能出现 Belady 异常（分配的页框数增加、缺页次数反而增加）的是（ ）。',
@@ -184,6 +186,7 @@ export const y2014c2: Question[] = [
     topic: '位示图',
     difficulty: 2,
     source: 'real',
+    templateId: 'os-bitmap',
     score: 2,
     question:
       '某文件系统用位示图管理磁盘空闲空间，位示图每个字 32 位，字号 i 的第 j 位对应磁盘块号 32i + j（字号、位号与块号均从 0 开始编号）。磁盘块 4096 在位示图中对应的字号与位号是（ ）。',
@@ -255,6 +258,7 @@ export const y2014c2: Question[] = [
     topic: '停止等待协议',
     difficulty: 2,
     source: 'real',
+    templateId: 'cn-latency',
     score: 2,
     question:
       '主机甲经一条带宽为 8 kbit/s 的链路向主机乙发送数据帧，单向传播时延为 200 ms，采用停止—等待协议，数据帧长 800 bit，忽略确认帧的发送时延与处理时延。该信道的利用率约为（ ）。',
@@ -272,6 +276,7 @@ export const y2014c2: Question[] = [
     topic: 'CSMA/CD',
     difficulty: 2,
     source: 'real',
+    templateId: 'cn-minframe',
     score: 2,
     question:
       '把传统 10 Mb/s 以太网升级为 100 Mb/s 快速以太网时，若保持最小帧长（64 B）不变，为保证冲突检测仍然有效，网络的最大跨距应（ ）。',
@@ -349,6 +354,7 @@ export const y2014c2: Question[] = [
     topic: 'TCP确认号',
     difficulty: 1,
     source: 'real',
+    templateId: 'cn-tcp-seq',
     score: 2,
     question: 'TCP 报文段首部中，确认号（acknowledgement number）字段的含义是（ ）。',
     options: [

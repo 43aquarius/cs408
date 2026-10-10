@@ -126,6 +126,7 @@ export const mock10c1: Question[] = [
     topic: '二叉树',
     difficulty: 3,
     source: 'mock',
+    templateId: 'ds-huffman',
     score: 2,
     question:
       '一棵二叉树：A 为根；A 的左孩子为 B，右孩子为 C；B 只有左孩子 D；D 只有左孩子 G；C 的左、右孩子分别为 E、F。叶子 G、E、F 的权依次为 2、8、5（其余结点不带权）。规定根结点的深度为 0，则该树的带权路径长度 WPL 为（　）。',
@@ -252,6 +253,31 @@ export const mock10c1: Question[] = [
     ],
     explanation:
       '点双连通研究割点，边双连通研究桥，两者不可混淆。三个必记结论：① 每条边恰属一个双连通分量；② 不同分量至多共享一个顶点，共享点即割点；③ DFS 根是割点当且仅当其 DFS 树孩子数不少于 2，非根结点 u 是割点当且仅当 u 的某棵子树中没有指向 u 祖先的回边。D 项的「边不相交」与「点不相交」是经典偷换。',
+    visual: {
+      kind: 'graph',
+      title: '蝴蝶结图：有两条边不相交路径却仍有割点',
+      nodes: [
+        { id: 'v', x: 50, y: 50 },
+        { id: 'a', x: 16, y: 26 },
+        { id: 'b', x: 16, y: 74 },
+        { id: 'c', x: 84, y: 26 },
+        { id: 'd', x: 84, y: 74 },
+      ],
+      edges: [
+        { from: 'v', to: 'a' },
+        { from: 'v', to: 'b' },
+        { from: 'a', to: 'b' },
+        { from: 'v', to: 'c' },
+        { from: 'v', to: 'd' },
+        { from: 'c', to: 'd' },
+      ],
+      steps: [
+        { note: '蝴蝶结图（选项 D 的反例）：两个三角形共用顶点 v，每条边都在环上，图中没有桥' },
+        { activeNodes: ['a', 'v', 'c'], activeEdges: ['v-a', 'v-c'], labels: { v: '必经点' }, note: 'a 到 c 的路径一：a—v—c，两条边都经过 v' },
+        { activeNodes: ['a', 'b', 'v', 'd', 'c'], activeEdges: ['a-b', 'v-b', 'v-d', 'c-d'], note: '路径二：a—b—v—d—c，与路径一没有公共边（边不相交）' },
+        { activeNodes: ['a', 'b', 'c', 'd'], activeEdges: ['a-b', 'c-d'], labels: { v: '已删' }, note: '删去 v：只剩 a—b 与 c—d 两条边，图分裂为两半——v 是割点，「边不相交」不保证无割点' },
+      ],
+    },
   },
   {
     id: 'mock10-08',
@@ -291,6 +317,7 @@ export const mock10c1: Question[] = [
     topic: '堆',
     difficulty: 3,
     source: 'mock',
+    templateId: 'ds-heap-op',
     score: 2,
     question:
       '将关键字序列 {12, 45, 28, 67, 9, 33, 51, 24}（按下标 1～8 存放）自底向上建大顶堆：从最后一个非叶结点（下标 4）开始到根，依次对每个结点执行向下调整。整个建堆过程中，关键字之间的比较次数共为（　）。',
@@ -488,6 +515,27 @@ export const mock10c1: Question[] = [
     ],
     explanation:
       '补码规格化的判断口诀：符号位与尾数最高数位相反——正数为 0.1××…、负数为 1.0××…。对比原码：原码规格化只要求最高数位为 1（正负皆然），两者判据不同。补码规格化正数区间是 [1/2, 1)，负数区间是 [−1, −1/2)（含 −1、不含 −1/2）。做题时把十六进制展开为二进制看前两位即可判断，注意别把 1.1 开头的负数误判为规格化。',
+    visual: {
+      kind: 'flow',
+      title: '补码尾数规格化形式的逐项判定',
+      nodes: [
+        { id: 's', label: '判断四个候选\n补码尾数编码', type: 'start' },
+        { id: 'r', label: '正数 0.1×\n负数 1.0×', type: 'proc' },
+        { id: 'a', label: 'C8H=1100 1000\n1.1 开头，否', type: 'proc' },
+        { id: 'b', label: '34H=0011 0100\n0.0 开头，否', type: 'proc' },
+        { id: 'c', label: 'F0H=1111 0000\n1.1 开头，否', type: 'proc' },
+        { id: 'd', label: 'A0H=1010 0000\n1.0 开头，是', type: 'proc' },
+        { id: 'e', label: '答案 D：真值 -0.75\n属 [−1, −1/2)', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'r' },
+        { from: 'r', to: 'a' },
+        { from: 'a', to: 'b' },
+        { from: 'b', to: 'c' },
+        { from: 'c', to: 'd' },
+        { from: 'd', to: 'e' },
+      ],
+    },
   },
   {
     id: 'mock10-14',

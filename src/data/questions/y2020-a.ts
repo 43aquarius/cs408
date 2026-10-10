@@ -57,6 +57,87 @@ void Infix(BiTree t, char parentOp, int isRight)
     },
     explanation:
       '本题核心是"后序（中序化）遍历 + 按优先级加括号"。输出次序正是中缀次序：左子树、根、右子树。加括号的判定是阅卷关键：左孩子仅当其根运算符优先级严格更低时加括号；右孩子除优先级更低外，"同级且父子均为减/除"（a−(b−c)、a/(b/c) 型）也要加括号，而 a−(b+c)、a×(b/c) 等数学上等价展开的情形不必加，才符合"必要的括号"。易错点：把先序当输出次序、对同级加法乘法也一律加括号、给最外层加括号。',
+    visual: {
+      kind: 'tree',
+      title: '表达式树转中缀：示例 (a−b)×(c−(d−e))',
+      steps: [
+        {
+          nodes: [
+            { id: 'r', label: '×' },
+            { id: 'm1', label: '−', parent: 'r' },
+            { id: 'a', label: 'a', parent: 'm1' },
+            { id: 'b', label: 'b', parent: 'm1' },
+            { id: 'm2', label: '−', parent: 'r' },
+            { id: 'c', label: 'c', parent: 'm2' },
+            { id: 'm3', label: '−', parent: 'm2' },
+            { id: 'd', label: 'd', parent: 'm3' },
+            { id: 'e', label: 'e', parent: 'm3' },
+          ],
+          highlight: ['r'],
+          note: '示例表达式树（叶为操作数，内部结点为运算符）：后序遍历生成中缀式；根 × 的双亲是哨兵，根永不加括号',
+        },
+        {
+          nodes: [
+            { id: 'r', label: '×' },
+            { id: 'm1', label: '−', parent: 'r' },
+            { id: 'a', label: 'a', parent: 'm1' },
+            { id: 'b', label: 'b', parent: 'm1' },
+            { id: 'm2', label: '−', parent: 'r' },
+            { id: 'c', label: 'c', parent: 'm2' },
+            { id: 'm3', label: '−', parent: 'm2' },
+            { id: 'd', label: 'd', parent: 'm3' },
+            { id: 'e', label: 'e', parent: 'm3' },
+          ],
+          highlight: ['m1', 'a', 'b'],
+          note: '先访左子树：其根 − 优先级 1 低于 × 的 2，子结果必须加括号 → (a−b)',
+        },
+        {
+          nodes: [
+            { id: 'r', label: '×' },
+            { id: 'm1', label: '−', parent: 'r' },
+            { id: 'a', label: 'a', parent: 'm1' },
+            { id: 'b', label: 'b', parent: 'm1' },
+            { id: 'm2', label: '−', parent: 'r' },
+            { id: 'c', label: 'c', parent: 'm2' },
+            { id: 'm3', label: '−', parent: 'm2' },
+            { id: 'd', label: 'd', parent: 'm3' },
+            { id: 'e', label: 'e', parent: 'm3' },
+          ],
+          highlight: ['m2', 'c'],
+          note: '再访右子树：其根 − 优先级同样低于 ×，加括号 → (c−…',
+        },
+        {
+          nodes: [
+            { id: 'r', label: '×' },
+            { id: 'm1', label: '−', parent: 'r' },
+            { id: 'a', label: 'a', parent: 'm1' },
+            { id: 'b', label: 'b', parent: 'm1' },
+            { id: 'm2', label: '−', parent: 'r' },
+            { id: 'c', label: 'c', parent: 'm2' },
+            { id: 'm3', label: '−', parent: 'm2' },
+            { id: 'd', label: 'd', parent: 'm3' },
+            { id: 'e', label: 'e', parent: 'm3' },
+          ],
+          highlight: ['m3', 'd', 'e'],
+          note: '右子树的右孩子仍是 −：与父同级且均为减法（不满足交换律）→ 再加括号 (d−e)',
+        },
+        {
+          nodes: [
+            { id: 'r', label: '×' },
+            { id: 'm1', label: '−', parent: 'r' },
+            { id: 'a', label: 'a', parent: 'm1' },
+            { id: 'b', label: 'b', parent: 'm1' },
+            { id: 'm2', label: '−', parent: 'r' },
+            { id: 'c', label: 'c', parent: 'm2' },
+            { id: 'm3', label: '−', parent: 'm2' },
+            { id: 'd', label: 'd', parent: 'm3' },
+            { id: 'e', label: 'e', parent: 'm3' },
+          ],
+          highlight: ['r', 'm1', 'm2', 'm3'],
+          note: '按左、根、右次序拼接输出 (a−b)×(c−(d−e))；每结点恰访问一次，时间 O(n)、递归栈深 O(h)',
+        },
+      ],
+    },
   },
   {
     id: 'q-2020-42',
@@ -94,6 +175,31 @@ void Infix(BiTree t, char parentOp, int isRight)
     },
     explanation:
       '本题是经典的"原地哈希（桶归位）"设计题。关键观察：结果只可能在 1..n+1 内，因此超出该区间的值可直接忽略，从而允许用数组下标充当哈希地址，省去辅助数组。交换写成"交换后不前进 i"，使换来的新值继续参与归位，保证总交换次数不超过 n。常见次优做法：先排序再扫描（O(n log n)）或开标记数组（O(n) 额外空间），均不如本解法高效。',
+    visual: {
+      kind: 'flow',
+      title: '原地散列法：找未出现的最小正整数',
+      nodes: [
+        { id: 's', label: '示例 {−5,3,2,3,\n4,2,99,1} n=8', type: 'start' },
+        { id: 'p1', label: '答案∈[1,n+1]\n超界值可忽略', type: 'proc' },
+        { id: 'c1', label: 'a[i] 在 1..n 内\n且未归位？', type: 'cond' },
+        { id: 'p2', label: 'a[i] 交换到下标\na[i]−1 处\n（i 不前进）', type: 'proc' },
+        { id: 'p3', label: '已就位或超界\ni++ 看下一个', type: 'proc' },
+        { id: 'c2', label: '第二趟扫描\na[i]≠i+1？', type: 'cond' },
+        { id: 'e1', label: '输出 i+1\n（示例输出 5）', type: 'end' },
+        { id: 'e2', label: '输出 n+1', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'p1' },
+        { from: 'p1', to: 'c1' },
+        { from: 'c1', to: 'p2', label: '是' },
+        { from: 'p2', to: 'c1', label: '换来的值继续归位' },
+        { from: 'c1', to: 'p3', label: '否' },
+        { from: 'p3', to: 'c1', label: 'i<n 继续' },
+        { from: 'p3', to: 'c2', label: '整理完毕' },
+        { from: 'c2', to: 'e1', label: '是' },
+        { from: 'c2', to: 'e2', label: '否（1..n 全出现）' },
+      ],
+    },
   },
   {
     id: 'q-2020-43',
@@ -104,6 +210,7 @@ void Infix(BiTree t, char parentOp, int isRight)
     topic: 'Cache 映射',
     difficulty: 2,
     source: 'real',
+    templateId: 'co-cache-split',
     score: 13,
     question:
       '某计算机按字节编址，主存容量 256 MB，Cache 数据区容量 64 KB，行长 16 B。\n(1) 写出直接映射方式下主存地址的划分（各字段名与位数），并求标记（Tag）的位数；（4 分）\n(2) 若改为 4 路组相联映射，写出主存地址划分与标记位数；（4 分）\n(3) 设 Cache 命中时间为 1 个时钟周期，缺失代价为 50 个时钟周期，某程序执行时的命中率为 96%。求平均访存时间（时钟周期数），并比较直接映射与 4 路组相联的优缺点。（5 分）',
@@ -111,6 +218,27 @@ void Infix(BiTree t, char parentOp, int isRight)
       '**(1)** 主存 256 MB = 2^28 B，地址共 28 位。块内地址 log₂16 = 4 位；Cache 行数 = 64 KB / 16 B = 4096 = 2^12，行号 12 位；标记 = 28 − 12 − 4 = **12 位**。地址结构：**标记 12 位 ｜ 行号 12 位 ｜ 块内地址 4 位**。\n**(2)** 4 路组相联：组数 = 4096 / 4 = 1024 = 2^10，组号 10 位；标记 = 28 − 10 − 4 = **14 位**。地址结构：**标记 14 位 ｜ 组号 10 位 ｜ 块内地址 4 位**。\n**(3)** 平均访存时间 = 命中时间 + 缺失率 × 缺失代价 = 1 + 0.04 × 50 = **3 个时钟周期**。比较：直接映射地址变换最简单（只需一次比较 12 位标记）、硬件开销小、命中判定快，但每个主存块只能进入固定行，两个热点块映射到同一行会互相驱逐，冲突缺失多、命中率偏低；4 路组相联中主存块可放入组内任意一行（同时比较 4 行的 14 位标记），冲突率低、命中率更高，代价是标记更宽、需要 4 套比较器、控制稍复杂。组相联是两者的折中，路数越多越接近全相联。',
     explanation:
       '本题三问分别对应"地址划分 → 标记位数 → 性能与实现折衷"。求标记位数的通用流程：先由行长定块内位数，再由 Cache 组织（直接映射看行数、组相联看组数）定索引位数，剩余高位即标记。注意直接映射把块号的低 12 位用作行号从而免于存储比较；路数增加使组数减少、组号位数减少、标记位数增大且比较器成倍增加，但冲突缺失下降——这正是"用硬件换命中率"的量化体现。平均访存时间公式中缺失率与缺失代价只相乘一次，不要重复计入命中时间。',
+    visual: {
+      kind: 'flow',
+      title: 'Cache 地址三段拆分与平均访存时间',
+      nodes: [
+        { id: 's', label: '主存 256MB=2²⁸\nCache 64KB\n行长 16B', type: 'start' },
+        { id: 'p1', label: '块内地址\nlog₂16=4 位', type: 'proc' },
+        { id: 'p2', label: '行数 64KB/16B\n=4096=2¹²', type: 'proc' },
+        { id: 'b1', label: '(1) 直接映射\n行号 12 位\ntag=28−12−4\n=12 位', type: 'proc' },
+        { id: 'b2', label: '(2) 4 路组相联\n组数 4096/4=1024\n组号 10 位\ntag=28−10−4=14', type: 'proc' },
+        { id: 'p3', label: '(3) 平均访存\n1+0.04×50=3 周期', type: 'proc' },
+        { id: 'e', label: '直接映射快而冲突多\n组相联慢而命中高', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'p1' },
+        { from: 'p1', to: 'p2' },
+        { from: 'p2', to: 'b1' },
+        { from: 'b1', to: 'b2' },
+        { from: 'b2', to: 'p3' },
+        { from: 'p3', to: 'e' },
+      ],
+    },
   },
   {
     id: 'q-2020-44',
@@ -121,6 +249,7 @@ void Infix(BiTree t, char parentOp, int isRight)
     topic: '指令流水线',
     difficulty: 3,
     source: 'real',
+    templateId: 'co-pipeline',
     score: 10,
     question:
       '某计算机指令流水线由 IF、ID、EX、MEM、WB 五段组成，每段 1 个时钟周期。约定：**若不采用转发技术，后继指令必须等到先行指令完成 WB（写回）后的下一个时钟周期，才能在 ID 段读到该寄存器**。现有指令序列：\nI1: LW  R1, 0(R2)　（R1 ← M[(R2)]）\nI2: ADD R3, R1, R4　（R3 ← R1 + R4）\nI3: SW  R3, 0(R5)　（M[(R5)] ← R3）\n(1) 指出相邻指令之间存在的数据相关；（3 分）\n(2) 在不采用转发技术的情况下，给出各条指令占用周期的时序安排（或时空图），并计算执行完这 3 条指令所需的总时钟周期数；（4 分）\n(3) 若采用转发（旁路）技术，且约定 load-use 相关（LW 的结果供下一条指令使用）仍需插入 1 个暂停周期、其余 RAW 相关可完全消除，此时总时钟周期数是多少？相对于（2）加速了多少？（3 分）',
@@ -128,6 +257,16 @@ void Infix(BiTree t, char parentOp, int isRight)
       '**(1)** I1→I2 是关于 R1 的写后读（RAW）相关，且 I1 为 load 指令，属 load-use 相关；I2→I3 是关于 R3 的 RAW 相关。\n**(2)** 无转发时：I1 占用周期 1～5（IF1、ID2、EX3、MEM4、WB5）。I2 的 ID 必须不早于 I1 写回后的周期，即周期 6：I2 为 IF2、停顿 3 拍、ID6、EX7、MEM8、WB9。I3 需在 ID 段读 R3，而 R3 于周期 9 写回：I3 为 IF3、停顿至 ID10、EX11、MEM12、WB13。**总周期数 = 13**（理想无停顿为 5 + 3 − 1 = 7 拍，共插入 6 拍气泡）。\n**(3)** 采用转发：I1 的 R1 在 MEM 段末（周期 4 末）可得，经 MEM→EX 旁路送入 I2 的 EX：I2 为 IF2、ID3、停顿 1 拍、EX5、MEM6、WB7；I2 的 R3 在 EX 段末（周期 5 末）产生，经 EX 段间旁路送入 I3：I3 为 IF3、ID4、EX6、MEM7、WB8。**总周期数 = 8**，加速比 = 13 / 8 = 1.625。',
     explanation:
       '本题考查 RAW 相关对五段流水线的时序影响。(2) 的关键是严格按题给约定排时序：后继指令的读寄存器周期必须晚于先行指令的写回周期，逐条递推出 3 拍 + 3 拍共 6 拍气泡；(3) 中转发把两处等待分别压缩为 load-use 的 1 拍与 ALU 相关的 0 拍。若本题改为 n 条同规律的指令序列，可用公式"总拍数 = 5 + (n−1) + 累计停顿数"快速计算。作答时用表格列出每条指令各段所在周期（时空图）最不易失分。',
+    visual: {
+      kind: 'pipeline',
+      title: '无转发时 LW–ADD–SW 的流水线时空图（共 13 拍）',
+      stages: ['IF', 'ID', 'EX', 'MEM', 'WB'],
+      instrs: [
+        { name: 'I1: LW R1,0(R2)', delay: 0, note: 'I1 第 1 拍取指，第 5 拍 WB 段末写回 R1' },
+        { name: 'I2: ADD R3,R1,R4', delay: 4, note: 'I2 读 R1 须在 I1 写回后的下一拍（第 6 拍）：插 3 拍气泡，ID~WB=第 6~9 拍' },
+        { name: 'I3: SW R3,0(R5)', delay: 8, note: 'I3 读 R3 须在第 10 拍：再插 3 拍，第 13 拍完成。理想仅 7 拍、共插 6 拍气泡；改用转发后 8 拍，加速 13/8=1.625' },
+      ],
+    },
   },
   {
     id: 'q-2020-45',
@@ -138,6 +277,7 @@ void Infix(BiTree t, char parentOp, int isRight)
     topic: '页面置换',
     difficulty: 2,
     source: 'real',
+    templateId: 'os-page-replace',
     score: 7,
     question:
       '某系统采用请求分页存储管理，进程 P 分得 3 个页框（初始为空），页面访问序列为：\n4, 3, 2, 1, 4, 3, 5, 4, 3, 2, 1, 5\n(1) 采用 LRU（最近最久未使用）置换算法，给出每次访问后驻留集的变化过程，并计算缺页次数与命中率；（4 分）\n(2) 说明缺页中断与一般外部中断在响应时机与处理方式上的主要差别。（3 分）',
@@ -145,6 +285,13 @@ void Infix(BiTree t, char parentOp, int isRight)
       '**(1)** 逐次模拟（方括号内为驻留集，按"最近使用"由新到旧排列；"缺"表示发生缺页并装入）：\n4 缺 [4]；3 缺 [4,3]；2 缺 [4,3,2]；1 缺淘汰 4 → [3,2,1]；4 缺淘汰 3 → [2,1,4]；3 缺淘汰 2 → [1,4,3]；5 缺淘汰 1 → [4,3,5]；4 命中 [3,5,4]；3 命中 [5,4,3]；2 缺淘汰 5 → [4,3,2]；1 缺淘汰 4 → [3,2,1]；5 缺淘汰 3 → [2,1,5]。\n共缺页 **10 次**，命中 2 次，命中率 = 2/12 ≈ **16.7%**。\n**(2)** 缺页中断属于**内中断（异常）**：它在**一条指令执行期间**产生并立即被响应处理，处理后**重新执行被中断的那条指令**（因为指令尚未完成）；而一般外部中断（如 I/O 完成、时钟中断）在**指令周期结束处**才被查询和响应，处理完成后返回执行被中断指令的**下一条**指令。因此缺页的处理更为紧迫，且要求硬件支持"指令重启"。',
     explanation:
       'LRU 手工模拟必须逐条记录"最近使用"的新旧次序，命中会把对应页面提为最新——这是 LRU 与 FIFO 的本质差别（FIFO 命中不改变队列次序）。淘汰时选取"最旧"的页面。第 (2) 问是概念题：内中断（异常）与外中断在"响应时机"（指令执行中 vs 指令周期末）和"返回点"（重执行本条 vs 执行下一条）上的差异是阅卷要点，此外还可补充缺页中断的处理流程（保护现场→定位缺页→分配页框/调页→更新页表→重启指令）。',
+    visual: {
+      kind: 'pages',
+      title: 'LRU 页面置换（3 页框：缺页 10 次、命中 2 次）',
+      algo: 'LRU',
+      frames: 3,
+      accesses: ['4', '3', '2', '1', '4', '3', '5', '4', '3', '2', '1', '5'],
+    },
   },
   {
     id: 'q-2020-46',
@@ -155,6 +302,7 @@ void Infix(BiTree t, char parentOp, int isRight)
     topic: '信号量与同步',
     difficulty: 3,
     source: 'real',
+    templateId: 'os-pv-model',
     score: 8,
     question:
       '某寺庙里有一口水缸，容量为 10 桶水。若干小和尚负责**提水入缸**：用庙里的水桶到水井打满一桶水后倒入缸中；老和尚负责**取水饮用**：用水勺从缸中舀水。庙里共有 3 只水桶（打水时必须占用一只），倒水入缸与从缸中舀水时缸口同时只能容纳一人操作；小和尚只有在缸未满时才能倒水，老和尚只有在缸中有水时才能舀水。\n(1) 用信号量机制描述小和尚、老和尚的行为（给出信号量设置、初值及含义，并用伪代码描述进程）；（6 分）\n(2) 若把小和尚进程中 P(empty) 与 P(mutex) 的次序颠倒，会产生什么后果？（2 分）',
@@ -192,6 +340,44 @@ semaphore mutex = 1;     /* 缸口互斥 */
     },
     explanation:
       '本题是"生产者—消费者 + 设备资源"的复合同步模型：水缸是有界缓冲区（empty/full 成对出现），水桶是与缓冲区无关的计数资源（bucket），缸口是临界区（mutex）。设计步骤：先为每类约束找一个信号量，再按"先资源、后互斥"排序 P 操作。第 (2) 问正是该排序规则的反例证明——"抱着互斥锁睡眠"导致对方无法推进，构成循环等待，是 PV 大题最常考的失分点。',
+    visual: {
+      kind: 'flow',
+      title: '水缸问题的 PV 流程（bucket/empty/full/mutex）',
+      nodes: [
+        { id: 's', label: '和尚循环取/倒水', type: 'start' },
+        { id: 'q', label: '小和尚？', type: 'cond' },
+        { id: 'p1', label: 'P(bucket)\n取一只水桶', type: 'proc' },
+        { id: 'p2', label: '到井边打满一桶水', type: 'proc' },
+        { id: 'p3', label: 'P(empty) 缸未满\nP(mutex) 占缸口', type: 'proc' },
+        { id: 'p4', label: '将水倒入缸中', type: 'proc' },
+        { id: 'p5', label: 'V(mutex)\nV(full)', type: 'proc' },
+        { id: 'p6', label: 'V(bucket)\n归还水桶', type: 'proc' },
+        { id: 'c1', label: 'P(full) 缸有水\nP(mutex) 占缸口', type: 'proc' },
+        { id: 'c2', label: '用水勺从缸中舀水', type: 'proc' },
+        { id: 'c3', label: 'V(mutex)\nV(empty)', type: 'proc' },
+        { id: 'd1', label: 'P 次序颠倒？', type: 'cond' },
+        { id: 'd2', label: '缸满时阻塞在\nempty 上不放锁', type: 'proc' },
+        { id: 'd3', label: '老和尚拿不到\nmutex → 死锁', type: 'end' },
+        { id: 'e', label: '循环继续', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'q' },
+        { from: 'q', to: 'p1', label: '是（提水）' },
+        { from: 'p1', to: 'p2' },
+        { from: 'p2', to: 'p3' },
+        { from: 'p3', to: 'p4', label: '先资源后互斥' },
+        { from: 'p3', to: 'd1', label: '若颠倒次序' },
+        { from: 'd1', to: 'd2', label: '是' },
+        { from: 'd2', to: 'd3' },
+        { from: 'p4', to: 'p5' },
+        { from: 'p5', to: 'p6' },
+        { from: 'p6', to: 'e' },
+        { from: 'q', to: 'c1', label: '否（取水）' },
+        { from: 'c1', to: 'c2' },
+        { from: 'c2', to: 'c3' },
+        { from: 'c3', to: 'e' },
+      ],
+    },
   },
   {
     id: 'q-2020-47',
@@ -202,6 +388,7 @@ semaphore mutex = 1;     /* 缸口互斥 */
     topic: '信道利用率',
     difficulty: 2,
     source: 'real',
+    templateId: 'cn-latency',
     score: 9,
     question:
       '主机甲与主机乙通过一条卫星点对点链路直接相连：链路数据率 R = 100 kb/s，甲到乙的单向传播时延 t_p = 270 ms，链路误码率可忽略。甲向乙发送长度 L = 1000 bit 的数据帧，帧头开销与确认帧的发送时间均可忽略，乙每收到一帧立即返回确认（处理时延为 0）。\n(1) 若采用停止—等待协议，求甲连续发送数据时该链路的最大信道利用率；（3 分）\n(2) 若改用连续 ARQ（回退 N 帧）协议，发送窗口为 W（W 帧可连续在途），写出利用率表达式；若要求利用率不低于 50%，发送窗口至少为多少？（3 分）\n(3) 说明还可通过哪些途径提高该链路的利用率，并指出各自的代价。（3 分）',
@@ -209,5 +396,24 @@ semaphore mutex = 1;     /* 缸口互斥 */
       '**(1)** 一帧的发送时延 t_f = L / R = 1000 bit ÷ 100 kb/s = 10 ms。停止—等待协议下，从开始发送一帧到收到确认需经历 t_f + 2t_p = 10 + 540 = 550 ms，期间只能发送 10 ms 的数据。利用率 = t_f / (t_f + 2t_p) = 10 / 550 = 1/55 ≈ **1.82%**。\n**(2)** 连续 ARQ 在途最多 W 帧，利用率 U = min(W, 1+2a) / (1+2a)，其中 a = t_p / t_f = 27，1+2a = 55，故 U = min(W, 55) / 55。要求 U ≥ 50%，需 W ≥ 0.5 × 55 = 27.5，即**发送窗口至少取 28**（当 W ≥ 55 时利用率可达 100%）。注意 W 还受序号空间限制：采用 n 位序号时回退 N 帧协议要求 W ≤ 2^n − 1。\n**(3)** ① 增大帧长 L：a = t_p / t_f 减小，利用率上升；代价是出错重传的浪费增大、收发缓冲区增大。② 采用选择重传（SR）协议：只重传出错帧，配合大窗口可使有效吞吐接近理想；代价是接收端需缓存失序帧、序号空间要求更大（W ≤ 2^(n−1)）。③ 提高链路层以上的并行度（如 TCP 大窗口/窗口缩放、多连接并行传输）；代价是端系统开销和拥塞风险上升。',
     explanation:
       '本题核心公式：停止—等待利用率 = 1/(1+2a)，a = 单向传播时延/发送时延。卫星链路 a 高达 27，属"长肥管道"，停等协议几乎不可用，必须用大窗口连续传输——这正是 TCP 窗口缩放选项存在的原因。第 (2) 问注意两处细节：利用率对窗口是"先线性后封顶"关系（min 截断），以及窗口下限 27.5 要向上取整为 28；同时别忘了回退 N 帧协议中窗口与序号位数的约束关系。',
+    visual: {
+      kind: 'flow',
+      title: '卫星链路停等利用率与 GBN 窗口下限',
+      nodes: [
+        { id: 's', label: 'R=100kb/s\nL=1000b\nt_p=270ms', type: 'start' },
+        { id: 'p1', label: '发送时延\nt_f=L/R=10ms', type: 'proc' },
+        { id: 'p2', label: '停等周期\n10+2×270=550ms', type: 'proc' },
+        { id: 'p3', label: 'U=10/550\n≈1.82%', type: 'proc' },
+        { id: 'p4', label: 'GBN：\nU=min(W,55)/55', type: 'proc' },
+        { id: 'e', label: 'U≥50% → W≥27.5\n→ 至少 W=28', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'p1' },
+        { from: 'p1', to: 'p2' },
+        { from: 'p2', to: 'p3' },
+        { from: 'p3', to: 'p4' },
+        { from: 'p4', to: 'e' },
+      ],
+    },
   },
 ]

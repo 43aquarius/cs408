@@ -521,6 +521,7 @@ export const curatedOs1: Question[] = [
     topic: '调度算法',
     difficulty: 1,
     source: 'curated',
+    templateId: 'os-schedule-metrics',
     score: 2,
     question: '采用高响应比优先（HRRN）调度算法时，某作业已等待 8 个时间单位，估计还需运行 4 个时间单位，其当前的响应比为（　）。',
     options: ['3', '2', '1.5', '4'],
@@ -544,6 +545,7 @@ export const curatedOs1: Question[] = [
     topic: '调度算法',
     difficulty: 2,
     source: 'curated',
+    templateId: 'os-schedule-metrics',
     score: 2,
     question: '某系统采用时间片轮转调度（时间片为 2），进程 P1、P2、P3 在 0 时刻依次（按此顺序）进入就绪队列，分别需要运行 7、4、2 个时间单位。忽略切换开销，P2 的完成时刻是（　）。',
     options: ['8', '12', '14', '10'],
@@ -556,6 +558,27 @@ export const curatedOs1: Question[] = [
     ],
     explanation:
       '时间片轮转的模拟要诀：把就绪队列当圆桌循环，每轮最多执行一个时间片，未完成者排到队尾。本题逐段排布：P1(0-2)→P2(2-4)→P3(4-6 完)→P1(6-8)→P2(8-10 完)→P1(10-12)→P1(12-13 完)。P2 完成于 10 时刻。答题时建议直接画甘特条，避免心算轮转时的队尾顺序出错。',
+    visual: {
+      kind: 'flow',
+      title: '时间片轮转调度甘特（时间片 2：P2 完成于 10）',
+      nodes: [
+        { id: 's', label: 'P1 P2 P3\n0 时刻依次入队', type: 'start' },
+        { id: 'a', label: 'P1 运行 0~2\n剩 5 排到队尾', type: 'proc' },
+        { id: 'b', label: 'P2 运行 2~4\n剩 2 排到队尾', type: 'proc' },
+        { id: 'c', label: 'P3 运行 4~6\n刚好用完撤离', type: 'proc' },
+        { id: 'd', label: 'P1 运行 6~8\n剩 3 排到队尾', type: 'proc' },
+        { id: 'e', label: 'P2 运行 8~10\n剩余 2 恰好跑完', type: 'proc' },
+        { id: 'f', label: 'P2 完成于 10\n（此后 P1 到 13）', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'a' },
+        { from: 'a', to: 'b', label: '时间片到' },
+        { from: 'b', to: 'c', label: '时间片到' },
+        { from: 'c', to: 'd', label: '时间片到' },
+        { from: 'd', to: 'e', label: '时间片到' },
+        { from: 'e', to: 'f' },
+      ],
+    },
   },
   {
     id: 'cur-os-021',
@@ -567,6 +590,7 @@ export const curatedOs1: Question[] = [
     topic: '调度算法',
     difficulty: 1,
     source: 'curated',
+    templateId: 'os-schedule-metrics',
     score: 2,
     question: '单处理机系统中，4 个作业同时到达，估计运行时间分别为 5、3、8、1 个时间单位。采用非抢占式短作业优先（SJF）调度，平均周转时间为（　）。',
     options: ['8.25', '7.75', '6.75', '9.25'],
@@ -590,6 +614,7 @@ export const curatedOs1: Question[] = [
     topic: '调度算法',
     difficulty: 3,
     source: 'curated',
+    templateId: 'os-schedule-metrics',
     score: 2,
     question: '采用最短剩余时间优先（SRTF）调度，P1、P2、P3、P4 分别在 0、1、2、3 时刻到达，要求服务时间依次为 6、4、10、1。平均周转时间为（　）。',
     options: ['9', '10', '8', '11'],
@@ -602,6 +627,29 @@ export const curatedOs1: Question[] = [
     ],
     explanation:
       'SRTF（抢占式短作业优先）的模拟要点：每个到达时刻比较「新进程的剩余时间」与「现运行进程的剩余时间」，短者上场。本题时间线：0-1 P1（被 P2 抢）；1-3 P2（2 时 P3 到但拼不过）；3-4 P4（1 < 2 插队）完成；4-6 P2 完成；6-11 P1 完成；11-21 P3 完成。周转 P1=11、P2=5、P3=19、P4=1，平均 36/4 = 9。可对比：同一组作业采用非抢占 SJF 的平均周转为 9.75、FCFS 为 12.75，抢占带来的改善一目了然。',
+    visual: {
+      kind: 'flow',
+      title: 'SRTF 抢占式调度时间线（平均周转 9）',
+      nodes: [
+        { id: 's', label: '到达 0/1/2/3\n服务 6/4/10/1', type: 'start' },
+        { id: 'a', label: 'P1 0~1\n被 P2 抢占 4<5', type: 'proc' },
+        { id: 'b', label: 'P2 1~3\nP3 到 10>2 不抢', type: 'proc' },
+        { id: 'c', label: 'P4 到 1<2 抢占\nP4 3~4 完成', type: 'proc' },
+        { id: 'd', label: 'P2 4~6 完成\n周转 5', type: 'proc' },
+        { id: 'e', label: 'P1 6~11 完成\n周转 11', type: 'proc' },
+        { id: 'f', label: 'P3 11~21 完成\n周转 19', type: 'proc' },
+        { id: 'g', label: '平均周转\n36/4 = 9', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'a' },
+        { from: 'a', to: 'b' },
+        { from: 'b', to: 'c' },
+        { from: 'c', to: 'd' },
+        { from: 'd', to: 'e' },
+        { from: 'e', to: 'f' },
+        { from: 'f', to: 'g' },
+      ],
+    },
   },
   {
     id: 'cur-os-023',
@@ -692,6 +740,7 @@ export const curatedOs1: Question[] = [
     topic: '银行家算法',
     difficulty: 2,
     source: 'curated',
+    templateId: 'os-banker',
     score: 2,
     question: '银行家算法中，进程提出一项资源请求后，系统的标准处理流程是（　）。',
     options: [
@@ -720,6 +769,7 @@ export const curatedOs1: Question[] = [
     topic: '银行家算法',
     difficulty: 3,
     source: 'curated',
+    templateId: 'os-banker',
     score: 2,
     question: '某系统有 A、B 两类资源，总量为 (10, 4)。当前 3 个进程的情况为：\nP0：已分配 (0, 1)，最大需求 (7, 4)\nP1：已分配 (2, 0)，最大需求 (3, 2)\nP2：已分配 (3, 0)，最大需求 (9, 0)\n下列序列中，能作为安全序列的是（　）。',
     options: ['P0→P1→P2', 'P2→P1→P0', 'P1→P0→P2', 'P0→P2→P1'],
@@ -732,6 +782,29 @@ export const curatedOs1: Question[] = [
     ],
     explanation:
       '安全序列的判定方法：用总量减去已分配求出 Available = (5,3)；逐个计算 Need（Max−Allocation）：P0 为 (7,3)、P1 为 (1,2)、P2 为 (6,0)。能被 (5,3) 满足的只有 P1，故安全序列必以 P1 开头；P1 完成释放后 Available 升为 (7,3)，P0、P2 皆可完成。据此排除所有以 P0、P2 开头的选项。本题也可顺势数出安全序列共两个：P1→P0→P2 与 P1→P2→P0。',
+    visual: {
+      kind: 'flow',
+      title: '银行家算法安全序列搜索（P1→P0→P2）',
+      nodes: [
+        { id: 's', label: '总量 (10,4)\n已分配 (5,1)', type: 'start' },
+        { id: 'a', label: 'Available\n= (5,3)', type: 'proc' },
+        { id: 'b', label: 'Need ≤ (5,3)？\n仅 P1 (1,2)', type: 'cond' },
+        { id: 'c', label: 'P1 先完成\n回收后 (7,3)', type: 'proc' },
+        { id: 'd', label: 'P0 Need (7,3)\n恰好满足', type: 'proc' },
+        { id: 'e', label: 'P0 完成\n回收后 (7,4)', type: 'proc' },
+        { id: 'f', label: 'P2 Need (6,0)\n也可满足', type: 'proc' },
+        { id: 'g', label: '安全序列\nP1→P0→P2\n（P1→P2→P0 亦可）', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'a' },
+        { from: 'a', to: 'b' },
+        { from: 'b', to: 'c', label: 'P1 先行' },
+        { from: 'c', to: 'd' },
+        { from: 'd', to: 'e' },
+        { from: 'e', to: 'f' },
+        { from: 'f', to: 'g' },
+      ],
+    },
   },
   {
     id: 'cur-os-028',
@@ -799,6 +872,7 @@ export const curatedOs1: Question[] = [
     topic: '信号量',
     difficulty: 2,
     source: 'curated',
+    templateId: 'os-pv-model',
     score: 2,
     question: '进程 P1 中的语句 s1 完成后，进程 P2 中的语句 s2 才允许开始执行。用信号量 S 实现该约束，正确的方案是（　）。',
     options: [
@@ -855,6 +929,7 @@ export const curatedOs1: Question[] = [
     topic: '生产者消费者',
     difficulty: 3,
     source: 'curated',
+    templateId: 'os-pv-model',
     score: 2,
     question: '生产者-消费者问题中，若缓冲区容量为 1（只有一个缓冲单元），关于互斥信号量 mutex（初值 1）的设置，正确的说法是（　）。',
     options: [
@@ -883,6 +958,7 @@ export const curatedOs1: Question[] = [
     topic: '读者写者',
     difficulty: 2,
     source: 'curated',
+    templateId: 'os-pv-model',
     score: 2,
     question: '读者优先的读者-写者问题中，信号量 rw（初值 1）用于实现读与写的互斥。对 rw 执行 P 操作（申请）的进程是（　）。',
     options: [
@@ -911,6 +987,7 @@ export const curatedOs1: Question[] = [
     topic: '读者写者',
     difficulty: 3,
     source: 'curated',
+    templateId: 'os-pv-model',
     score: 2,
     question: '某写者优先方案中增设信号量 w（初值 1）：读者仅在「登记进入」（修改读者计数的前后）期间短暂持有 w（P(w) 后随即 V(w)），读文件期间不持有；写者在写文件前 P(w)、写完 V(w)（整个写期间持有）；读写互斥仍由 rw 保证。信号量 w 的作用是（　）。',
     options: [
@@ -939,6 +1016,7 @@ export const curatedOs1: Question[] = [
     topic: '进程同步',
     difficulty: 2,
     source: 'curated',
+    templateId: 'os-pv-model',
     score: 2,
     question: '某任务包含 4 个活动 S1~S4，前驱关系为：S1→S2、S2→S3、S1→S4、S4→S3（「→」表示箭头前的活动完成后，箭头后的活动才能开始）。用信号量的 P、V 操作实现该约束，至少需要设置的信号量个数是（　）。',
     options: ['3', '4', '5', '2'],
@@ -1064,6 +1142,7 @@ export const curatedOs1: Question[] = [
     topic: '分页管理',
     difficulty: 2,
     source: 'curated',
+    templateId: 'os-paging-translate',
     score: 2,
     question: '某分页系统页面大小为 2KB，进程页表中页号 0、1、2 分别对应物理块 3、5、7。访问逻辑地址 4600（十进制）时，对应的物理地址是（　）。',
     options: ['10744', '16888', '14840', '6648'],
@@ -1076,5 +1155,22 @@ export const curatedOs1: Question[] = [
     ],
     explanation:
       '页式地址变换三步：拆分（页号 2、偏移 504）→ 查表（页 2 → 块 7）→ 拼接（7×2048 + 504 = 14840）。物理地址的计算只与块号和页内偏移有关，逻辑页号本身被页表「翻译」掉了；三个典型错法分别对应拆分错（A）、偏移错（B）、查表错（D），与正确项构成完整排查链。页式系统无外部碎片，越界与缺页才需要异常处理。',
+    visual: {
+      kind: 'flow',
+      title: '分页地址变换（逻辑 4600 → 物理 14840）',
+      nodes: [
+        { id: 's', label: '逻辑地址 4600', type: 'start' },
+        { id: 'a', label: '4600 ÷ 2048\n商 2 余 504', type: 'proc' },
+        { id: 'b', label: '查页表\n页 2 → 块 7', type: 'proc' },
+        { id: 'c', label: '拼物理地址\n7×2048+504', type: 'proc' },
+        { id: 'd', label: '物理地址 14840', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'a' },
+        { from: 'a', to: 'b' },
+        { from: 'b', to: 'c' },
+        { from: 'c', to: 'd' },
+      ],
+    },
   },
 ]

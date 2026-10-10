@@ -36,6 +36,7 @@ export const mock07c1: Question[] = [
     topic: 'KMP',
     difficulty: 3,
     source: 'mock',
+    templateId: 'ds-kmp',
     score: 2,
     question:
       '模式串 t = "abaabc"。按约定 next[1] = 0、next[2] = 1，当 j ≥ 3 时 next[j] 等于 t 前 j−1 个字符中最长相等前后缀长度加 1。则 t 的 next 数组为（　）。',
@@ -123,6 +124,83 @@ export const mock07c1: Question[] = [
     ],
     explanation:
       '后序后继的判定规则：结点 p 是其子树最后被访问者，其后继必在 p 的子树之外。若 p 无双亲（根）则无后继；若 p 是双亲的右孩子、或双亲无右孩子，则后继为双亲（更准确地说此时要看包含 p 的子树在其双亲处的位置）；若 p 是双亲的左孩子且双亲有右子树，则后继 = 右子树的后序首结点，即从右子树根起「有左走左、无左看右」直到叶子。本题 P 是 R 的左孩子且 R 有右孩子 Q，Q 只有左孩子 K，故后继 = K。口诀：找后继，先看兄弟子树最左下。',
+    visual: {
+      kind: 'tree',
+      title: '后序线索：P 的后序后继判定（后序序列 M N P K Q R）',
+      steps: [
+        {
+          nodes: [
+            { id: 'R', label: 'R' },
+            { id: 'P', label: 'P', parent: 'R' },
+            { id: 'Q', label: 'Q', parent: 'R' },
+            { id: 'M', label: 'M', parent: 'P' },
+            { id: 'N', label: 'N', parent: 'P' },
+            { id: 'K', label: 'K', parent: 'Q' },
+          ],
+          note: '初始二叉树：R 为根；P、Q 是 R 的左右孩子，P 有叶孩子 M、N，Q 只有左孩子 K',
+        },
+        {
+          nodes: [
+            { id: 'R', label: 'R' },
+            { id: 'P', label: 'P', parent: 'R' },
+            { id: 'Q', label: 'Q', parent: 'R' },
+            { id: 'M', label: 'M', parent: 'P' },
+            { id: 'N', label: 'N', parent: 'P' },
+            { id: 'K', label: 'K', parent: 'Q' },
+          ],
+          highlight: ['M'],
+          note: '后序遍历（左→右→根）先走 P 的左子树：叶子 M 第一个被访问（序列：M）',
+        },
+        {
+          nodes: [
+            { id: 'R', label: 'R' },
+            { id: 'P', label: 'P', parent: 'R' },
+            { id: 'Q', label: 'Q', parent: 'R' },
+            { id: 'M', label: 'M', parent: 'P' },
+            { id: 'N', label: 'N', parent: 'P' },
+            { id: 'K', label: 'K', parent: 'Q' },
+          ],
+          highlight: ['N'],
+          note: '再访问 P 的右孩子 N（序列：M N）',
+        },
+        {
+          nodes: [
+            { id: 'R', label: 'R' },
+            { id: 'P', label: 'P', parent: 'R' },
+            { id: 'Q', label: 'Q', parent: 'R' },
+            { id: 'M', label: 'M', parent: 'P' },
+            { id: 'N', label: 'N', parent: 'P' },
+            { id: 'K', label: 'K', parent: 'Q' },
+          ],
+          highlight: ['P'],
+          note: 'P 的子树访问完毕，输出 P；P 在左子树末尾，其后继要到 R 的右子树中找（序列：M N P）',
+        },
+        {
+          nodes: [
+            { id: 'R', label: 'R' },
+            { id: 'P', label: 'P', parent: 'R' },
+            { id: 'Q', label: 'Q', parent: 'R' },
+            { id: 'M', label: 'M', parent: 'P' },
+            { id: 'N', label: 'N', parent: 'P' },
+            { id: 'K', label: 'K', parent: 'Q' },
+          ],
+          highlight: ['Q', 'K'],
+          note: '从 Q 出发「有左走左」：Q 只有左孩子 K 且 K 是叶子，K 即右子树的后序首结点——P 的后序后继是 K（选 C）',
+        },
+        {
+          nodes: [
+            { id: 'R', label: 'R' },
+            { id: 'P', label: 'P', parent: 'R' },
+            { id: 'Q', label: 'Q', parent: 'R' },
+            { id: 'M', label: 'M', parent: 'P' },
+            { id: 'N', label: 'N', parent: 'P' },
+            { id: 'K', label: 'K', parent: 'Q' },
+          ],
+          highlight: ['Q', 'R'],
+          note: '随后输出 Q、R：完整后序序列 M N P K Q R，与逐步推演一致',
+        },
+      ],
+    },
   },
   {
     id: 'mock07-05',
@@ -158,6 +236,7 @@ export const mock07c1: Question[] = [
     topic: '哈夫曼编码',
     difficulty: 3,
     source: 'mock',
+    templateId: 'ds-huffman',
     score: 2,
     question: '对给定频率的字符集构造哈夫曼编码，下列叙述中正确的是（　）。',
     options: [
@@ -210,6 +289,7 @@ export const mock07c1: Question[] = [
     topic: 'AOE网',
     difficulty: 3,
     source: 'mock',
+    templateId: 'ds-topo-aoe',
     score: 2,
     question:
       '某 AOE 网有 6 个事件 v1～v6，活动为：a1(v1→v2, 3 天)、a2(v1→v3, 2 天)、a3(v2→v4, 4 天)、a4(v3→v4, 5 天)、a5(v3→v5, 3 天)、a6(v4→v6, 4 天)、a7(v5→v6, 2 天)。则关键路径的条数与关键活动的个数为（　）。',
@@ -263,6 +343,7 @@ export const mock07c1: Question[] = [
     topic: '散列删除',
     difficulty: 3,
     source: 'mock',
+    templateId: 'ds-hash-asl',
     score: 2,
     question:
       '散列函数 H(key) = key mod 7，用线性探测法处理冲突，依次插入 15、22、29 后分别存于 1、2、3 号单元（三者同余 1）。现删除 22 时将 2 号单元直接置空，随后查找 29。查找失败的原因是（　）。',
@@ -281,6 +362,19 @@ export const mock07c1: Question[] = [
     ],
     explanation:
       '开放定址法中，删除一个元素不能简单置空：空单元既是「查找终止」的信号，又是「插入可用」的信号，直接置空会把后续同义词的探测链剪断。正确做法是把单元标记为已删除（墓碑），查找时视墓碑为「非空、继续探测」，插入时视墓碑为「可复用」。本题探测 1（占 15，不等）→ 2（空，终止），29 永远找不到。链地址法则无此问题，删除只摘链结点。',
+    visual: {
+      kind: 'sort',
+      title: '散列表：插入、置空删除与查找失败的探测链（表长 7）',
+      frames: [
+        { arr: ['—', '—', '—', '—', '—', '—', '—'], note: '空表。H(key) = key mod 7：15、22、29 mod 7 均为 1，三者互为同义词' },
+        { arr: ['—', '15', '—', '—', '—', '—', '—'], settled: [1], note: '插入 15：H(15)=1，1 号单元为空，直接存入' },
+        { arr: ['—', '15', '22', '—', '—', '—', '—'], settled: [2], note: '插入 22：H(22)=1，1 号被 15 占用，线性探测到 2 号存入' },
+        { arr: ['—', '15', '22', '29', '—', '—', '—'], settled: [3], note: '插入 29：1、2 号均被占用，探测到 3 号存入——同义词链 1→2→3' },
+        { arr: ['—', '15', '—', '29', '—', '—', '—'], compared: [2], note: '删除 22：把 2 号单元直接置空（未打墓碑），探测链被剪断' },
+        { arr: ['—', '15', '—', '29', '—', '—', '—'], compared: [1], note: '查找 29：从 H(29)=1 出发，1 号是 15≠29，继续向后探测' },
+        { arr: ['—', '15', '—', '29', '—', '—', '—'], compared: [2], note: '探测到 2 号为空单元：按约定判定 29 不存在而终止，3 号的 29 永远走不到（选 C）' },
+      ],
+    },
   },
   {
     id: 'mock07-10',
@@ -419,6 +513,18 @@ export const mock07c1: Question[] = [
     ],
     explanation:
       'Booth 算法把乘数（含符号位）与附加位 0 连成一串，每次看「当前位与附加位」组成的判断位：00 或 11 加 0；01 加 [x]补；10 加 [−x]补；每拍末右移一位（最后一步判断后不移）。本题 [y]补 = 1.0110，判断位依次 00、10、11、01、10，算术运算两减一加共 3 次，移位 4 次。注意：比较的是「附加位在前、当前位在后」的相邻两位，即 10 减、01 加。',
+    visual: {
+      kind: 'sort',
+      title: 'Booth 补码一位乘：判断位逐拍演化（[y]补 = 1.0110，右端补附加位 0）',
+      frames: [
+        { arr: ['1', '0', '1', '1', '0', '0'], compared: [4, 5], note: '第 1 拍：判断位 (y4, 附加位) = (0,0) = 00 → +0，右移 1 位' },
+        { arr: ['1', '0', '1', '1', '0', '0'], compared: [3, 4], note: '第 2 拍：(y3, y4) = (1,0) = 10 → +[−x]补，右移 1 位' },
+        { arr: ['1', '0', '1', '1', '0', '0'], compared: [2, 3], note: '第 3 拍：(y2, y3) = (1,1) = 11 → +0，右移 1 位' },
+        { arr: ['1', '0', '1', '1', '0', '0'], compared: [1, 2], note: '第 4 拍：(y1, y2) = (0,1) = 01 → +[x]补，右移 1 位' },
+        { arr: ['1', '0', '1', '1', '0', '0'], compared: [0, 1], note: '第 5 拍：(符号位, y1) = (1,0) = 10 → +[−x]补；最后一步只加减、不再移位' },
+        { arr: ['1', '0', '1', '1', '0', '0'], note: '汇总：加减共 3 次（两减一加）、移位 4 次——4 位尾数做 4 次移位、5 次判断，答案 3 次、4 次（选 C）' },
+      ],
+    },
   },
   {
     id: 'mock07-13',
@@ -506,6 +612,7 @@ export const mock07c1: Question[] = [
     topic: '组相联',
     difficulty: 2,
     source: 'mock',
+    templateId: 'co-cache-split',
     score: 2,
     question:
       '某机主存地址 32 位，按字节编址；Cache 数据区容量 64KB，块大小 32B，采用 4 路组相联映射。主存地址划分为「Tag | 组号 | 块内偏移」，三段位数依次为（　）。',
@@ -543,6 +650,29 @@ export const mock07c1: Question[] = [
     ],
     explanation:
       '段页式地址读取三步：把 0x1A2B3C00 展成 32 位二进制 0001 1010 0010 1011 0011 1100 0000 0000；按 8/12/12 切段，段号 = 0x1A = 26，段内页号 = 0x2B3 = 691，页内偏移 = 0xC00 = 3072；用按权展开回验 26×2^24 + 691×2^12 + 3072 = 439041024 = 0x1A2B3C00。位宽边界（8/12/12）是唯一易错点，误画成 12/8/12 或 8/16/8 都会让两段同时失真；「段号从 0 计」也是常设陷阱。',
+    visual: {
+      kind: 'flow',
+      title: '段页式虚地址 8/12/12 切分流程',
+      nodes: [
+        { id: 's', label: '开始：虚地址\n0x1A2B3C00', type: 'start' },
+        { id: 'a', label: '展成 32 位二进制', type: 'proc' },
+        { id: 'b', label: '按 8/12/12 切段', type: 'proc' },
+        { id: 'c', label: '段号 = 0x1A = 26', type: 'proc' },
+        { id: 'd', label: '段内页号\n= 0x2B3 = 691', type: 'proc' },
+        { id: 'e', label: '页内偏移\n= 0xC00 = 3072', type: 'proc' },
+        { id: 'f', label: '回代 26×2^24\n+691×2^12+3072', type: 'proc' },
+        { id: 'g', label: '恰为 439041024\n= 原地址，切分闭合', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'a' },
+        { from: 'a', to: 'b' },
+        { from: 'b', to: 'c' },
+        { from: 'c', to: 'd' },
+        { from: 'd', to: 'e' },
+        { from: 'e', to: 'f' },
+        { from: 'f', to: 'g' },
+      ],
+    },
   },
   {
     id: 'mock07-18',
@@ -554,6 +684,7 @@ export const mock07c1: Question[] = [
     topic: '相对寻址',
     difficulty: 2,
     source: 'mock',
+    templateId: 'co-relative',
     score: 2,
     question:
       '某机按字节编址，一条 2 字节长的转移指令存放在主存地址 3000H 处，采用相对寻址，位移量字段为 D8H（8 位补码）。取出该指令后 PC 自动加 2，则转移目标地址为（　）。',
@@ -607,6 +738,7 @@ export const mock07c1: Question[] = [
     topic: '总线复用',
     difficulty: 1,
     source: 'mock',
+    templateId: 'co-bus-bandwidth',
     score: 2,
     question:
       '某同步总线时钟频率 100MHz，数据线 32 位，每个时钟周期可在总线上传送一次信息。若该总线的地址线与数据线复用，传送一个存储字需先占用一个总线周期发送地址、再占用一个总线周期传送数据，则该总线访问存储器的有效数据带宽约为（　）。',

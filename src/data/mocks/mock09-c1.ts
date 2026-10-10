@@ -35,6 +35,7 @@ export const mock09c1: Question[] = [
     topic: '循环队列',
     difficulty: 2,
     source: 'mock',
+    templateId: 'ds-loop-queue',
     score: 2,
     question:
       '循环队列存放在数组 Q[0..m−1] 中，front 指向队头元素，rear 指向队尾元素的下一位置。下列关于队空与队满判断的叙述中，正确的是（　）。\nⅠ. 若不增设任何辅助信息，仅凭 front 与 rear 无法区分队空与队满（两种状态下均有 front == rear）\nⅡ. 牺牲一个存储单元后，队空条件为 front == rear，队满条件为 (rear+1) mod m == front\nⅢ. 增设 size 变量记录元素个数后，队空为 size == 0、队满为 size == m，此时队列最多可存 m − 1 个元素\nⅣ. 增设 tag 标志（最近一次执行的是插入则 tag 置 1、是删除则置 0）后，front == rear 且 tag == 1 表示队满',
@@ -169,6 +170,50 @@ export const mock09c1: Question[] = [
     ],
     explanation:
       '考点是树与二叉树转换（孩子-兄弟表示）后的深度关系。转换规则：结点的第一个孩子成为其左孩子，下一个兄弟成为其右孩子。原树每下一层等价于二叉树向左走一步，故 d ≥ h 恒成立；兄弟并列会在二叉树中拉出向右的长链使 d 进一步增大。取等号的条件是每个结点至多一个孩子且无兄弟并列（单链树）。',
+    visual: {
+      kind: 'tree',
+      title: '孩子-兄弟转换前后的深度对比（d ≥ h）',
+      steps: [
+        {
+          nodes: [
+            { id: 'a', label: 'A' },
+            { id: 'b', label: 'B', parent: 'a' },
+            { id: 'c', label: 'C', parent: 'a' },
+            { id: 'd', label: 'D', parent: 'a' },
+          ],
+          note: '原树：根 A 的孩子 B、C、D 并列，深度 h = 2（选项 A 的反例）',
+        },
+        {
+          nodes: [
+            { id: 'a', label: 'A' },
+            { id: 'b', label: 'B', parent: 'a' },
+            { id: 'c', label: 'C', parent: 'b' },
+            { id: 'd', label: 'D', parent: 'c' },
+          ],
+          highlight: ['a', 'b'],
+          note: '规则一：长子 B 成为 A 的左孩子——原树每下一层，二叉树沿左指针前进一步',
+        },
+        {
+          nodes: [
+            { id: 'a', label: 'A' },
+            { id: 'b', label: 'B', parent: 'a' },
+            { id: 'c', label: 'C', parent: 'b' },
+            { id: 'd', label: 'D', parent: 'c' },
+          ],
+          highlight: ['b', 'c', 'd'],
+          note: '规则二：兄弟依次右链，C 为 B 的右孩子、D 为 C 的右孩子，路径 A→B→C→D 使 d = 4 > h',
+        },
+        {
+          nodes: [
+            { id: 'a', label: 'A' },
+            { id: 'b', label: 'B', parent: 'a' },
+            { id: 'c', label: 'C', parent: 'b' },
+          ],
+          highlight: ['a', 'b', 'c'],
+          note: '对照：每层仅一个孩子且无兄弟的单链树转换后仍是左链，d = h——故恒有 d ≥ h，选 B',
+        },
+      ],
+    },
   },
   {
     id: 'mock09-07',
@@ -180,6 +225,7 @@ export const mock09c1: Question[] = [
     topic: '最短路径',
     difficulty: 2,
     source: 'mock',
+    templateId: 'ds-dijkstra',
     score: 2,
     question:
       '用 Dijkstra 算法求含 n 个顶点的有向图中从源点到其余各顶点的最短路径。图采用邻接矩阵存储，且每一轮直接顺序扫描 dist 数组选取最小的未确定顶点（不使用任何优先队列）。该实现的时间复杂度及其原因是（　）。',
@@ -369,6 +415,7 @@ export const mock09c1: Question[] = [
     topic: '补码表示',
     difficulty: 1,
     source: 'mock',
+    templateId: 'co-complement',
     score: 2,
     question: '某机器字长 8 位（含 1 位符号位），采用补码表示定点整数。下列关于 8 位补码整数表示范围的叙述中，正确的是（　）。',
     options: [
@@ -421,6 +468,7 @@ export const mock09c1: Question[] = [
     topic: 'IEEE754',
     difficulty: 2,
     source: 'mock',
+    templateId: 'co-ieee754',
     score: 2,
     question:
       '按 IEEE 754 单精度浮点数格式（1 位符号、8 位阶码、23 位尾数，阶码偏置值 127），某浮点寄存器的内容为 41C80000H，其表示的十进制真值是（　）。',
@@ -494,6 +542,7 @@ export const mock09c1: Question[] = [
     topic: 'Cache映射',
     difficulty: 2,
     source: 'mock',
+    templateId: 'co-cache-split',
     score: 2,
     question:
       '某计算机主存地址 32 位，按字节编址。Cache 数据区容量为 4KB，块大小 16B，采用直接映射方式。则 Cache 的行数以及主存地址中 Tag（标记）字段的位数为（　）（只计数据区容量，不含有效位、Tag 等开销）。',
@@ -575,6 +624,7 @@ export const mock09c1: Question[] = [
     topic: '流水线周期',
     difficulty: 1,
     source: 'mock',
+    templateId: 'co-pipeline',
     score: 2,
     question:
       '某指令流水线分为取指、译码、执行、写回 4 个功能段，各段耗时依次为 2ns、1ns、3ns、2ns。该流水线的时钟周期（流水线周期）以及连续流入 10 条指令全部完成所需的总时间是（　）。',

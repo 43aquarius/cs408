@@ -28,6 +28,25 @@ for (int i = 1; i <= n; i++)
     answer: 'D',
     explanation:
       '内层循环次数为 ⌈n/i⌉，总执行次数 = n/1 + n/2 + … + n/n = n·(1 + 1/2 + … + 1/n) ≈ n·ln n，即调和级数求和，数量级为 O(nlog₂n)。A 只看了单层循环；C 误认为内层每次都执行 n 次（那才是 O(n²)）；D 之外的组合均不成立。',
+    visual: {
+      kind: 'flow',
+      title: '调和级数求和：O(nlog₂n) 推导',
+      nodes: [
+        { id: 's', label: '外层 i：1 到 n\n内层 j：步长 i', type: 'start' },
+        { id: 'p1', label: 'i=1 执行 n 次\ni=2 执行 n/2 次\n…', type: 'proc' },
+        { id: 'p2', label: '内层次数 ⌈n/i⌉\n总次数 n/1+n/2+…\n+n/n', type: 'proc' },
+        { id: 'p3', label: '1+1/2+…+1/n\n调和级数 ≈ ln n', type: 'proc' },
+        { id: 'p4', label: '总次数 ≈ n·ln n\n即 O(nlog₂n)', type: 'proc' },
+        { id: 'e', label: '误以为内层\n每次 n 次\n才得 O(n²)', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'p1' },
+        { from: 'p1', to: 'p2' },
+        { from: 'p2', to: 'p3' },
+        { from: 'p3', to: 'p4' },
+        { from: 'p4', to: 'e' },
+      ],
+    },
   },
   {
     id: 'q-2023-02',
@@ -38,6 +57,7 @@ for (int i = 1; i <= n; i++)
     topic: '循环队列',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'ds-loop-queue',
     score: 2,
     question:
       '循环队列存放在数组 Q[0..m−1] 中，front 指示队头元素，rear 指示队尾元素的下一位置。若约定"牺牲一个存储单元"来区分队空与队满，则判断队满的条件是（ ）。',
@@ -66,6 +86,66 @@ for (int i = 1; i <= n; i++)
     answer: 'A',
     explanation:
       '按运算优先级逐段转换：a + b → ab+；(ab+) * c → ab+c*；d / e → de/；最后做减法 → ab+c*de/−，运算符都紧跟在它的两个操作数之后。B 等价于 (ab + c * d) / e，除法被提前；C、D 中运算符与操作数的配对关系错乱（如 abc*+ 表示的是 a 与 (b*c) 相加）。',
+    visual: {
+      kind: 'tree',
+      title: '(a+b)*c−d/e 的表达式树与后序遍历',
+      steps: [
+        {
+          nodes: [
+            { id: 'm', label: '−' },
+            { id: 't', label: '*', parent: 'm' }, { id: 's', label: '/', parent: 'm' },
+            { id: 'p', label: '+', parent: 't' }, { id: 'c', label: 'c', parent: 't' },
+            { id: 'd', label: 'd', parent: 's' }, { id: 'e', label: 'e', parent: 's' },
+            { id: 'a', label: 'a', parent: 'p' }, { id: 'b', label: 'b', parent: 'p' },
+          ],
+          note: '表达式树：运算符作内部结点、操作数作叶子；后序遍历（左右根）即后缀表达式',
+        },
+        {
+          nodes: [
+            { id: 'm', label: '−' },
+            { id: 't', label: '*', parent: 'm' }, { id: 's', label: '/', parent: 'm' },
+            { id: 'p', label: '+', parent: 't' }, { id: 'c', label: 'c', parent: 't' },
+            { id: 'd', label: 'd', parent: 's' }, { id: 'e', label: 'e', parent: 's' },
+            { id: 'a', label: 'a', parent: 'p' }, { id: 'b', label: 'b', parent: 'p' },
+          ],
+          highlight: ['p', 'a', 'b'],
+          note: '先算左下子树 a+b：叶 a、叶 b 之后根 + → ab+',
+        },
+        {
+          nodes: [
+            { id: 'm', label: '−' },
+            { id: 't', label: '*', parent: 'm' }, { id: 's', label: '/', parent: 'm' },
+            { id: 'p', label: '+', parent: 't' }, { id: 'c', label: 'c', parent: 't' },
+            { id: 'd', label: 'd', parent: 's' }, { id: 'e', label: 'e', parent: 's' },
+            { id: 'a', label: 'a', parent: 'p' }, { id: 'b', label: 'b', parent: 'p' },
+          ],
+          highlight: ['t', 'p', 'c', 'a', 'b'],
+          note: '(a+b)*c：左子树 ab+ 之后叶 c，最后根 * → ab+c*',
+        },
+        {
+          nodes: [
+            { id: 'm', label: '−' },
+            { id: 't', label: '*', parent: 'm' }, { id: 's', label: '/', parent: 'm' },
+            { id: 'p', label: '+', parent: 't' }, { id: 'c', label: 'c', parent: 't' },
+            { id: 'd', label: 'd', parent: 's' }, { id: 'e', label: 'e', parent: 's' },
+            { id: 'a', label: 'a', parent: 'p' }, { id: 'b', label: 'b', parent: 'p' },
+          ],
+          highlight: ['s', 'd', 'e'],
+          note: '右子树 d/e：叶 d、叶 e 之后根 / → de/',
+        },
+        {
+          nodes: [
+            { id: 'm', label: '−' },
+            { id: 't', label: '*', parent: 'm' }, { id: 's', label: '/', parent: 'm' },
+            { id: 'p', label: '+', parent: 't' }, { id: 'c', label: 'c', parent: 't' },
+            { id: 'd', label: 'd', parent: 's' }, { id: 'e', label: 'e', parent: 's' },
+            { id: 'a', label: 'a', parent: 'p' }, { id: 'b', label: 'b', parent: 'p' },
+          ],
+          highlight: ['m', 't', 's', 'p', 'c', 'd', 'e', 'a', 'b'],
+          note: '根 − 最后输出：ab+c* 与 de/ 相减 → ab+c*de/−，选 A',
+        },
+      ],
+    },
   },
   {
     id: 'q-2023-04',
@@ -76,12 +156,71 @@ for (int i = 1; i <= n; i++)
     topic: '哈夫曼树',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'ds-huffman',
     score: 2,
     question: '以 {4, 5, 6, 7, 8} 为叶结点的权值构造哈夫曼树，其带权路径长度（WPL）为（ ）。',
     options: ['60', '78', '84', '69'],
     answer: 'D',
     explanation:
       '哈夫曼构造：合并 4 + 5 = 9；合并 6 + 7 = 13；合并 8 + 9 = 17；合并 13 + 17 = 30。深度分布：4、5 在第 3 层（路径长 3），6、7、8 在第 2 层（路径长 2）。WPL = (4 + 5) × 3 + (6 + 7 + 8) × 2 = 27 + 42 = 69。B、D 之外的干扰值来自把大权值错误地放在更深层（如 84 = (4+5)×3 + 8×3 + …类误算）。哈夫曼树使权值越大的结点离根越近，WPL 必为最小。',
+    visual: {
+      kind: 'tree',
+      title: '哈夫曼树 {4,5,6,7,8} 构造过程（WPL = 69）',
+      steps: [
+        {
+          nodes: [
+            { id: 'a', label: '4' }, { id: 'b', label: '5' }, { id: 'c', label: '6' },
+            { id: 'd', label: '7' }, { id: 'e', label: '8' },
+          ],
+          note: '初始森林：5 棵单结点树，权值集合 {4,5,6,7,8}',
+        },
+        {
+          nodes: [
+            { id: 'n1', label: '9' },
+            { id: 'a', label: '4', parent: 'n1' }, { id: 'b', label: '5', parent: 'n1' },
+            { id: 'c', label: '6' }, { id: 'd', label: '7' }, { id: 'e', label: '8' },
+          ],
+          highlight: ['n1', 'a', 'b'],
+          note: '第 1 次合并：最小两权 4 + 5 = 9（WPL 累计 9）',
+        },
+        {
+          nodes: [
+            { id: 'n1', label: '9' },
+            { id: 'a', label: '4', parent: 'n1' }, { id: 'b', label: '5', parent: 'n1' },
+            { id: 'n2', label: '13' },
+            { id: 'c', label: '6', parent: 'n2' }, { id: 'd', label: '7', parent: 'n2' },
+            { id: 'e', label: '8' },
+          ],
+          highlight: ['n2', 'c', 'd'],
+          note: '第 2 次合并：6 + 7 = 13（累计 9 + 13 = 22）',
+        },
+        {
+          nodes: [
+            { id: 'n1', label: '9' },
+            { id: 'a', label: '4', parent: 'n1' }, { id: 'b', label: '5', parent: 'n1' },
+            { id: 'n2', label: '13' },
+            { id: 'c', label: '6', parent: 'n2' }, { id: 'd', label: '7', parent: 'n2' },
+            { id: 'n3', label: '17' },
+            { id: 'e', label: '8', parent: 'n3' },
+          ],
+          highlight: ['n3', 'e', 'n1'],
+          note: '第 3 次合并：8 + 9 = 17（累计 22 + 17 = 39）',
+        },
+        {
+          nodes: [
+            { id: 'r', label: '30' },
+            { id: 'n2', label: '13', parent: 'r' },
+            { id: 'c', label: '6', parent: 'n2' }, { id: 'd', label: '7', parent: 'n2' },
+            { id: 'n3', label: '17', parent: 'r' },
+            { id: 'e', label: '8', parent: 'n3' },
+            { id: 'n1', label: '9', parent: 'n3' },
+            { id: 'a', label: '4', parent: 'n1' }, { id: 'b', label: '5', parent: 'n1' },
+          ],
+          highlight: ['r', 'n2', 'n3'],
+          note: '第 4 次合并：13 + 17 = 30；WPL = 9+13+17+30 = 69；4、5 深度 3，6、7、8 深度 2（选 D）',
+        },
+      ],
+    },
   },
   {
     id: 'q-2023-05',
@@ -218,6 +357,7 @@ for (int i = 1; i <= n; i++)
     topic: '补码表示',
     difficulty: 1,
     source: 'adapted',
+    templateId: 'co-complement',
     score: 2,
     question: '某机器字长 16 位，采用补码表示整数。若 [x]补 = FF9CH，则 x 的十进制真值是（ ）。',
     options: ['−100', '100', '−65436', '−156'],
@@ -234,12 +374,32 @@ for (int i = 1; i <= n; i++)
     topic: 'IEEE 754',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'co-ieee754',
     score: 2,
     question: '将十进制数 −1.25 表示成 IEEE 754 单精度浮点数，其十六进制形式是（ ）。',
     options: ['BFA00000H', '3FA00000H', 'BF400000H', 'BEA00000H'],
     answer: 'A',
     explanation:
       '1.25 = 1.01₂ = 1.01 × 2^0。数符 s = 1；阶码 = 0 + 127 = 127 = 0111 1111B；尾数为隐含 1 之后的 0100…0。拼装：1 01111111 0100…0，按 4 位一组得 1011 1111 1010 0000 …，即 BFA00000H。B 符号位为 0（表示 +6.5 一类正数）；C 的阶码少 1（对应 −0.75）；D 阶码少 2。检验口诀：符号看最高位、指数看阶码减 127。',
+    visual: {
+      kind: 'flow',
+      title: 'IEEE 754 单精度：−1.25 → BFA00000H',
+      nodes: [
+        { id: 's', label: '十进制 −1.25\n求单精度机器码', type: 'start' },
+        { id: 'p1', label: '1.25 = 1.01₂\n规格化 1.01×2⁰', type: 'proc' },
+        { id: 'p2', label: '数符 s = 1\n阶码 0+127\n= 0111 1111', type: 'proc' },
+        { id: 'p3', label: '尾数 = 0100…0\n（去掉隐含的 1）', type: 'proc' },
+        { id: 'p4', label: '拼装：1 01111111\n0100…0', type: 'proc' },
+        { id: 'e', label: '1011 1111 1010\n…0 = BFA00000H', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'p1' },
+        { from: 'p1', to: 'p2' },
+        { from: 'p2', to: 'p3' },
+        { from: 'p3', to: 'p4' },
+        { from: 'p4', to: 'e' },
+      ],
+    },
   },
   {
     id: 'q-2023-14',
@@ -289,6 +449,7 @@ for (int i = 1; i <= n; i++)
     topic: 'Cache 命中率',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'co-cache-perf',
     score: 2,
     question:
       '某系统中 Cache 存取时间为 40 ns，主存存取时间为 200 ns。CPU 先访问 Cache，缺失时再访问主存（串行进行）。若 Cache 命中率为 95%，则平均访存时间为（ ）。',
@@ -334,6 +495,25 @@ for (int i = 1; i <= n; i++)
     answer: 'C',
     explanation:
       '扩展过程：三地址指令占用操作码 0000～1110，留 1111 作为扩展标志；二地址占用 1111 0000～1111 1110，留 1111 1111；一地址占用 1111 1111 0000～1111 1111 1110，留 1111 1111 1111。剩余 12 位前缀之后还有 4 位全空，可全部用作零地址操作码，故零地址指令最多 2⁴ = 16 条。每级"用满 15 个、留 1 个标志位往下扩"，是这类计数的固定套路。',
+    visual: {
+      kind: 'flow',
+      title: '扩展操作码：15/15/15 后零地址最多 16 条',
+      nodes: [
+        { id: 's', label: '指令字 16 位\n每个地址码 4 位', type: 'start' },
+        { id: 'p1', label: '三地址 15 条\nOP：0000~1110\n留 1111 扩展', type: 'proc' },
+        { id: 'p2', label: '二地址 15 条\n前缀 1111\n后段 0000~1110\n留 1111 1111', type: 'proc' },
+        { id: 'p3', label: '一地址 15 条\n前缀 1111 1111\n后段 0000~1110\n留 12 个 1', type: 'proc' },
+        { id: 'p4', label: '零地址：前 12 位\n全 1，剩 4 位\n2⁴ = 16 条', type: 'proc' },
+        { id: 'e', label: '每级用满 15 条\n留 1 个码点扩展', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'p1' },
+        { from: 'p1', to: 'p2' },
+        { from: 'p2', to: 'p3' },
+        { from: 'p3', to: 'p4' },
+        { from: 'p4', to: 'e' },
+      ],
+    },
   },
   {
     id: 'q-2023-19',
@@ -494,6 +674,27 @@ for (int i = 1; i <= n; i++)
     answer: 'D',
     explanation:
       '缓冲区满时，生产者在已持有 mutex 的情况下阻塞于 P(empty)；消费者取产品前须先 P(mutex)，因 mutex ≤ 0 被挡在临界区外，无法取走产品释放空位——两个进程互相等待对方释放资源，形成死锁。正确顺序是"先资源、后互斥"（P(empty) 在前，P(mutex) 在后），V 操作的次序则相对自由。',
+    visual: {
+      kind: 'flow',
+      title: 'P(mutex) 先于 P(empty)：满缓冲区死锁',
+      nodes: [
+        { id: 's', label: '生产者投入产品\n缓冲区容量 n', type: 'start' },
+        { id: 'p1', label: '错误顺序\nP(mutex) 在前\nP(empty) 在后', type: 'proc' },
+        { id: 'p2', label: '缓冲区已满\nP(empty) 阻塞\n生产者持锁等待', type: 'proc' },
+        { id: 'p3', label: '消费者取产品\n先 P(mutex)\n被挡在临界区外', type: 'proc' },
+        { id: 'e0', label: '取不出产品\n空位无法回升\n互等 → 死锁', type: 'end' },
+        { id: 'p4', label: '正确顺序\n先 P(empty)\n再 P(mutex)', type: 'proc' },
+        { id: 'e1', label: '口诀：先资源\n后互斥，V 随意', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'p1', label: '顺序颠倒' },
+        { from: 'p1', to: 'p2' },
+        { from: 'p2', to: 'p3' },
+        { from: 'p3', to: 'e0' },
+        { from: 's', to: 'p4', label: '正确写法' },
+        { from: 'p4', to: 'e1' },
+      ],
+    },
   },
   {
     id: 'q-2023-27',
@@ -675,6 +876,25 @@ for (int i = 1; i <= n; i++)
     answer: 'A',
     explanation:
       'G(x) = x³ + x² + 1 对应除数 1101（4 位，阶为 3，故 FCS 占 3 位）。用被除数 110101000（数据后补 3 个 0）对 1101 做模 2 除：依次商 1、0? 逐步相除得余数 101，即 FCS = 101；实际发送码串 = 数据 + FCS = 110101101。接收方用收到的码串模 2 除 1101，余 0 即认为无差错。B、C、D 的余数均非 101。',
+    visual: {
+      kind: 'flow',
+      title: 'CRC 逐位模 2 除法（G(x) = x³+x²+1）',
+      nodes: [
+        { id: 's', label: '数据 110101\n除数 1101\n（x³+x²+1，4 位）', type: 'start' },
+        { id: 'p1', label: '阶为 3 → FCS 3 位\n数据后补 3 个 0\n得 110101000', type: 'proc' },
+        { id: 'p2', label: '高 4 位 1101\n⊕ 1101 = 0000\n商 1', type: 'proc' },
+        { id: 'p3', label: '余式 0 1000\n首 1 对齐除数\n1000⊕1101=0101', type: 'proc' },
+        { id: 'p4', label: '0101 不足 4 位\n除法结束\nFCS = 101', type: 'proc' },
+        { id: 'e', label: '发送码串\n110101101\n收方除尽余 0', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'p1' },
+        { from: 'p1', to: 'p2' },
+        { from: 'p2', to: 'p3' },
+        { from: 'p3', to: 'p4' },
+        { from: 'p4', to: 'e' },
+      ],
+    },
   },
   {
     id: 'q-2023-36',
@@ -701,6 +921,7 @@ for (int i = 1; i <= n; i++)
     topic: '子网划分',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'cn-vlsm',
     score: 2,
     question:
       '某主机的 IP 地址为 192.168.64.66，子网掩码为 255.255.255.240，则该主机所在子网可用的主机地址数是（ ）。',
@@ -725,6 +946,25 @@ for (int i = 1; i <= n; i++)
     answer: 'C',
     explanation:
       '129.56.87.150 = 1001 0110B，位于 129.56.87.128/26（范围 .128～.191）之内，同时匹配 ②（/24）与 ①（/16）；③ 的前缀长度为 26，三者中最长，故选 ③ 转发给 R3。最长前缀匹配使路由选择最具体、最精确；默认路由（/0）仅在无任何具体匹配时才使用。',
+    visual: {
+      kind: 'flow',
+      title: '最长前缀匹配：129.56.87.150 → R3',
+      nodes: [
+        { id: 's', label: '目的地址\n129.56.87.150', type: 'start' },
+        { id: 'p1', label: '匹配 ①\n129.56.0.0/16', type: 'proc' },
+        { id: 'p2', label: '匹配 ②\n129.56.87.0/24', type: 'proc' },
+        { id: 'p3', label: '匹配 ③\n129.56.87.128\n前缀 /26', type: 'proc' },
+        { id: 'p4', label: '150 ∈ 128~191\n三条均命中', type: 'proc' },
+        { id: 'e', label: '最长前缀 /26\n选 ③ 转发给 R3\n默认路由不用', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'p1' },
+        { from: 'p1', to: 'p2' },
+        { from: 'p2', to: 'p3' },
+        { from: 'p3', to: 'p4' },
+        { from: 'p4', to: 'e' },
+      ],
+    },
   },
   {
     id: 'q-2023-39',
@@ -735,6 +975,7 @@ for (int i = 1; i <= n; i++)
     topic: 'TCP 确认',
     difficulty: 1,
     source: 'adapted',
+    templateId: 'cn-tcp-seq',
     score: 2,
     question:
       '主机甲向主机乙发送的某个 TCP 报文段序号为 500，该报文段携带 200 字节数据。若乙正确收到该报文段，则乙发回的确认报文段中的确认号是（ ）。',

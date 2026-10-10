@@ -68,6 +68,7 @@ export const curatedCn1: Question[] = [
     topic: '性能指标',
     difficulty: 2,
     source: 'curated',
+    templateId: 'cn-latency',
     score: 2,
     question: '主机甲经两个存储转发路由器（共 3 段链路）向主机乙传送一个长度为 1000B 的分组。每段链路的数据率均为 1Mb/s，忽略传播时延、处理时延和排队时延，该分组从开始发送到完全到达乙的端到端时延为（　）。',
     options: ['8ms', '16ms', '24ms', '32ms'],
@@ -91,6 +92,7 @@ export const curatedCn1: Question[] = [
     topic: '性能指标',
     difficulty: 1,
     source: 'curated',
+    templateId: 'cn-latency',
     score: 2,
     question: 'A、B 两台路由器相距 250km，用一条 8Mb/s 的链路直连，信号在链路媒体中的传播速率为 2×10^8 m/s。该链路的时延带宽积为（　）。',
     options: ['10000bit', '5000bit', '20000bit', '2000bit'],
@@ -108,6 +110,7 @@ export const curatedCn1: Question[] = [
     topic: '性能指标',
     difficulty: 3,
     source: 'curated',
+    templateId: 'cn-latency',
     score: 2,
     question: '一个 9×10^6 bit 的报文经分组交换网从主机甲传到主机乙，途经 2 个存储转发路由器（共 3 段链路），每段链路数据率均为 3Mb/s。若把报文等分为 3 个分组（每组 3×10^6 bit）连续发送，忽略分组首部、传播时延与处理时延，端到端时延为（　）。',
     options: ['3s', '5s', '9s', '6s'],
@@ -120,6 +123,16 @@ export const curatedCn1: Question[] = [
     ],
     explanation:
       '分组交换流水线公式：p 个分组经 k 段链路，总时延 = (p + k − 1) × (每组长度/链路速率)。本题每组在一段链路上的发送时延 = 3×10^6 bit ÷ 3×10^6 b/s = 1s，代入得 (3+3−1)×1s = 5s。直观理解：第一个分组用 3s「探路」，之后每 1s 就有一个分组到达目的地，比整报文存储转发的 9s 节省 4s；分组数越多、链路数越多，流水线收益越明显。',
+    visual: {
+      kind: 'pipeline',
+      title: '分组交换流水线：3 分组 × 3 链路，每段 1s（总 5s）',
+      stages: ['链路1', '链路2', '链路3'],
+      instrs: [
+        { name: '分组1', delay: 0, note: '分组1：0~1s 在链路1，第 3s 末完全到达乙' },
+        { name: '分组2', delay: 1, note: '分组2：晚 1s 发射，第 4s 末到达乙' },
+        { name: '分组3', delay: 2, note: '分组3：第 5s 末到达乙，总时延 (3+3−1)×1s = 5s' },
+      ],
+    },
   },
   {
     id: 'cur-cn-007',
@@ -194,6 +207,26 @@ export const curatedCn1: Question[] = [
     ],
     explanation:
       '奈氏准则与香农公式分别从「码元速率上限」与「噪声误码」两个角度限制信道，实际极限 = min(2W·log2 V, W·log2(1+S/N))。本题奈氏 16kbps < 香农约 20kbps，极限为 16kbps。若增大码元状态数（如 64 种状态时奈氏为 24kbps），瓶颈便切换为香农值——这种「谁小取谁」的综合判断是命题热点。',
+    visual: {
+      kind: 'flow',
+      title: '奈氏与香农双上限：谁小取谁',
+      nodes: [
+        { id: 's', label: '双公式分别\n计算极限值', type: 'start' },
+        { id: 'a', label: '奈氏 2W·log₂V\n= 2×2000×4\n= 16kbps', type: 'proc' },
+        { id: 'b', label: '香农：30dB\nS/N = 1000\n2000×log₂1001\n≈ 20kbps', type: 'proc' },
+        { id: 'c', label: '实际极限\n取较小者', type: 'cond' },
+        { id: 'd', label: '16kbps\n受奈氏限制', type: 'end' },
+        { id: 'e', label: '取香农值\n瓶颈为噪声', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'a' },
+        { from: 's', to: 'b' },
+        { from: 'a', to: 'c' },
+        { from: 'b', to: 'c' },
+        { from: 'c', to: 'd', label: '奈氏小' },
+        { from: 'c', to: 'e', label: '香农小' },
+      ],
+    },
   },
   {
     id: 'cur-cn-010',
@@ -274,6 +307,35 @@ export const curatedCn1: Question[] = [
     ],
     explanation:
       'CRC 三步走：① 除数 = 生成多项式系数，x^3+x+1 对应 1011；② 数据 100101 后追加 r = 3 个 0 得 100101000；③ 模 2 除法求余：每一步做按位异或，最终余数 110。发送码 = 100101 + 110 = 100101110。接收方用同一除数去除收到的码序列，余数为 0 即认为传输无差错。CRC 只能检错不能纠错，漏检概率随生成多项式阶数升高而骤降。',
+    visual: {
+      kind: 'sort',
+      title: 'CRC 模 2 除法：100101 补 3 个 0，除数 1011',
+      frames: [
+        {
+          arr: ['1', '0', '0', '1', '0', '1', '0', '0', '0'],
+          pivot: 0,
+          compared: [0, 1, 2, 3],
+          note: '数据 100101 后补 3 个 0 得被除数；除数 1011 对齐最高位的 1，按位异或',
+        },
+        {
+          arr: ['0', '0', '1', '0', '0', '1', '0', '0', '0'],
+          pivot: 2,
+          compared: [2, 3, 4, 5],
+          note: '首次异或后残留 001001000；下一个 1 在第 3 位，除数再对齐',
+        },
+        {
+          arr: ['0', '0', '0', '0', '1', '0', '0', '0', '0'],
+          pivot: 4,
+          compared: [4, 5, 6, 7],
+          note: '第二次异或后残留 000010000；下一个 1 在第 5 位',
+        },
+        {
+          arr: ['0', '0', '0', '0', '0', '0', '1', '1', '0'],
+          settled: [6, 7, 8],
+          note: '第三次异或后只剩 3 位余数 110；发送码序列 = 100101 拼上 110',
+        },
+      ],
+    },
   },
   {
     id: 'cur-cn-014',
@@ -360,6 +422,28 @@ export const curatedCn1: Question[] = [
     ],
     explanation:
       '零比特填充：发送端硬件扫描信息字段，每发现 5 个连续的 1，立即插入一个 0，确保信息字段中不会出现 6 个连续的 1（01111110 是 HDLC/PPP 同步传输的帧定界符）。原串 011011111111000 的 1 游程为 8：前 5 个 1 后插 0，计数器清零后剩余 3 个 1 不再插入，结果为 0110111110111000。接收方执行逆操作（删去 5 个连续 1 之后的 0）即可透明还原。',
+    visual: {
+      kind: 'sort',
+      title: '零比特填充：每 5 个连续 1 后插入一个 0',
+      frames: [
+        {
+          arr: ['0', '1', '1', '0', '1', '1', '1', '1', '1', '1', '1', '1', '0', '0', '0'],
+          compared: [4, 5, 6, 7, 8],
+          note: '原始信息字段 011011111111000：1 游程长度 8，数到第 5 个连续 1',
+        },
+        {
+          arr: ['0', '1', '1', '0', '1', '1', '1', '1', '1', '0', '1', '1', '1', '0', '0', '0'],
+          pivot: 9,
+          note: '第 5 个连续 1 之后立即插入 0（黄色格），游程计数器清零',
+        },
+        {
+          arr: ['0', '1', '1', '0', '1', '1', '1', '1', '1', '0', '1', '1', '1', '0', '0', '0'],
+          settled: [9],
+          compared: [10, 11, 12],
+          note: '清零后剩余 3 个连续 1，不足 5 不再插入；发送 0110111110111000',
+        },
+      ],
+    },
   },
   {
     id: 'cur-cn-018',
@@ -445,6 +529,7 @@ export const curatedCn1: Question[] = [
     topic: '滑动窗口',
     difficulty: 3,
     source: 'curated',
+    templateId: 'cn-latency',
     score: 2,
     question: '主机甲与乙之间采用连续 ARQ 协议（滑动窗口）通信：链路速率 2Mb/s，数据帧长 2000bit，单程传播时延 25ms，确认帧长度与处理时延忽略不计。为使甲能连续不断地发送数据帧（不出现空等），发送窗口至少应为（　）。',
     options: ['26 帧', '51 帧', '50 帧', '101 帧'],
@@ -457,6 +542,29 @@ export const curatedCn1: Question[] = [
     ],
     explanation:
       '连续发送的临界条件：发送窗口 W 满足 W×Td ≥ Td + 2Tp（一个确认周期内窗口里的帧要够发）。本题 Td = 1ms、2Tp = 50ms，W ≥ 51。若窗口不足，甲在确认到来前发完窗口内全部帧后只能等待，信道出现空闲，利用率 = W×Td/(Td+2Tp) < 1。这一条件与时延带宽积一脉相承：管道里能容纳多少比特，窗口就得装多少。',
+    visual: {
+      kind: 'flow',
+      title: '连续 ARQ 最小窗口：覆盖完整确认周期',
+      nodes: [
+        { id: 's', label: '读题提取参数', type: 'start' },
+        { id: 'a', label: '单帧发送时延\nTd=2000b÷2Mb/s\n= 1ms', type: 'proc' },
+        { id: 'b', label: '一个确认周期\n= Td+2Tp\n= 51ms', type: 'proc' },
+        { id: 'c', label: '连续发送条件\nW×Td ≥ 周期', type: 'proc' },
+        { id: 'd', label: 'W ≥ 周期 ÷ Td\n= 51 帧', type: 'proc' },
+        { id: 'e', label: '窗口不足 51？', type: 'cond' },
+        { id: 'f', label: '发完窗口后\n信道空等', type: 'end' },
+        { id: 'g', label: '窗口至少 51 帧\n确认返回时\n恰有帧可发', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'a' },
+        { from: 'a', to: 'b' },
+        { from: 'b', to: 'c' },
+        { from: 'c', to: 'd' },
+        { from: 'd', to: 'e' },
+        { from: 'e', to: 'f', label: '是' },
+        { from: 'e', to: 'g', label: '否' },
+      ],
+    },
   },
   {
     id: 'cur-cn-022',
@@ -468,6 +576,7 @@ export const curatedCn1: Question[] = [
     topic: '停止等待',
     difficulty: 2,
     source: 'curated',
+    templateId: 'cn-latency',
     score: 2,
     question: '主机甲用停止-等待协议向主机乙传送数据：链路速率 128kb/s，数据帧长 512bit，单程传播时延 20ms；确认帧很短，其发送时间与处理时间均可忽略。该信道的利用率约为（　）。',
     options: ['约 18.2%', '约 2.3%', '约 90%', '约 9.1%'],
@@ -480,6 +589,16 @@ export const curatedCn1: Question[] = [
     ],
     explanation:
       '停止-等待协议的信道利用率 U = Td/(Td + 2Tp + T确认)，忽略确认时延后 U = Td/(Td+2Tp)。本题 Td = 512/128k = 4ms，U = 4/44 ≈ 9.1%。利用率低是停止等待在长时延链路上的致命弱点，解决办法是滑动窗口连续发送：窗口 W 满足 W×Td ≥ Td+2Tp 即可把利用率提到接近 100%。',
+    visual: {
+      kind: 'seq',
+      title: '停止-等待：周期 44ms，有效发送仅 4ms（U≈9.1%）',
+      actors: ['主机甲', '主机乙'],
+      messages: [
+        { from: '主机甲', to: '主机乙', label: '数据帧 512bit：发送 4ms + 传播 20ms' },
+        { from: '主机乙', to: '主机甲', label: '确认帧：发送时间忽略，传播 20ms' },
+        { from: '主机甲', to: '主机乙', label: '下一帧（周期 44ms，仅 4ms 在发送）' },
+      ],
+    },
   },
   {
     id: 'cur-cn-023',
@@ -491,6 +610,7 @@ export const curatedCn1: Question[] = [
     topic: 'CSMA/CD',
     difficulty: 2,
     source: 'curated',
+    templateId: 'cn-minframe',
     score: 2,
     question: '某总线型以太网的数据率为 10Mb/s，两端站点间的最大距离为 2km，电信号在电缆中的传播速率为 2×10^8 m/s，忽略中继器等设备时延。要让 CSMA/CD 的冲突检测始终有效，该网络的帧长不能小于（　）。',
     options: ['100bit', '400bit', '200bit', '2000bit'],
@@ -770,6 +890,7 @@ export const curatedCn1: Question[] = [
     topic: '子网划分',
     difficulty: 2,
     source: 'curated',
+    templateId: 'cn-vlsm',
     score: 2,
     question: '把网络 10.1.0.0/16 用子网掩码 255.255.240.0（/20）划分为若干大小相等的子网，则划分出的子网数与每个子网的可分配主机数分别为（　）。',
     options: ['16 与 4096', '8 与 8190', '16 与 4094', '32 与 2046'],
@@ -793,6 +914,7 @@ export const curatedCn1: Question[] = [
     topic: '子网划分',
     difficulty: 2,
     source: 'curated',
+    templateId: 'cn-vlsm',
     score: 2,
     question: '某主机的 IP 地址为 172.18.55.120，子网掩码为 255.255.248.0。该主机所在子网的广播地址是（　）。',
     options: ['172.18.48.255', '172.18.63.255', '172.18.40.255', '172.18.55.255'],
@@ -816,6 +938,7 @@ export const curatedCn1: Question[] = [
     topic: '子网划分',
     difficulty: 2,
     source: 'curated',
+    templateId: 'cn-vlsm',
     score: 2,
     question: '将网络 192.168.50.0/24 划分为若干个大小相等的子网，要求每个子网的可分配主机地址至少为 100 个，则最多能划分的子网数与对应的子网掩码为（　）。',
     options: [
@@ -844,6 +967,7 @@ export const curatedCn1: Question[] = [
     topic: '子网划分',
     difficulty: 1,
     source: 'curated',
+    templateId: 'cn-vlsm',
     score: 2,
     question: '路由器之间的点对点串行链路两端接口各需要一个 IP 地址。为这类链路分配子网时，最节省地址的掩码长度与每条链路需要的可用地址数为（　）。',
     options: ['/30，2 个', '/29，6 个', '/28，14 个', '/24，254 个'],
@@ -861,6 +985,7 @@ export const curatedCn1: Question[] = [
     topic: '路由聚合',
     difficulty: 2,
     source: 'curated',
+    templateId: 'cn-vlsm',
     score: 2,
     question: '某路由器的路由表中有 172.16.16.0/24、172.16.17.0/24、172.16.18.0/24 与 172.16.19.0/24 四条路由，且下一跳相同。将它们聚合（构成超网）后的地址块为（　）。',
     options: ['172.16.16.0/23', '172.16.16.0/21', '172.16.16.0/22', '172.16.18.0/22'],
@@ -884,6 +1009,7 @@ export const curatedCn1: Question[] = [
     topic: '路由聚合',
     difficulty: 3,
     source: 'curated',
+    templateId: 'cn-vlsm',
     score: 2,
     question: '某路由器的路由表中只有 10.1.0.0/24、10.1.1.0/24、10.1.2.0/24 三条路由（下一跳相同），现要将它们聚合后向外通告。下列叙述正确的是（　）。',
     options: [
@@ -901,6 +1027,29 @@ export const curatedCn1: Question[] = [
     ],
     explanation:
       '聚合的副作用：三条 /24 的最长公共前缀是 /22，块大小 4 必然包含不在表中的 10.1.3.0/24。工程上的标准处理是「聚合 + 例外」：先通告聚合路由 10.1.0.0/22，若 10.1.3.0/24 实际属于其他下一跳，再单独通告该子网的具体路由——路由器按最长前缀匹配选中更具体的表项，两全其美。理解聚合的「吸虹效应」是 BGP 工程与考纲 CIDR 部分的共同要求。',
+    visual: {
+      kind: 'flow',
+      title: '路由聚合的吸收风险与例外路由',
+      nodes: [
+        { id: 's', label: '三条 /24 路由\n下一跳相同', type: 'start' },
+        { id: 'a', label: '第三字节 0、1、2\n写成二进制', type: 'proc' },
+        { id: 'b', label: '公共前缀 22 位\n聚合 10.1.0.0/22', type: 'proc' },
+        { id: 'c', label: '块内含未分配\n的 .3.0/24？', type: 'cond' },
+        { id: 'd', label: '该子网流量被\n误引形成黑洞', type: 'proc' },
+        { id: 'e', label: '补救：再单独\n通告 .3.0/24', type: 'proc' },
+        { id: 'f', label: '最长前缀匹配\n更具体路由胜出', type: 'end' },
+        { id: 'g', label: '直接通告聚合\n无副作用', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'a' },
+        { from: 'a', to: 'b' },
+        { from: 'b', to: 'c' },
+        { from: 'c', to: 'd', label: '是' },
+        { from: 'c', to: 'g', label: '否' },
+        { from: 'd', to: 'e' },
+        { from: 'e', to: 'f' },
+      ],
+    },
   },
   {
     id: 'cur-cn-040',
@@ -912,6 +1061,7 @@ export const curatedCn1: Question[] = [
     topic: 'IP 分片',
     difficulty: 2,
     source: 'curated',
+    templateId: 'cn-fragment',
     score: 2,
     question: '一个总长度为 3020B（含 20B IP 首部，无选项字段）的 IP 数据报经过 MTU = 820B 的链路时被分片。分片数与第 3 片的片偏移字段值分别为（　）。',
     options: ['4 片、205', '4 片、200', '3 片、200', '5 片、200'],

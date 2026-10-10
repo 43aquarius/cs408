@@ -24,6 +24,27 @@ export const mock04c2: Question[] = [
     ],
     explanation:
       '程序查询方式的关键约束：查询周期必须不超过数据到达的间隔（1 字节缓冲时）。占比 = 每秒查询次数 × 每次周期数 ÷ 主频每秒周期数。本题 10^4 × 500 / 10^8 = 5%。这一计算也直观解释了为什么键盘尚可查询、而高速设备必须转向中断或 DMA——速率每高一个量级，CPU 被占用比例同步放大。',
+    visual: {
+      kind: 'flow',
+      title: '程序查询方式：CPU 时间占比推导',
+      nodes: [
+        { id: 's', label: '开始\n键盘 10 KB/s', type: 'start' },
+        { id: 'a', label: '10^4 B/s\n字节间隔 100μs', type: 'proc' },
+        { id: 'b', label: '仅 1 字节缓冲\n须 100μs 内查完', type: 'proc' },
+        { id: 'c', label: '每秒至少查询\n10^4 次', type: 'proc' },
+        { id: 'd', label: '每次 500 周期\n共 5×10^6 周期/s', type: 'proc' },
+        { id: 'e', label: '占比 5×10^6\n÷ 10^8 = 5%', type: 'proc' },
+        { id: 'f', label: '结束', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'a' },
+        { from: 'a', to: 'b' },
+        { from: 'b', to: 'c' },
+        { from: 'c', to: 'd' },
+        { from: 'd', to: 'e' },
+        { from: 'e', to: 'f' },
+      ],
+    },
   },
   {
     id: 'mock04-22',
@@ -197,6 +218,7 @@ export const mock04c2: Question[] = [
     topic: '银行家算法',
     difficulty: 3,
     source: 'mock',
+    templateId: 'os-banker',
     score: 2,
     question: '某系统有 A、B、C 三类资源，总量为 (10, 7, 5)，当前进程 P0～P3 的已分配与最大需求如下（括号内依次为 A、B、C 的数量）：\n已分配：P0(0,1,0)、P1(2,0,1)、P2(3,1,1)、P3(2,1,2)\n最大需求：P0(7,4,2)、P1(4,2,2)、P2(9,3,3)、P3(5,3,4)\n则下列序列中，属于当前状态下的安全序列的是（　）。',
     options: [
@@ -214,6 +236,29 @@ export const mock04c2: Question[] = [
     ],
     explanation:
       '安全性算法两步循环：Need = Max − Allocation；从剩余进程中找 Need ≤ Available 者令其完成，回收其 Allocation 累加进 Available，直到全部进程完成即安全。本题 Need 依次为 P0(7,3,2)、P1(2,2,1)、P2(6,2,2)、P3(3,2,2)，初始可用 (3,4,1) 只能满足 P1，随后顺序唯一推导为 P1→P3→（P0、P2 任选其一），选项中只有 A 匹配。',
+    visual: {
+      kind: 'flow',
+      title: '银行家算法安全性检查（Work 演化）',
+      nodes: [
+        { id: 's', label: '开始\n安全性检查', type: 'start' },
+        { id: 'a', label: 'Need=Max−Alloc\n可用 (3,4,1)', type: 'proc' },
+        { id: 'b', label: '初始仅 P1 满足\nP1 完成→(5,4,2)', type: 'proc' },
+        { id: 'c', label: 'P3 Need(3,2,2)\n完成→(7,5,4)', type: 'proc' },
+        { id: 'd', label: 'P2 Need(6,2,2)\n完成→(10,6,5)', type: 'proc' },
+        { id: 'e', label: 'P0 Need(7,3,2)\n完成→(10,7,5)', type: 'proc' },
+        { id: 'f', label: '安全序列（其一）\nP1→P3→P2→P0', type: 'proc' },
+        { id: 'g', label: '结束', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'a' },
+        { from: 'a', to: 'b' },
+        { from: 'b', to: 'c' },
+        { from: 'c', to: 'd' },
+        { from: 'd', to: 'e' },
+        { from: 'e', to: 'f' },
+        { from: 'f', to: 'g' },
+      ],
+    },
   },
   {
     id: 'mock04-28',
@@ -225,6 +270,7 @@ export const mock04c2: Question[] = [
     topic: '分页变换',
     difficulty: 2,
     source: 'mock',
+    templateId: 'os-paging-translate',
     score: 2,
     question: '某分页存储管理系统页面大小为 4KB，进程页表当前内容为：页 0 → 物理块 2，页 1 → 物理块 8，页 2 → 物理块 3。现访问逻辑地址 4097（十进制），其对应的物理地址是（　）。',
     options: ['8193', '12289', '4097', '32769'],
@@ -248,6 +294,7 @@ export const mock04c2: Question[] = [
     topic: 'Belady',
     difficulty: 3,
     source: 'mock',
+    templateId: 'os-page-replace',
     score: 2,
     question: '某请求分页系统采用 FIFO 页面置换算法，进程的页面访问序列为 3、2、1、4、3、2、5、3、2、1、4、5，初始时页框全空。当分配给该进程的页框数从 3 个增加到 4 个时，缺页次数的变化是（　）。',
     options: [
@@ -339,6 +386,7 @@ export const mock04c2: Question[] = [
     topic: '位示图',
     difficulty: 2,
     source: 'mock',
+    templateId: 'os-bitmap',
     score: 2,
     question: '某文件系统采用位示图管理磁盘空闲块，位示图每个字 16 位，字号与位号均从 0 开始编号，第 0 字的第 0 位对应 0 号盘块（某位为 0 表示对应盘块空闲）。若某盘块的编号为 2018，则它在位示图中对应的字号与位号是（　）。',
     options: ['126 与 3', '127 与 2', '126 与 2', '2 与 126'],
@@ -521,6 +569,7 @@ export const mock04c2: Question[] = [
     topic: 'IP 地址',
     difficulty: 2,
     source: 'mock',
+    templateId: 'cn-vlsm',
     score: 2,
     question: '按分类编址（默认掩码）规则，下列 IPv4 地址中不能分配给主机接口作为普通单播地址的是（　）。',
     options: ['172.20.100.200', '10.255.255.254', '10.255.255.255', '192.168.1.1'],

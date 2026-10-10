@@ -58,6 +58,23 @@ export const mock10c2: Question[] = [
     ],
     explanation:
       '单总线数据通路的加法三拍口诀「先送 Y、再直送、经 Z 写回」：一条总线同拍只能传一个数，因此两个操作数必须分拍提供，Y 暂存先到者，ALU 输出暂存于 Z 等待下一拍上总线。判断此类题先查「同一拍是否有两个发送者（总线冲突）」，再查「结果写到哪个寄存器（目标正确性）」，最后核对拍数与控制信号配对。',
+    visual: {
+      kind: 'flow',
+      title: '单总线 CPU 执行 ADD R0, R1 的三拍微操作',
+      nodes: [
+        { id: 's', label: 'ADD R0, R1\n功能 R0←R0+R1', type: 'start' },
+        { id: 'a', label: '①R0out, Yin\nR0 经总线存入 Y', type: 'proc' },
+        { id: 'b', label: '②R1out,Add,Zin\nALU 算 Y+R1 存 Z', type: 'proc' },
+        { id: 'c', label: '③Zout, R0in\n结果写回 R0', type: 'proc' },
+        { id: 'e', label: '三拍完成\n单总线无冲突', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'a' },
+        { from: 'a', to: 'b' },
+        { from: 'b', to: 'c' },
+        { from: 'c', to: 'e' },
+      ],
+    },
   },
   {
     id: 'mock10-23',
@@ -143,6 +160,27 @@ export const mock10c2: Question[] = [
     ],
     explanation:
       'EDF 是动态优先级实时调度：优先级随截止期临近而升高，谁的截止期最早谁先运行。对截止期等于周期的周期任务集，单机 EDF 可调度的充要条件是 ΣCi/Pi ≤ 1。计算 1/4 + 2/8 + 1/16 = 0.5625 后即可判定。拓展对比：静态优先级的 RM（速率单调）算法只有 U ≤ n(2^(1/n) − 1) 的充分条件（n=3 时约 0.78），EDF 的利用率上界更优。',
+    visual: {
+      kind: 'flow',
+      title: 'EDF 利用率判定',
+      nodes: [
+        { id: 's', label: '三周期任务\nT1 T2 T3', type: 'start' },
+        { id: 'a', label: 'T1 C=1 P=4\nU1=1/4=0.25', type: 'proc' },
+        { id: 'b', label: 'T2 C=2 P=8\nU2=2/8=0.25', type: 'proc' },
+        { id: 'c', label: 'T3 C=1 P=16\nU3=1/16=0.0625', type: 'proc' },
+        { id: 'd', label: 'U=0.5625 ≤ 1?', type: 'cond' },
+        { id: 'e', label: 'EDF 可调度\n不会错过截止期', type: 'end' },
+        { id: 'f', label: 'U > 1 超载\n不可调度', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'a' },
+        { from: 'a', to: 'b' },
+        { from: 'b', to: 'c' },
+        { from: 'c', to: 'd' },
+        { from: 'd', to: 'e', label: '是' },
+        { from: 'd', to: 'f', label: '否' },
+      ],
+    },
   },
   {
     id: 'mock10-26',
@@ -182,6 +220,7 @@ export const mock10c2: Question[] = [
     topic: '页面置换',
     difficulty: 2,
     source: 'mock',
+    templateId: 'os-page-replace',
     score: 2,
     question: '关于 Clock（时钟）置换算法及其改进，下列说法**错误**的是（　）。',
     options: [
@@ -210,6 +249,7 @@ export const mock10c2: Question[] = [
     topic: '段页式',
     difficulty: 2,
     source: 'mock',
+    templateId: 'os-paging-translate',
     score: 2,
     question:
       '段页式存储管理中，逻辑地址分为段号 s、段内页号 p、页内偏移 w。若快表（TLB）未命中，在不考虑越界中断与保护检查开销的前提下，CPU 完成一次取数据访问共需访问内存（　）。',
@@ -541,6 +581,7 @@ export const mock10c2: Question[] = [
     topic: '拥塞控制',
     difficulty: 3,
     source: 'mock',
+    templateId: 'cn-cwnd',
     score: 2,
     question:
       'TCP 连接初始拥塞窗口 cwnd = 1 MSS、初始慢开始门限 ssthresh = 8 MSS；慢开始阶段 cwnd 每轮（RTT）加倍，拥塞避免阶段每轮加 1 MSS。第 6 轮（cwnd 达到 10 MSS）发生超时，此后 ssthresh 更新为当时 cwnd 的一半、cwnd 重置为 1 重新慢开始。则第 8 轮与第 12 轮结束时 cwnd 分别为（　）。',

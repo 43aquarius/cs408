@@ -36,6 +36,7 @@ export const y2025c1: Question[] = [
     topic: '循环队列',
     difficulty: 2,
     source: 'real',
+    templateId: 'ds-loop-queue',
     score: 2,
     question:
       '循环队列存放于数组 Q[0…m−1] 中，队头指针 front 指向队头元素，队尾指针 rear 指向队尾元素的下一个位置（rear 所指处不存放元素）。当前队列中的元素个数为（ ）。',
@@ -74,6 +75,7 @@ export const y2025c1: Question[] = [
     topic: '完全二叉树',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'ds-tree-count',
     score: 2,
     question: '一棵完全二叉树共有 2025 个结点，则其中叶结点的个数是（ ）。',
     options: ['1012', '1013', '1014', '不能确定'],
@@ -165,6 +167,7 @@ export const y2025c1: Question[] = [
     topic: '折半查找',
     difficulty: 3,
     source: 'real',
+    templateId: 'ds-bsearch-asl',
     score: 2,
     question:
       '对有序表 {7, 12, 19, 25, 33, 41, 46, 55, 68, 79}（含 10 个元素，依次存放于下标 1~10）进行折半查找，查找每个元素等概率发生，则查找成功的平均查找长度为（ ）。',
@@ -172,6 +175,71 @@ export const y2025c1: Question[] = [
     answer: 'A',
     explanation:
       '折半查找判定树只与元素个数有关：mid = ⌊(1+10)/2⌋ = 5 为根；第 2 层为 2、8；第 3 层为 1、3、6、9；第 4 层为 4、7、10。比较 1、2、3、4 次的元素分别有 1、2、4、3 个，ASL = (1×1 + 2×2 + 3×4 + 4×3)/10 = 29/10 = 2.9。判定树是一棵接近平衡的判定二叉树但通常不满，n = 10 时恰为 4 层。',
+    visual: {
+      kind: 'tree',
+      title: '折半查找判定树（n=10，ASL=2.9）',
+      steps: [
+        {
+          nodes: [{ id: 'n5', label: '33' }],
+          highlight: ['n5'],
+          note: 'mid=⌊(1+10)/2⌋=5：根为 5 号元素 33，第 1 层 1 个元素，比较 1 次',
+        },
+        {
+          nodes: [
+            { id: 'n5', label: '33' },
+            { id: 'n2', label: '12', parent: 'n5' },
+            { id: 'n8', label: '55', parent: 'n5' },
+          ],
+          highlight: ['n2', 'n8'],
+          note: '第 2 层：区间 [1,4]、[6,10] 的 mid=2、8，即元素 12 与 55，比较 2 次',
+        },
+        {
+          nodes: [
+            { id: 'n5', label: '33' },
+            { id: 'n2', label: '12', parent: 'n5' },
+            { id: 'n8', label: '55', parent: 'n5' },
+            { id: 'n1', label: '7', parent: 'n2' },
+            { id: 'n3', label: '19', parent: 'n2' },
+            { id: 'n6', label: '41', parent: 'n8' },
+            { id: 'n9', label: '68', parent: 'n8' },
+          ],
+          highlight: ['n1', 'n3', 'n6', 'n9'],
+          note: '第 3 层：mid=1、3、6、9（元素 7、19、41、68），比较 3 次',
+        },
+        {
+          nodes: [
+            { id: 'n5', label: '33' },
+            { id: 'n2', label: '12', parent: 'n5' },
+            { id: 'n8', label: '55', parent: 'n5' },
+            { id: 'n1', label: '7', parent: 'n2' },
+            { id: 'n3', label: '19', parent: 'n2' },
+            { id: 'n6', label: '41', parent: 'n8' },
+            { id: 'n9', label: '68', parent: 'n8' },
+            { id: 'n4', label: '25', parent: 'n3' },
+            { id: 'n7', label: '46', parent: 'n6' },
+            { id: 'n10', label: '79', parent: 'n9' },
+          ],
+          highlight: ['n4', 'n7', 'n10'],
+          note: '第 4 层：mid=4、7、10（均为右孩子），比较 4 次；判定树共 4 层',
+        },
+        {
+          nodes: [
+            { id: 'n5', label: '33' },
+            { id: 'n2', label: '12', parent: 'n5' },
+            { id: 'n8', label: '55', parent: 'n5' },
+            { id: 'n1', label: '7', parent: 'n2' },
+            { id: 'n3', label: '19', parent: 'n2' },
+            { id: 'n6', label: '41', parent: 'n8' },
+            { id: 'n9', label: '68', parent: 'n8' },
+            { id: 'n4', label: '25', parent: 'n3' },
+            { id: 'n7', label: '46', parent: 'n6' },
+            { id: 'n10', label: '79', parent: 'n9' },
+          ],
+          highlight: ['n5', 'n8', 'n6', 'n7'],
+          note: '查 46：33→55→41→46，比较 4 次命中；ASL=(1×1+2×2+3×4+4×3)/10=29/10=2.9',
+        },
+      ],
+    },
   },
   {
     id: 'q-2025-10',
@@ -219,6 +287,7 @@ export const y2025c1: Question[] = [
     topic: '补码表示',
     difficulty: 2,
     source: 'real',
+    templateId: 'co-complement',
     score: 2,
     question:
       '某机字长 8 位（含 1 位符号位），寄存器内容为 1110 1100。若它是一个整数的补码，则该整数的真值是（ ）。',
@@ -236,6 +305,7 @@ export const y2025c1: Question[] = [
     topic: 'IEEE 754',
     difficulty: 2,
     source: 'real',
+    templateId: 'co-ieee754',
     score: 2,
     question: 'IEEE 754 单精度浮点数的机器数（十六进制）为 40A0 0000H，其对应的十进制值是（ ）。',
     options: ['2.5', '4.5', '5.0', '10.0'],
@@ -264,6 +334,29 @@ export const y2025c1: Question[] = [
     answer: 'B',
     explanation:
       'Booth 算法按判断位 y_n y_{n+1} 决定部分积的加减：00 或 11 加 0；01 加 [x]补；10 加 [−x]补，随后部分积与乘数（含附加位）联合算术右移一位。10 表示乘数位由 1 变 0，对应减去被乘数 x 的贡献，故加 [−x]补。有的实现约定最后一步不再右移，但加减规则不变；D 的"加 [−y]补、左移"与算法毫无关系。',
+    visual: {
+      kind: 'flow',
+      title: 'Booth 补码一位乘：判断位规则与部分积演化（x=2, y=3）',
+      nodes: [
+        { id: 's', label: '[x]补=0010\n[y]补=0011\nP=0000，附 0', type: 'start' },
+        { id: 'p1', label: '判断位 10：\nP+[−x]补\n0000+1110=1110', type: 'proc' },
+        { id: 'p2', label: '右移：P=1111\n乘数 0001，附 1', type: 'proc' },
+        { id: 'p3', label: '判断位 11：P+0\n右移：P=1111\n乘数 1000，附 1', type: 'proc' },
+        { id: 'p4', label: '判断位 01：\nP+[x]补\n1111+0010=0001', type: 'proc' },
+        { id: 'p5', label: '右移：P=0000\n乘数 1100，附 0', type: 'proc' },
+        { id: 'p6', label: '判断位 00：P+0\n末步右移后\nP=0000 乘数 0110', type: 'proc' },
+        { id: 'e1', label: '[x·y]补\n=0000 0110\n=+6（2×3=6）', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'p1' },
+        { from: 'p1', to: 'p2' },
+        { from: 'p2', to: 'p3' },
+        { from: 'p3', to: 'p4' },
+        { from: 'p4', to: 'p5' },
+        { from: 'p5', to: 'p6' },
+        { from: 'p6', to: 'e1' },
+      ],
+    },
   },
   {
     id: 'q-2025-15',
@@ -274,6 +367,7 @@ export const y2025c1: Question[] = [
     topic: '存储器扩展',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'co-chip-extend',
     score: 2,
     question: '用 8K×8 位的 SRAM 芯片构成一个容量为 32K×16 位的存储器，共需该芯片（ ）片。',
     options: ['4', '8', '16', '32'],
@@ -311,6 +405,7 @@ export const y2025c1: Question[] = [
     topic: '相对寻址',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'co-relative',
     score: 2,
     question:
       '某机主存按字节编址，转移指令由 2 个字节组成：第一字节为操作码，第二字节为相对位移量（补码表示）；取指令时每取 1 字节 PC 自动加 1。该转移指令存放在主存地址 3000H 处，位移量字段的内容为 25H。本次转移成功时，转移到的目标地址是（ ）。',
@@ -349,6 +444,7 @@ export const y2025c1: Question[] = [
     topic: '指令流水线',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'co-pipeline',
     score: 2,
     question:
       '某指令流水线共 5 个功能段，每段耗时 1 个时钟周期，连续输入 20 条指令且不发生任何冒险。完成这 20 条指令共需（ ）个时钟周期。',

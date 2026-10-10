@@ -110,6 +110,27 @@ export const y2017c2: Question[] = [
     answer: 'D',
     explanation:
       '考察最坏情况：n 个进程都已各自获得 k − 1 个资源、都还差 1 个才能完成，此时共占用 n(k−1) 个资源而没有任何进程能运行完。只要再多 1 个资源，把它分给任一进程，该进程即可完成并释放全部资源，使系统摆脱僵局。故至少需要 n(k−1) + 1 个。n(k−1) 恰是最坏临界态，仍可能死锁；nk、nk+1 都不是下界。',
+    visual: {
+      kind: 'flow',
+      title: '死锁最坏情况与资源下界',
+      nodes: [
+        { id: 's', label: 'n 个进程\n各最多需 k 个资源', type: 'start' },
+        { id: 'w', label: '最坏情形\n每进程各得 k−1 个', type: 'proc' },
+        { id: 'c', label: '已占 n(k−1) 个\n都差 1 个，可能死锁', type: 'proc' },
+        { id: 'y', label: '再增 1 个资源\n分给任一进程', type: 'proc' },
+        { id: 'r', label: '它凑足 k 个先完成\n释放 k 个资源', type: 'proc' },
+        { id: 'f', label: '其余进程\n依次获得所需完成', type: 'proc' },
+        { id: 'e', label: '至少 n(k−1)+1 个', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'w' },
+        { from: 'w', to: 'c' },
+        { from: 'c', to: 'y', label: '+1 个打破僵局' },
+        { from: 'y', to: 'r' },
+        { from: 'r', to: 'f' },
+        { from: 'f', to: 'e' },
+      ],
+    },
   },
   {
     id: 'q-2017-27',
@@ -312,6 +333,7 @@ export const y2017c2: Question[] = [
     topic: '子网划分',
     difficulty: 2,
     source: 'real',
+    templateId: 'cn-vlsm',
     score: 2,
     question:
       '将网络 192.168.8.0/24 用子网掩码 255.255.255.224 划分为若干大小相等的子网，则每个子网中可分配给主机的 IP 地址个数是（ ）。',
@@ -329,6 +351,7 @@ export const y2017c2: Question[] = [
     topic: '拥塞控制',
     difficulty: 2,
     source: 'real',
+    templateId: 'cn-cwnd',
     score: 2,
     question:
       '主机甲与主机乙已建立一个 TCP 连接，双方约定的最大报文段长度 MSS = 1 KB。当甲的拥塞窗口 cwnd 为 16 KB 时发送超时，则超时后甲的拥塞窗口 cwnd 与慢开始门限 ssthresh 分别为（ ）。',
@@ -336,6 +359,19 @@ export const y2017c2: Question[] = [
     answer: 'C',
     explanation:
       'TCP 拥塞控制中，重传计时器超时被判定为网络拥塞：ssthresh 更新为当前 cwnd 的一半，即 16 KB ÷ 2 = 8 KB；cwnd 重置为 1 个 MSS = 1 KB，重新进入慢开始阶段（指数增长到 ssthresh 后转拥塞避免）。注意区分：若触发事件是连续收到 3 个冗余 ACK，则执行快重传与快恢复，ssthresh 减半但 cwnd 直接设为新 ssthresh，不归 1。',
+    visual: {
+      kind: 'cwnd',
+      title: '超时后 cwnd 与 ssthresh 演化（MSS = 1 KB）',
+      points: [
+        { round: 1, cwnd: 16, event: '超时' },
+        { round: 2, cwnd: 1, ssthresh: 8, event: '门限减半、cwnd 归 1' },
+        { round: 3, cwnd: 2, ssthresh: 8 },
+        { round: 4, cwnd: 4, ssthresh: 8 },
+        { round: 5, cwnd: 8, ssthresh: 8, event: '到门限转拥塞避免' },
+        { round: 6, cwnd: 9, ssthresh: 8 },
+        { round: 7, cwnd: 10, ssthresh: 8 },
+      ],
+    },
   },
   {
     id: 'q-2017-39',
@@ -373,5 +409,15 @@ export const y2017c2: Question[] = [
     answer: 'C',
     explanation:
       '三次握手中：第一次握手报文段 SYN = 1、ACK = 0，携带客户端初始序号；第二次握手（服务器 → 客户端）既要确认对方的连接请求，又要进行自己的同步，故 SYN = 1 且 ACK = 1，确认号 = 甲的初始序号 + 1；第三次握手 SYN = 0、ACK = 1。FIN 标志用于连接释放（四次挥手），与建立过程无关。',
+    visual: {
+      kind: 'seq',
+      title: 'TCP 三次握手（关注第 2 个报文段）',
+      actors: ['主机甲', '主机乙'],
+      messages: [
+        { from: '主机甲', to: '主机乙', label: '① SYN=1, ACK=0, seq=x' },
+        { from: '主机乙', to: '主机甲', label: '② SYN=1, ACK=1, ack=x+1 —— 答案 C' },
+        { from: '主机甲', to: '主机乙', label: '③ SYN=0, ACK=1, ack=y+1' },
+      ],
+    },
   },
 ]

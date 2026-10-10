@@ -63,6 +63,7 @@ export const mock04c1: Question[] = [
     topic: '循环队列',
     difficulty: 2,
     source: 'mock',
+    templateId: 'ds-loop-queue',
     score: 2,
     question: '循环队列存放在大小为 8 的数组中，牺牲一个存储单元区分队空与队满（front 指向队头元素，rear 指向队尾元素的下一位置）。若当前 front = 3、rear = 6，则在不发生上溢的前提下，最多还能执行多少次入队操作？',
     options: ['4 次', '5 次', '3 次', '2 次'],
@@ -103,6 +104,16 @@ export const mock04c1: Question[] = [
     ],
     explanation:
       '算符优先法规则：操作数进操作数栈；运算符 c 与栈顶 s 比较，c 更高则入栈，否则弹出 s 取两个操作数计算并把结果回压，重复比较。本题考点是「+ 低于 × 也低于 −」，需要连续弹两层栈。它与中缀转后缀中「遇低优先级运算符连续弹栈」是同一套机制，可对照记忆。',
+    visual: {
+      kind: 'sort',
+      title: '算符优先法：扫描到「+」瞬间的运算符栈',
+      frames: [
+        { arr: ['#', '−', '×'], compared: [2], note: '扫描完 8、−、3、×、2：− 与 × 依次入栈，操作数栈为 8、3、2' },
+        { arr: ['#', '−'], compared: [1], note: '读到 +：低于栈顶 ×，弹出 × 计算 3×2=6，结果 6 回压操作数栈' },
+        { arr: ['#'], compared: [0], note: '+ 与 − 同级（左结合）：再弹 − 计算 8−6=2，操作数栈只剩 2' },
+        { arr: ['#', '+'], settled: [1], note: '+ 高于 #，入栈；继续扫 6、÷、3，全部算完得最终值 4' },
+      ],
+    },
   },
   {
     id: 'mock04-05',
@@ -114,6 +125,7 @@ export const mock04c1: Question[] = [
     topic: '二叉树计数',
     difficulty: 2,
     source: 'mock',
+    templateId: 'ds-tree-count',
     score: 2,
     question: '设一棵二叉树中有 12 个叶结点（度为 0），有 5 个度为 1 的结点，则该二叉树的结点总数为（　）。',
     options: ['23', '27', '28', '17'],
@@ -137,6 +149,7 @@ export const mock04c1: Question[] = [
     topic: '完全二叉树',
     difficulty: 2,
     source: 'mock',
+    templateId: 'ds-tree-count',
     score: 2,
     question: '一棵完全二叉树共有 699 个结点，则其中叶结点（度为 0 的结点）的个数是（　）。',
     options: ['188', '350', '349', '351'],
@@ -160,6 +173,7 @@ export const mock04c1: Question[] = [
     topic: '二叉搜索树',
     difficulty: 2,
     source: 'mock',
+    templateId: 'ds-bst-delete',
     score: 2,
     question: '在二叉搜索树中删除左右子树均非空的结点时，标准做法之一是：用被删结点的中序后继替换它，再在右子树中删除该后继。现有二叉搜索树：根为 50，其左子树的根为 30（30 的左孩子为 20、右孩子为 40，40 的右孩子为 45），右子树的根为 70（孩子为 60 与 80）。现删除结点 30，删除完成后新树的结构是（　）。',
     options: [
@@ -247,6 +261,7 @@ export const mock04c1: Question[] = [
     topic: '平衡二叉树',
     difficulty: 3,
     source: 'mock',
+    templateId: 'ds-avl-rotate',
     score: 2,
     question: '向初始为空的平衡二叉树（AVL 树）中依次插入关键字 50、30、70、20、40、35。下列叙述正确的是（　）。',
     options: [
@@ -358,6 +373,7 @@ export const mock04c1: Question[] = [
     topic: 'B 树',
     difficulty: 3,
     source: 'mock',
+    templateId: 'ds-btree-overflow',
     score: 2,
     question: '一棵 5 阶 B 树（每个结点最多 4 个关键字）当前形态为：根结点 [4]，根的两个孩子（叶子结点）从左到右为 [1, 3] 与 [6, 8]。依次插入关键字 9、5、7，完成全部插入后该 B 树的形态是（　）。',
     options: [
@@ -456,6 +472,7 @@ export const mock04c1: Question[] = [
     topic: '机器数范围',
     difficulty: 2,
     source: 'mock',
+    templateId: 'co-complement',
     score: 2,
     question: '某计算机字长 8 位（含 1 位符号位），用于表示定点整数。下列关于其表示范围的叙述中，正确的是（　）。',
     options: [
@@ -484,6 +501,7 @@ export const mock04c1: Question[] = [
     topic: 'IEEE754',
     difficulty: 3,
     source: 'mock',
+    templateId: 'co-ieee754',
     score: 2,
     question: '按 IEEE 754 单精度（32 位：1 位符号、8 位阶码、23 位尾数）浮点数格式，真值 −0.75 的机器数（十六进制形式）是（　）。',
     options: ['3F40 0000H', 'BF80 0000H', 'BF40 0000H', 'BFC0 0000H'],
@@ -496,6 +514,31 @@ export const mock04c1: Question[] = [
     ],
     explanation:
       '求 IEEE 754 机器数三步走：① 十进制化二进制并规格化为 ±1.x × 2^e（0.75 = 0.11B = 1.1B × 2^−1）；② 阶码 = e + 127 = 126；③ 按符号(1) + 阶码(8) + 尾数(23，隐去整数 1) 拼装并转十六进制，得 1 01111110 1000…0 = BF40 0000H。反向验证：0x40B80000 是 +5.75、0x40240000 是 +3.125，可自行验算巩固。',
+    visual: {
+      kind: 'flow',
+      title: 'IEEE 754 单精度：−0.75 的机器数推导',
+      nodes: [
+        { id: 's', label: '开始\n真值 −0.75', type: 'start' },
+        { id: 'a', label: '0.75 = 0.11B\n（二进制）', type: 'proc' },
+        { id: 'b', label: '规格化\n1.1B × 2^−1', type: 'proc' },
+        { id: 'c', label: '负数 → 符号位 1\n阶码 = −1+127', type: 'proc' },
+        { id: 'd', label: '阶码 126\n= 0111 1110', type: 'proc' },
+        { id: 'e', label: '尾数 1000…0\n（隐含 1）', type: 'proc' },
+        { id: 'f', label: '拼装 1 01111110\n1000…0', type: 'proc' },
+        { id: 'g', label: '机器数\nBF40 0000H', type: 'proc' },
+        { id: 'h', label: '结束', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'a' },
+        { from: 'a', to: 'b' },
+        { from: 'b', to: 'c' },
+        { from: 'c', to: 'd' },
+        { from: 'd', to: 'e' },
+        { from: 'e', to: 'f' },
+        { from: 'f', to: 'g' },
+        { from: 'g', to: 'h' },
+      ],
+    },
   },
   {
     id: 'mock04-14',
@@ -563,6 +606,7 @@ export const mock04c1: Question[] = [
     topic: '命中率计算',
     difficulty: 3,
     source: 'mock',
+    templateId: 'co-cache-perf',
     score: 2,
     question: '某访存系统采用「先访问 Cache，若缺失再访问主存」的串行方式。某程序执行期间共访存 2000 次，其中 1980 次命中 Cache。已知 Cache 存取时间 20ns，主存存取时间 100ns，则该系统的平均访问时间为（　）。',
     options: ['21 ns', '20.8 ns', '20 ns', '20.6 ns'],
@@ -575,6 +619,27 @@ export const mock04c1: Question[] = [
     ],
     explanation:
       '平均访问时间必须先确认访问模型：串行（先查 Cache 后访主存）T = h·tc + (1−h)·(tc + tm)；并行（同时启动）T = h·tc + (1−h)·tm。本题串行模型下缺失代价 120ns，T = 21ns。命题人常备三个干扰：并行模型的 20.8ns、忽略缺失的 20ns、补差模型的 20.6ns，逐一排除即可。',
+    visual: {
+      kind: 'flow',
+      title: '串行访问模型的平均访问时间',
+      nodes: [
+        { id: 's', label: '开始\n先查 Cache', type: 'start' },
+        { id: 'a', label: '命中 1980/2000\nh = 0.99', type: 'proc' },
+        { id: 'b', label: '缺失代价\n20+100 = 120ns', type: 'proc' },
+        { id: 'c', label: 'T = 0.99×20\n+ 0.01×120', type: 'proc' },
+        { id: 'd', label: '= 19.8+1.2\n= 21ns', type: 'proc' },
+        { id: 'e', label: '对照（并行）\n20.8ns 是干扰项', type: 'proc' },
+        { id: 'f', label: '结束', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'a' },
+        { from: 'a', to: 'b' },
+        { from: 'b', to: 'c' },
+        { from: 'c', to: 'd' },
+        { from: 'd', to: 'e' },
+        { from: 'e', to: 'f' },
+      ],
+    },
   },
   {
     id: 'mock04-17',
@@ -614,6 +679,7 @@ export const mock04c1: Question[] = [
     topic: '相对寻址',
     difficulty: 3,
     source: 'mock',
+    templateId: 'co-relative',
     score: 2,
     question: '某机主存按字节编址，一条转移指令字长 4B，采用相对寻址，位移量用补码表示。该指令存放在主存地址 3200（十进制）处，指令中位移量字段的值为 −30。执行该转移指令后，程序转向的目标地址是（　）。',
     options: ['3174', '3170', '3234', '3172'],

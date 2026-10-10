@@ -57,6 +57,25 @@ export const y2016c1: Question[] = [
     answer: 'A',
     explanation:
       '关键是"先保存、后修改"：p->prior 中保存着原前驱 q 的地址，必须先用它链接 s（s->prior = q、q->next = s），最后才能改写 p->prior = s，顺序不能颠倒。选项 B、C 中执行 s->prior = p->prior 时 p->prior 已被改成 s，结果 s->prior = s 形成自环；选项 D 最后一句 p->prior->next = s 在 p->prior 已等于 s 时等于 s->next = s，破坏了刚建立的 s->next = p。',
+    visual: {
+      kind: 'flow',
+      title: '双向链表：把 s 插入 p 之前',
+      nodes: [
+        { id: 's', label: '目标：s 插入 p 之前\nq 为 p 的原前驱', type: 'start' },
+        { id: 'f1', label: '① s->prior = q\n（保存原前驱）', type: 'proc' },
+        { id: 'f2', label: '② q->next = s', type: 'proc' },
+        { id: 'f3', label: '③ s->next = p', type: 'proc' },
+        { id: 'f4', label: '④ p->prior = s', type: 'proc' },
+        { id: 'e', label: '改 p->prior 必须\n放在最后一步', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'f1' },
+        { from: 'f1', to: 'f2' },
+        { from: 'f2', to: 'f3' },
+        { from: 'f3', to: 'f4' },
+        { from: 'f4', to: 'e' },
+      ],
+    },
   },
   {
     id: 'q-2016-04',
@@ -96,6 +115,42 @@ export const y2016c1: Question[] = [
     answer: 'B',
     explanation:
       '中序遍历按"左子树—根—右子树"的次序访问，故 x 先于 y 当且仅当 y 尚未被访问时 x 已访问完，等价的说法是：x 处在 y 的左子树中，或 y 处在 x 的右子树中，通常简称"x 在 y 的左方"。祖先关系并不必然：x 是 y 的祖先且 y 在 x 的右子树中固然成立，但 x 也可能只是 y 左子树中的普通结点，A、C 均过强；结点层次与中序先后没有确定关系，D 错。',
+    visual: {
+      kind: 'tree',
+      title: '中序先后与「x 在 y 左方」关系',
+      steps: [
+        {
+          nodes: [
+            { id: 'A', label: 'A' },
+            { id: 'B', label: 'B', parent: 'A' }, { id: 'C', label: 'C', parent: 'A' },
+            { id: 'D', label: 'x=D', parent: 'B' }, { id: 'E', label: 'E', parent: 'B' },
+            { id: 'F', label: 'y=F', parent: 'C' }, { id: 'G', label: 'G', parent: 'C' },
+          ],
+          highlight: ['D', 'F'],
+          note: '示例树中序序列为 D B E A F C G：x=D 先于 y=F，二者分居根 A 的左、右子树——D 在 F 的左方',
+        },
+        {
+          nodes: [
+            { id: 'A', label: 'y=A' },
+            { id: 'B', label: 'B', parent: 'A' }, { id: 'C', label: 'C', parent: 'A' },
+            { id: 'D', label: 'D', parent: 'B' }, { id: 'E', label: 'x=E', parent: 'B' },
+            { id: 'F', label: 'F', parent: 'C' }, { id: 'G', label: 'G', parent: 'C' },
+          ],
+          highlight: ['E', 'A'],
+          note: 'x=E 仍先于祖先 y=A：x 位于 y 的左子树中，祖先在左子树情形下反而后访问',
+        },
+        {
+          nodes: [
+            { id: 'A', label: 'x=A' },
+            { id: 'B', label: 'B', parent: 'A' }, { id: 'C', label: 'C', parent: 'A' },
+            { id: 'D', label: 'D', parent: 'B' }, { id: 'E', label: 'E', parent: 'B' },
+            { id: 'F', label: 'y=F', parent: 'C' }, { id: 'G', label: 'G', parent: 'C' },
+          ],
+          highlight: ['A', 'F'],
+          note: '祖先 x=A 先于 y=F：y 位于 x 的右子树中；三种情形统称「x 在 y 的左方」，故选 B',
+        },
+      ],
+    },
   },
   {
     id: 'q-2016-06',
@@ -128,6 +183,7 @@ export const y2016c1: Question[] = [
     topic: '最短路径',
     difficulty: 3,
     source: 'adapted',
+    templateId: 'ds-dijkstra',
     score: 2,
     question:
       '对带权有向图 G = (V, E) 从源点 0 运行 Dijkstra 算法。V = {0, 1, 2, 3, 4}，E = {<0,1>=10, <0,2>=5, <2,1>=2, <1,3>=1, <0,3>=20, <3,4>=2, <0,4>=15}（弧上标注权值）。（原题带图，此处以弧集合给出。）各顶点按最短路径长度递增次序进入集合 S（被"选定"）的序列是（ ）。',
@@ -135,6 +191,57 @@ export const y2016c1: Question[] = [
     answer: 'B',
     explanation:
       '初始 dist = [−, 10, 5, 20, 15]。第 1 步选最小的 2（5）；经 2 松弛后 dist[1] = min(10, 5+2) = 7。第 2 步选 1（7）；经 1 松弛后 dist[3] = min(20, 7+1) = 8。第 3 步选 3（8）；经 3 松弛后 dist[4] = min(15, 8+2) = 10。第 4 步选 4（10）。故进入次序为 0, 2, 1, 3, 4。直接按弧权大小排成 0,1,2,3,4 是忽略了"绕行路径可能更短"这一关键。',
+    visual: {
+      kind: 'graph',
+      title: 'Dijkstra：顶点进入集合 S 的次序',
+      nodes: [
+        { id: '0', x: 8, y: 50 },
+        { id: '1', x: 40, y: 15 },
+        { id: '2', x: 35, y: 85 },
+        { id: '3', x: 72, y: 18 },
+        { id: '4', x: 92, y: 55 },
+      ],
+      edges: [
+        { from: '0', to: '1', w: 10, directed: true },
+        { from: '0', to: '2', w: 5, directed: true },
+        { from: '2', to: '1', w: 2, directed: true },
+        { from: '1', to: '3', w: 1, directed: true },
+        { from: '0', to: '3', w: 20, directed: true },
+        { from: '3', to: '4', w: 2, directed: true },
+        { from: '0', to: '4', w: 15, directed: true },
+      ],
+      steps: [
+        {
+          activeNodes: ['0'],
+          labels: { '0': '0', '1': '10', '2': '5', '3': '20', '4': '15' },
+          note: '初始化：dist 取源点 0 的直达边权（无边为 ∞），0 自身距离为 0',
+        },
+        {
+          activeEdges: ['0-2', '2-1'],
+          activeNodes: ['0', '2'],
+          labels: { '0': '0', '1': '10→7', '2': '5', '3': '20', '4': '15' },
+          note: '第 1 轮选 2（dist=5 最小）；松弛 2→1：dist[1]=min(10, 5+2)=7',
+        },
+        {
+          activeEdges: ['0-2', '2-1', '1-3'],
+          activeNodes: ['0', '2', '1'],
+          labels: { '0': '0', '1': '7', '2': '5', '3': '20→8', '4': '15' },
+          note: '第 2 轮选 1（dist=7）；松弛 1→3：dist[3]=min(20, 7+1)=8',
+        },
+        {
+          activeEdges: ['0-2', '2-1', '1-3', '3-4'],
+          activeNodes: ['0', '2', '1', '3'],
+          labels: { '0': '0', '1': '7', '2': '5', '3': '8', '4': '15→10' },
+          note: '第 3 轮选 3（dist=8）；松弛 3→4：dist[4]=min(15, 8+2)=10',
+        },
+        {
+          activeEdges: ['0-2', '2-1', '1-3', '3-4'],
+          activeNodes: ['0', '2', '1', '3', '4'],
+          labels: { '0': '0', '1': '7', '2': '5', '3': '8', '4': '10' },
+          note: '第 4 轮选 4（dist=10）；进入次序 0→2→1→3→4，选 B',
+        },
+      ],
+    },
   },
   {
     id: 'q-2016-08',
@@ -145,6 +252,7 @@ export const y2016c1: Question[] = [
     topic: '堆',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'ds-heap-op',
     score: 2,
     question:
       '将关键字序列 (12, 7, 25, 3, 18, 9, 16) 顺序存入数组（下标从 1 开始），然后自底向上调整（筛选）建大根堆。建堆完成后数组中的关键字序列是（ ）。',
@@ -167,6 +275,7 @@ export const y2016c1: Question[] = [
     topic: '散列表',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'ds-hash-asl',
     score: 2,
     question:
       '将关键字序列 {8, 15, 22, 1, 9} 依次插入表长为 7 的散列表，散列函数 H(key) = key mod 7，用线性探测再散列法处理冲突。装填完毕后，在等概率条件下查找这 5 个关键字，查找成功的平均查找长度（比较次数）为（ ）。',
@@ -222,6 +331,7 @@ export const y2016c1: Question[] = [
     topic: 'CPU性能',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'co-performance',
     score: 2,
     question:
       '某计算机 CPU 主频为 1.2 GHz，执行一条指令平均需要 4 个时钟周期（CPI = 4），则该机的运算速度约为（ ）MIPS。',
@@ -239,6 +349,7 @@ export const y2016c1: Question[] = [
     topic: '补码表示',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'co-complement',
     score: 2,
     question:
       '设机器字长 8 位（含 1 位符号位），x = −75，则 [x]补 的十六进制表示为（ ）。',
@@ -256,6 +367,7 @@ export const y2016c1: Question[] = [
     topic: 'IEEE 754',
     difficulty: 2,
     source: 'real',
+    templateId: 'co-ieee754',
     score: 2,
     question:
       '已知某 float 型变量按 IEEE 754 单精度格式存储，其机器数的十六进制表示为 BFC0 0000H，则该变量的值为（ ）。',
@@ -316,6 +428,7 @@ export const y2016c1: Question[] = [
     topic: 'Cache映射',
     difficulty: 3,
     source: 'adapted',
+    templateId: 'co-cache-split',
     score: 2,
     question:
       '某计算机主存地址 24 位，按字节编址；Cache 数据区容量为 8 KB，块（行）大小 32 B，采用 4 路组相联映射。主存地址中标记（Tag）字段的位数为（ ）。',
@@ -323,6 +436,27 @@ export const y2016c1: Question[] = [
     answer: 'C',
     explanation:
       '块内偏移 = log₂32 = 5 位；Cache 总行数 = 8 KB ÷ 32 B = 256 行，4 路一组共 256 ÷ 4 = 64 组，组号 = log₂64 = 6 位；剩下 Tag = 24 − 6 − 5 = 13 位。11 位对应直接映射（行号 8 位）的结果，12 位对应 2 路组相联，19 位是漏掉组号位数的错误值。组相联可视为"组间直接映射、组内全相联"，其地址划分介于两者之间。',
+    visual: {
+      kind: 'flow',
+      title: '4 路组相联：24 位主存地址三段拆分',
+      nodes: [
+        { id: 's', label: '主存地址 24 位\n按字节编址', type: 'start' },
+        { id: 'n1', label: '块内地址\n= log₂32 = 5 位', type: 'proc' },
+        { id: 'n2', label: '行数 = 8KB÷32B\n= 256 行', type: 'proc' },
+        { id: 'n3', label: '组数=256÷4=64', type: 'proc' },
+        { id: 'n4', label: '组号 = log₂64\n= 6 位', type: 'proc' },
+        { id: 'n5', label: '标记 = 24−6−5\n= 13 位', type: 'proc' },
+        { id: 'e', label: '标记13｜组号6｜块内5', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'n1' },
+        { from: 'n1', to: 'n2' },
+        { from: 'n2', to: 'n3' },
+        { from: 'n3', to: 'n4' },
+        { from: 'n4', to: 'n5' },
+        { from: 'n5', to: 'e' },
+      ],
+    },
   },
   {
     id: 'q-2016-18',
@@ -333,6 +467,7 @@ export const y2016c1: Question[] = [
     topic: '寻址方式',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'co-relative',
     score: 2,
     question: '下列关于基址寻址与变址寻址的叙述中，正确的是（ ）。',
     options: [
@@ -354,6 +489,7 @@ export const y2016c1: Question[] = [
     topic: '指令流水线',
     difficulty: 3,
     source: 'adapted',
+    templateId: 'co-pipeline',
     score: 2,
     question:
       '某超标量（多发射）处理机的指令流水线仍为 5 段（IF、ID、EX、MEM、WB，每段 1 个时钟周期），每个时钟周期可并行发射 2 条无相关的指令。连续执行 20 条指令所需的总时钟周期数约为（ ）。',
@@ -361,6 +497,24 @@ export const y2016c1: Question[] = [
     answer: 'C',
     explanation:
       '20 条指令按每周期 2 条发射共需 10 个发射节拍：第 1 对指令在第 1 周期进入流水线，第 10 对在第 10 周期进入；每条指令流过 5 段需 5 个周期，故最后一对指令在第 10 + 4 = 14 周期完成写回，总时间 = 5 + 10 − 1 = 14 个周期。24 = 5 + 20 − 1 是忘了"一拍两条"；10 只数了发射拍数而忽略了流水线建立深度。超标量靠空间换时间，在不提高时钟频率的前提下提高了吞吐率。',
+    visual: {
+      kind: 'pipeline',
+      title: '超标量双发射流水线（每拍 2 条，5 段）',
+      stages: ['IF', 'ID', 'EX', 'MEM', 'WB'],
+      instrs: [
+        { name: 'I1', delay: 0 }, { name: 'I2', delay: 0 },
+        { name: 'I3', delay: 1 }, { name: 'I4', delay: 1 },
+        { name: 'I5', delay: 2 }, { name: 'I6', delay: 2 },
+        { name: 'I7', delay: 3 }, { name: 'I8', delay: 3 },
+        { name: 'I9', delay: 4 }, { name: 'I10', delay: 4 },
+        { name: 'I11', delay: 5 }, { name: 'I12', delay: 5 },
+        { name: 'I13', delay: 6 }, { name: 'I14', delay: 6 },
+        { name: 'I15', delay: 7 }, { name: 'I16', delay: 7 },
+        { name: 'I17', delay: 8 }, { name: 'I18', delay: 8 },
+        { name: 'I19', delay: 9, note: '第 10 拍进入流水线' },
+        { name: 'I20', delay: 9, note: '第 14 拍写回：总周期 = 5+10−1 = 14' },
+      ],
+    },
   },
   {
     id: 'q-2016-20',
@@ -371,6 +525,7 @@ export const y2016c1: Question[] = [
     topic: '总线带宽',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'co-bus-bandwidth',
     score: 2,
     question:
       '某同步总线的时钟频率为 150 MHz，数据线 32 根，每个时钟周期传送一次数据，则该总线的数据传输率（带宽）为（ ）。',

@@ -55,6 +55,43 @@ export const y2013c1: Question[] = [
     answer: 'A',
     explanation:
       '增量 4 把序列分成 4 组（下标 1、5 位一组，2、6 一组，3、7 一组，4、8 一组）：(12, 34)、(5, 17)、(9, 2)、(22, 40)，各组内直接插入排序得 (12, 34)、(5, 17)、(2, 9)、(22, 40)，放回原位置得 12, 5, 2, 22, 34, 17, 9, 40。选项 B 是完整排序后的结果，混淆了"一趟"与"全部完成"。',
+    visual: {
+      kind: 'sort',
+      title: '希尔排序第一趟（增量 d=4 分组插入）',
+      frames: [
+        {
+          arr: [12, 5, 9, 22, 34, 17, 2, 40],
+          range: [0, 7],
+          compared: [0, 4],
+          note: '初始序列；d=4 时下标 i 与 i+4 同组，共分 4 组',
+        },
+        {
+          arr: [12, 5, 9, 22, 34, 17, 2, 40],
+          compared: [0, 4],
+          note: '第 1 组 (12,34)：已有序，组内直接插入排序不移动',
+        },
+        {
+          arr: [12, 5, 9, 22, 34, 17, 2, 40],
+          compared: [1, 5],
+          note: '第 2 组 (5,17)：已有序，不动',
+        },
+        {
+          arr: [12, 5, 9, 22, 34, 17, 2, 40],
+          compared: [2, 6],
+          note: '第 3 组 (9,2)：逆序，需交换——2 移到 9 之前',
+        },
+        {
+          arr: [12, 5, 2, 22, 34, 17, 9, 40],
+          settled: [2, 6],
+          note: '交换完成：下标 3 与 7 处变为 2 与 9，其余组不受影响',
+        },
+        {
+          arr: [12, 5, 2, 22, 34, 17, 9, 40],
+          compared: [3, 7],
+          note: '第 4 组 (22,40)：有序。第一趟结束得 12,5,2,22,34,17,9,40（选 A）',
+        },
+      ],
+    },
   },
   {
     id: 'q-2013-04',
@@ -71,6 +108,66 @@ export const y2013c1: Question[] = [
     answer: 'C',
     explanation:
       '设 N(h) 为高度 h 的平衡二叉树最少结点数，则 N(h) = N(h−1) + N(h−2) + 1（两棵高度差 1 的最小子树加根）：N(1) = 1、N(2) = 2、N(3) = 4、N(4) = 7、N(5) = 12。构造方式是让每个结点的左右子树高度差恰为 1 且都用最少结点。该递推与斐波那契数列同源，也常反过来考"n 个结点的 AVL 最大高度"。',
+    visual: {
+      kind: 'tree',
+      title: '高度 5 的最小平衡二叉树（结点标注其子树高度）',
+      steps: [
+        {
+          nodes: [{ id: 'a', label: 'h1' }],
+          highlight: ['a'],
+          note: '高度 1：N(1) = 1，单结点即最小平衡树',
+        },
+        {
+          nodes: [
+            { id: 'b', label: 'h2' },
+            { id: 'c', label: 'h1', parent: 'b' },
+          ],
+          highlight: ['b'],
+          note: '高度 2：N(2) = N(1)+N(0)+1 = 2——根带 1 个孩子，另一侧空（高度差 1）',
+        },
+        {
+          nodes: [
+            { id: 'r3', label: 'h3' },
+            { id: 'l2', label: 'h2', parent: 'r3' },
+            { id: 'l1', label: 'h1', parent: 'l2' },
+            { id: 'r1', label: 'h1', parent: 'r3' },
+          ],
+          highlight: ['r3', 'l2', 'r1'],
+          note: '高度 3：N(3) = N(2)+N(1)+1 = 4——左子树取 h2 最小树、右子树取 h1 最小树',
+        },
+        {
+          nodes: [
+            { id: 'r4', label: 'h4' },
+            { id: 'a', label: 'h3', parent: 'r4' },
+            { id: 'a1', label: 'h2', parent: 'a' },
+            { id: 'a2', label: 'h1', parent: 'a1' },
+            { id: 'a3', label: 'h1', parent: 'a' },
+            { id: 'b', label: 'h2', parent: 'r4' },
+            { id: 'b1', label: 'h1', parent: 'b' },
+          ],
+          highlight: ['r4', 'a', 'b'],
+          note: '高度 4：N(4) = N(3)+N(2)+1 = 7——左右子树分别取 h3 与 h2 的最小树',
+        },
+        {
+          nodes: [
+            { id: 'r5', label: 'h5' },
+            { id: 'c', label: 'h4', parent: 'r5' },
+            { id: 'c1', label: 'h3', parent: 'c' },
+            { id: 'c2', label: 'h2', parent: 'c1' },
+            { id: 'c3', label: 'h1', parent: 'c2' },
+            { id: 'c4', label: 'h1', parent: 'c1' },
+            { id: 'c5', label: 'h2', parent: 'c' },
+            { id: 'c6', label: 'h1', parent: 'c5' },
+            { id: 'd', label: 'h3', parent: 'r5' },
+            { id: 'd1', label: 'h2', parent: 'd' },
+            { id: 'd2', label: 'h1', parent: 'd1' },
+            { id: 'd3', label: 'h1', parent: 'd' },
+          ],
+          highlight: ['r5', 'c', 'd'],
+          note: '高度 5：N(5) = N(4)+N(3)+1 = 12，即本题答案；每个结点左右子树高度差恰为 1',
+        },
+      ],
+    },
   },
   {
     id: 'q-2013-05',
@@ -81,6 +178,7 @@ export const y2013c1: Question[] = [
     topic: 'B 树',
     difficulty: 2,
     source: 'real',
+    templateId: 'ds-btree-overflow',
     score: 2,
     question: '一棵 5 阶 B 树中，除根结点外的所有非叶（非失败）结点至少含有的关键字个数为（ ）。',
     options: ['1', '2', '3', '4'],
@@ -97,12 +195,51 @@ export const y2013c1: Question[] = [
     topic: '栈的输出序列',
     difficulty: 3,
     source: 'real',
+    templateId: 'ds-stack-sim',
     score: 2,
     question: '4 个不同的元素按 1、2、3、4 的顺序依次进栈（允许进栈与出栈交替进行），可能的出栈序列共有（ ）种。',
     options: ['12', '14', '24', '16'],
     answer: 'B',
     explanation:
       'n 个元素依次进栈的合法出栈序列数为卡特兰数 Cₙ = C(2n, n)/(n + 1)。n = 4 时 C₄ = (8×7×6×5)/(4!×5) = 14。判别单个序列合法性的准则：任一元素出栈时，先于它进栈且尚未出栈的元素必须按逆序出栈；总数计算则直接用卡特兰公式。',
+    visual: {
+      kind: 'sort',
+      title: '出栈序列模拟：输出 4,3,2,1（arr 为栈，右端为栈顶）',
+      frames: [
+        {
+          arr: [1],
+          note: '1 进栈：若出栈序列要以 4 开头，1、2、3 必须先压在 4 下面',
+        },
+        {
+          arr: [1, 2],
+          note: '2 进栈，栈深 2',
+        },
+        {
+          arr: [1, 2, 3],
+          note: '3 进栈，栈深 3',
+        },
+        {
+          arr: [1, 2, 3, 4],
+          note: '4 进栈：栈深 4——14 种合法序列中容量需求最大的形态',
+        },
+        {
+          arr: [1, 2, 3],
+          note: '4 出栈：输出序列第 1 位是 4',
+        },
+        {
+          arr: [1, 2],
+          note: '3 出栈：已输出 4,3',
+        },
+        {
+          arr: [1],
+          note: '2 出栈：已输出 4,3,2；栈中只剩 1',
+        },
+        {
+          arr: ['—'],
+          note: '1 出栈后栈空：得 4,3,2,1。合法序列共 14 种（卡特兰数 C₄）；非法如 3,1,4,2——3 出栈后栈顶是 2，取不到 1',
+        },
+      ],
+    },
   },
   {
     id: 'q-2013-07',
@@ -113,6 +250,7 @@ export const y2013c1: Question[] = [
     topic: '二叉树性质',
     difficulty: 1,
     source: 'real',
+    templateId: 'ds-tree-count',
     score: 2,
     question: '若一棵二叉树有 50 个叶结点，则该树中度为 2 的结点个数为（ ）。',
     options: ['49', '50', '51', '不确定'],
@@ -162,6 +300,7 @@ export const y2013c1: Question[] = [
     topic: '建堆',
     difficulty: 2,
     source: 'real',
+    templateId: 'ds-heap-op',
     score: 2,
     question: '将 n 个关键字建成一个大根堆（初始建堆），其时间复杂度为（ ）。',
     options: ['O(log₂n)', 'O(n)', 'O(n log₂n)', 'O(n²)'],
@@ -178,6 +317,7 @@ export const y2013c1: Question[] = [
     topic: '快速排序',
     difficulty: 2,
     source: 'real',
+    templateId: 'ds-quicksort',
     score: 2,
     question: '对 n 个元素进行快速排序，一趟排序（划分）结束后能够保证的是（ ）。',
     options: [
@@ -199,6 +339,7 @@ export const y2013c1: Question[] = [
     topic: '补码表示范围',
     difficulty: 1,
     source: 'real',
+    templateId: 'co-complement',
     score: 2,
     question: '某机器字长 8 位（含 1 位符号位），则补码定点整数的表示范围是（ ）。',
     options: ['−127 ～ +127', '−128 ～ +127', '−128 ～ +128', '−255 ～ +255'],
@@ -231,6 +372,7 @@ export const y2013c1: Question[] = [
     topic: 'IEEE 754',
     difficulty: 2,
     source: 'real',
+    templateId: 'co-ieee754',
     score: 2,
     question: '将十进制数 +178.625 表示为 IEEE 754 单精度浮点数，其十六进制形式是（ ）。',
     options: ['4332A000H', 'C332A000H', '4232A000H', '4331A000H'],
@@ -268,6 +410,7 @@ export const y2013c1: Question[] = [
     topic: '平均访问时间',
     difficulty: 2,
     source: 'real',
+    templateId: 'co-cache-perf',
     score: 2,
     question:
       '某系统访问 Cache 需 10 ns，访问主存需 200 ns，Cache 命中率为 95%（未命中时先访问 Cache 未命中、再访问主存）。则平均访问时间约为（ ）。',
@@ -285,6 +428,7 @@ export const y2013c1: Question[] = [
     topic: '变址寻址',
     difficulty: 2,
     source: 'real',
+    templateId: 'co-relative',
     score: 2,
     question: '变址寻址方式中，操作数的有效地址等于（ ）。',
     options: [

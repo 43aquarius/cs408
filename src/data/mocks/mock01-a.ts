@@ -11,6 +11,7 @@ export const mock01a: Question[] = [
     type: 'application',
     topic: '平衡二叉树',
     difficulty: 3,
+    templateId: 'ds-avl-rotate',
     source: 'mock',
     score: 13,
     question:
@@ -75,6 +76,7 @@ export const mock01a: Question[] = [
     topic: '哈夫曼编码',
     difficulty: 2,
     source: 'mock',
+    templateId: 'ds-huffman',
     score: 10,
     question:
       '某通信系统对只包含 6 个字符 a、b、c、d、e、f 的报文编码，各字符出现频率（每 100 个字符中）依次为 5、9、12、13、16、45。\n(1) 构造哈夫曼树，写出每个字符的哈夫曼编码（约定：左分支为 0、右分支为 1）。（5分）\n(2) 计算该编码方案的带权路径长度 WPL，并与 3 位等长编码比较，说明节省了多少比特。（5分）',
@@ -168,13 +170,37 @@ export const mock01a: Question[] = [
     topic: 'Cache 设计',
     difficulty: 3,
     source: 'mock',
+    templateId: 'co-cache-perf',
     score: 13,
     question:
       '某计算机主存地址 32 位，按字节编址。Cache 数据总容量 32KB，采用 2 路组相联映射，块大小 64B。\n(1) 写出主存地址划分（标记 Tag、组号、块内偏移各多少位），并计算 Cache 共分多少组。（4分）\n(2) 若 CPU 共访问 Cache 2000 次，其中 1940 次命中，Cache 访问时间为 10ns，Cache 缺失后访问主存需 200ns（先查 Cache 后访主存的串行方式），求平均访问时间。（5分）\n(3) 考虑每行包含 1 位有效位与 Tag，计算该 Cache 的总存储位数。（4分）',
     answerText:
-      '**(1) 地址划分与组数**\n块大小 64B = 2^6 → 块内偏移 **6 位**。\nCache 共 32KB / 64B = 512 行；2 路组相联 → 组数 = 512 / 2 = **256 组 = 2^8**，组号 **8 位**。\n标记 Tag = 32 − 8 − 6 = **19 位**。\n主存地址结构：`Tag(19) | 组号(8) | 块内偏移(6)`。\n\n**(2) 平均访问时间**\n命中率 h = 1940 / 2000 = 0.97。\n串行访问模型下：T = h×tc + (1−h)×(tc + tm)\n= 0.97×10 + 0.03×(10+200)\n= 9.7 + 6.3 = **16.0 ns**。\n\n**(3) Cache 总存储位数**\n每行存储位 = 数据 64×8 + Tag 19 + 有效位 1 = 512 + 20 = 532 bit。\n共 512 行，总位数 = 512 × 532 = **272384 bit**（= 34048B ≈ 33.25KB，比 32KB 数据容量多出的部分即 Tag 与状态位开销）。',
+      '**(1) 地址划分与组数**\n块大小 64B = 2^6 → 块内偏移 **6 位**。\nCache 共 32KB / 64B = 512 行；2 路组相联 → 组数 = 512 / 2 = **256 组 = 2^8**，组号 **8 位**。\n标记 Tag = 32 − 8 − 6 = **18 位**。\n主存地址结构：`Tag(18) | 组号(8) | 块内偏移(6)`。\n\n**(2) 平均访问时间**\n命中率 h = 1940 / 2000 = 0.97。\n串行访问模型下：T = h×tc + (1−h)×(tc + tm)\n= 0.97×10 + 0.03×(10+200)\n= 9.7 + 6.3 = **16.0 ns**。\n\n**(3) Cache 总存储位数**\n每行存储位 = 数据 64×8 + Tag 18 + 有效位 1 = 512 + 19 = 531 bit。\n共 512 行，总位数 = 512 × 531 = **271872 bit**（= 33984B ≈ 33.19KB，比 32KB 数据容量多出的部分即 Tag 与状态位开销）。',
     explanation:
       '组相联地址划分三步走：① 块内偏移 = log2(块大小)；② 组号 = log2(Cache 行数 ÷ 路数)；③ 其余位全给 Tag。平均访问时间注意「串行」口径：缺失时 Cache 白查的 10ns 也要计入，故缺失代价是 10+200 而非 200；若采用「同时访问」模型则用 max(tc,tm) 权衡式，两种口径结果略有差异，答题时先声明假设。存储位数计算别漏有效位（1 bit/行）；若题目含 LRU 位（2 路组相联每行 1 位）或脏位（写回法 1 位）还需相应加上。',
+    visual: {
+      kind: 'flow',
+      title: '2 路组相联 Cache：三段拆分与存储位数（Tag 18 位）',
+      nodes: [
+        { id: 'a', label: '32 位 / 32KB', type: 'start' },
+        { id: 'b', label: '块 64B 偏移 6 位', type: 'proc' },
+        { id: 'c', label: '512÷2 = 256 组', type: 'proc' },
+        { id: 'd', label: '组号 8 位', type: 'proc' },
+        { id: 'e', label: 'Tag = 18 位', type: 'proc' },
+        { id: 'f', label: '每行 531 bit', type: 'proc' },
+        { id: 'g', label: '总 271872 bit', type: 'end' },
+        { id: 'h', label: '平均访问 16 ns', type: 'proc' },
+      ],
+      edges: [
+        { from: 'a', to: 'b' },
+        { from: 'b', to: 'c' },
+        { from: 'c', to: 'd' },
+        { from: 'd', to: 'e' },
+        { from: 'e', to: 'f' },
+        { from: 'f', to: 'g' },
+        { from: 'e', to: 'h' },
+      ],
+    },
   },
   {
     id: 'mock01-44',
@@ -186,6 +212,7 @@ export const mock01a: Question[] = [
     topic: '流水线冲突',
     difficulty: 3,
     source: 'mock',
+    templateId: 'co-pipeline',
     score: 10,
     question:
       '某 5 段流水线（IF、ID、EX、MEM、WB，每段 1 拍）的机器上执行以下指令序列，且流水线采用按序发射，数据前递（forwarding）部件只能把 EX/MEM、MEM/WB 段的结果前递到 EX 段入口：\n`I1: lw  R1, 0(R2)`\n`I2: add R3, R1, R4`\n`I3: sub R5, R4, R6`\n`I4: sw  R3, 0(R5)`\n(1) 指出指令间存在的数据相关，说明哪些需要插入停顿（气泡），哪些可由前递解决。（4分）\n(2) 画出时空图（写出每条指令进入 IF 的拍号即可），计算执行完 4 条指令共需多少拍。（3分）\n(3) 计算该流水线相对完全串行执行（每条指令 5 拍）的加速比。（3分）',
@@ -215,6 +242,7 @@ export const mock01a: Question[] = [
     topic: '页面置换算法',
     difficulty: 2,
     source: 'mock',
+    templateId: 'os-page-replace',
     score: 7,
     question:
       '某请求分页系统的进程分配 3 个页框，页面访问序列为：1、2、3、4、1、2、5、1、2、3、4、5。初始时页框全空（首次调入也算缺页）。\n(1) 采用 LRU 置换算法，逐步写出每次访问后 3 个页框中的页面号，并统计缺页次数。（4分）\n(2) 计算缺页率。（1分）\n(3) 说明 LRU 与 FIFO 在本序列上的差异，并解释为什么 LRU 不一定总是优于 FIFO。（2分）',
@@ -240,6 +268,7 @@ export const mock01a: Question[] = [
     topic: '信号量机制',
     difficulty: 3,
     source: 'mock',
+    templateId: 'os-pv-model',
     score: 8,
     question:
       '有一座单向通行的小桥：同一时刻桥上只能有一个方向的汽车，但同方向可以有多辆汽车依次通过（桥面容量不限）。东西两方向汽车到达桥头后过桥，过完从另一端驶离。\n(1) 设计信号量与共享变量，说明各自的初值与含义。（2分）\n(2) 用 P、V 操作写出东向、西向汽车的过桥同步算法（伪代码）。（4分）\n(3) 若还要求桥上最多同时容纳 4 辆车，算法应如何修改？（2分）',
@@ -287,6 +316,7 @@ export const mock01a: Question[] = [
     topic: '子网划分',
     difficulty: 2,
     source: 'mock',
+    templateId: 'cn-vlsm',
     score: 9,
     question:
       '某单位获得地址块 192.168.10.0/24，需划分为 4 个等大小子网，分别分配给 4 个部门，各部门之间通过路由器 R 互联。\n(1) 写出子网掩码、各子网的网络地址与每个子网可用主机数。（3分）\n(2) 部门 A 的主机 X（192.168.10.70）要向部门 B 的主机 Y（192.168.10.130）发送数据，判断两主机是否在同一子网；若不在，X 如何送达 Y？（2分）\n(3) 主机 X 首次通过浏览器以域名访问子网外的 Web 服务器（假设本机 DNS 与网关配置齐全、均无缓存），简述从输入域名到页面显示的完整通信过程。（4分）',

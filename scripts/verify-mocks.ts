@@ -4,6 +4,7 @@
  * 校验：47 题结构 / 题号科目分值映射 / optionExplanations 完整性 / visual 规范 / 难度与答案分布
  */
 import type { Question, VisualSpec } from '../src/data/types'
+import { TEMPLATES } from '../src/data/templates'
 
 const ROOT = process.cwd()
 const name = process.argv[2]
@@ -205,6 +206,12 @@ async function main() {
         warns.push(`${where}: 综合题题干未标注小问分值`)
     }
     if (checkVisual(q.visual, where, errs, warns)) visualCount++
+    // templateId 必须在注册表且学科匹配
+    if (q.templateId) {
+      if (!TEMPLATES[q.templateId]) errs.push(`${where}: templateId '${q.templateId}' 不在模板注册表`)
+      else if (TEMPLATES[q.templateId].subject !== q.subject)
+        errs.push(`${where}: templateId '${q.templateId}' 学科不匹配（模板属 ${TEMPLATES[q.templateId].subject}）`)
+    }
   })
 
   // 综合题分值分组

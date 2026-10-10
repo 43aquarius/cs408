@@ -34,6 +34,7 @@ for (k = 1; k <= n; k *= 2)
     topic: '二叉树遍历',
     difficulty: 2,
     source: 'real',
+    templateId: 'ds-traversal-restore',
     score: 2,
     question:
       '某二叉树的中序遍历序列为 d b e a c，后序遍历序列为 d e b c a，则其先序遍历序列是（ ）。',
@@ -73,6 +74,7 @@ for (k = 1; k <= n; k *= 2)
     topic: '哈夫曼树',
     difficulty: 2,
     source: 'real',
+    templateId: 'ds-tree-count',
     score: 2,
     question: '若某哈夫曼树共有 199 个结点，则该哈夫曼树中叶结点的个数是（ ）。',
     options: ['99', '100', '101', '200'],
@@ -89,6 +91,7 @@ for (k = 1; k <= n; k *= 2)
     topic: '循环队列',
     difficulty: 2,
     source: 'real',
+    templateId: 'ds-loop-queue',
     score: 2,
     question:
       '某循环队列存放在一维数组 A[0..39] 中，约定队头指针 front 指向队头元素，队尾指针 rear 指向队尾元素的下一个位置（牺牲一个单元法区分队空与队满）。若当前 front = 20、rear = 6，则该队列中元素的个数是（ ）。',
@@ -113,6 +116,29 @@ for (k = 1; k <= n; k *= 2)
     answer: 'C',
     explanation:
       'Ⅰ正确：若各边权互异且存在两棵不同的最小生成树，把两棵树的边集合对称差中权最小的一条替换后可得更小生成树，矛盾，故唯一。Ⅱ正确：当存在权值相同的边时，不同选择可得到总权相同的不同生成树，最小生成树不唯一（但总权值唯一）。Ⅲ错误：若权值最大的边是"桥"（删除后图不连通），它必然出现在任何生成树中；只有当它处于某个环上时才可能被替代。故选 C。',
+    visual: {
+      kind: 'graph',
+      title: 'Kruskal 选边：权值最大的桥边必在最小生成树中',
+      nodes: [
+        { id: 'A', x: 12, y: 22 },
+        { id: 'B', x: 45, y: 18 },
+        { id: 'C', x: 28, y: 62 },
+        { id: 'D', x: 78, y: 62 },
+      ],
+      edges: [
+        { from: 'A', to: 'B', w: 1 },
+        { from: 'B', to: 'C', w: 2 },
+        { from: 'A', to: 'C', w: 3 },
+        { from: 'C', to: 'D', w: 9 },
+      ],
+      steps: [
+        { labels: {}, note: '示例图：4 顶点 4 条边且权值互不相同；Kruskal 按权值升序依次考察 1、2、3、9' },
+        { activeEdges: ['A-B'], activeNodes: ['A', 'B'], labels: { A: '选1', B: '选1' }, note: '考察权 1 的边 (A,B)：不成环，选入生成树' },
+        { activeEdges: ['A-B', 'B-C'], activeNodes: ['A', 'B', 'C'], labels: { C: '选2' }, note: '考察权 2 的边 (B,C)：选入后 A、B、C 三个顶点已连通' },
+        { activeEdges: ['A-B', 'B-C'], activeNodes: ['A', 'B', 'C'], labels: { A: '弃3', C: '弃3' }, note: '考察权 3 的边 (A,C)：A、C 已连通，选入会成环，弃选' },
+        { activeEdges: ['A-B', 'B-C', 'C-D'], activeNodes: ['A', 'B', 'C', 'D'], labels: { D: '选9' }, note: '权值最大的边 (C,D)=9 是桥（割断后 D 无法连通），必须选入；最小生成树权值 1+2+9=12——权值互异时最小生成树唯一（Ⅰ对），权值最大的边也可在其中（Ⅲ错）' },
+      ],
+    },
   },
   {
     id: 'q-2014-07',
@@ -123,6 +149,7 @@ for (k = 1; k <= n; k *= 2)
     topic: 'B树性质',
     difficulty: 2,
     source: 'real',
+    templateId: 'ds-btree-overflow',
     score: 2,
     question: '在一棵 5 阶 B 树中，除根结点外的所有分支（非叶）结点最多包含（ ）个关键字。',
     options: ['2', '3', '4', '5'],
@@ -161,6 +188,7 @@ for (k = 1; k <= n; k *= 2)
     topic: '堆的建立',
     difficulty: 2,
     source: 'real',
+    templateId: 'ds-heap-op',
     score: 2,
     question:
       '将关键字序列 45, 78, 12, 90, 34, 65 存入一维数组（下标从 1 开始），自最后一个非叶结点开始逐个向前向下筛选，把它建成初始大根堆。建堆完成后数组中的关键字序列（层序）是（ ）。',
@@ -183,6 +211,7 @@ for (k = 1; k <= n; k *= 2)
     topic: '散列表',
     difficulty: 2,
     source: 'real',
+    templateId: 'ds-hash-asl',
     score: 2,
     question:
       '将关键字序列 26, 25, 72, 38, 18 依次插入长度为 13、初始为空的散列表，散列函数 H(key) = key mod 13，用线性探测法处理冲突。在等概率情况下，该散列表上查找成功的平均查找长度是（ ）。',
@@ -200,6 +229,7 @@ for (k = 1; k <= n; k *= 2)
     topic: '折半查找',
     difficulty: 2,
     source: 'real',
+    templateId: 'ds-bsearch-asl',
     score: 2,
     question: '对长度为 17 的有序表进行折半查找，在等概率情况下，查找成功时关键字至多比较（ ）次。',
     options: ['4', '5', '6', '17'],
@@ -237,6 +267,7 @@ for (k = 1; k <= n; k *= 2)
     topic: 'IEEE754',
     difficulty: 2,
     source: 'real',
+    templateId: 'co-ieee754',
     score: 2,
     question:
       '某浮点数采用 IEEE 754 单精度格式存储，其机器数的十六进制表示为 4040 0000H，则该浮点数的十进制值是（ ）。',
@@ -286,6 +317,7 @@ for (k = 1; k <= n; k *= 2)
     topic: 'Cache组相联',
     difficulty: 2,
     source: 'real',
+    templateId: 'co-cache-split',
     score: 2,
     question:
       '某计算机主存容量 1 MB，按字节编址；Cache 数据区容量 8 KB，行长 32 B，采用 2 路组相联映射。主存地址（20 位）的划分为（ ）。',
@@ -315,6 +347,27 @@ for (k = 1; k <= n; k *= 2)
     answer: 'D',
     explanation:
       '4 位操作码的 16 个编码中，15 个（0000～1110）给三地址指令，留 1111 作扩展标志。二地址指令的操作码扩展为 8 位（1111 xxxx），定义 12 条后还剩 1111 1100～1111 1111 共 4 个 8 位前缀可用于继续扩展。一地址指令操作码为 12 位，每个前缀可派生 2^4 = 16 种，故最多 4 × 16 = 64 条。扩展操作码的要点是"每层留一个标志码给下一层"。',
+    visual: {
+      kind: 'flow',
+      title: '扩展操作码码点分配（16 位指令字）',
+      nodes: [
+        { id: 's', label: '指令字 16 位\n操作码 4 位', type: 'start' },
+        { id: 'a', label: '三地址指令\n共用 15 个码点', type: 'proc' },
+        { id: 'b', label: '留 1111 作\n扩展标志', type: 'proc' },
+        { id: 'c', label: '二地址 8 位操作码\n1111xxxx 已用 12', type: 'proc' },
+        { id: 'd', label: '剩 4 个 8 位前缀\n可继续向下扩展', type: 'proc' },
+        { id: 'e', label: '一地址 12 位操作码\n每个前缀派生 16 条', type: 'proc' },
+        { id: 'f', label: '一地址最多 64 条', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'a' },
+        { from: 'a', to: 'b' },
+        { from: 'b', to: 'c' },
+        { from: 'c', to: 'd' },
+        { from: 'd', to: 'e' },
+        { from: 'e', to: 'f' },
+      ],
+    },
   },
   {
     id: 'q-2014-18',
@@ -341,6 +394,7 @@ for (k = 1; k <= n; k *= 2)
     topic: '流水线相关',
     difficulty: 3,
     source: 'real',
+    templateId: 'co-pipeline',
     score: 2,
     question:
       '某按序流水线中依次执行下列指令：\nI1：ADD R1, R2, R3　//（R2 + R3）→ R1\nI2：SUB R4, R1, R5　//（R1 − R5）→ R4\nI3：ADD R2, R5, R6　//（R5 + R6）→ R2\n下列叙述中正确的是（ ）。',
@@ -353,6 +407,16 @@ for (k = 1; k <= n; k *= 2)
     answer: 'A',
     explanation:
       'I1 写 R1，随后 I2 读 R1，属"写后读"（RAW，真数据相关）；若不加前递/停顿，I2 会读到旧值。I1 读 R2 而 I3 写 R2，属"读后写"（WAR，反相关）；I2 写 R4，I3 并不读 R4，故 I2 与 I3 之间不存在 RAW；WAR/WAW 在按序流水线中一般不会造成停顿。D 忽略了最典型的 RAW。',
+    visual: {
+      kind: 'pipeline',
+      title: 'I1→I2 的 RAW 相关引起停顿（5 段流水线示意）',
+      stages: ['IF', 'ID', 'EX', 'MEM', 'WB'],
+      instrs: [
+        { name: 'I1: ADD R1,R2,R3', delay: 0, note: '拍 0 取指；R1 要到拍 4（WB 段）才写回寄存器' },
+        { name: 'I2: SUB R4,R1,R5', delay: 3, note: '读 R1 依赖 I1 的写回（拍 4），不设前递时须停顿 2 拍，拍 3 才取指' },
+        { name: 'I3: ADD R2,R5,R6', delay: 4, note: '读 R5/R6、写 R2，与 I2 无 RAW；I1 读 R2 属 WAR（读后写），按序流水不引起停顿' },
+      ],
+    },
   },
   {
     id: 'q-2014-20',
@@ -363,6 +427,7 @@ for (k = 1; k <= n; k *= 2)
     topic: '总线带宽',
     difficulty: 2,
     source: 'real',
+    templateId: 'co-bus-bandwidth',
     score: 2,
     question:
       '某同步总线的数据线宽度为 32 位，总线时钟频率为 200 MHz，每个时钟周期的上升沿与下降沿各传送一次数据（DDR 方式）。该总线的数据传输率是（ ）。',

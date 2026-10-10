@@ -97,6 +97,7 @@ export const y2019c2: Question[] = [
     topic: '调度算法',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'os-schedule-metrics',
     score: 2,
     question: '下列关于时间片轮转（RR）调度算法的叙述中，错误的是（ ）。',
     options: [
@@ -125,6 +126,21 @@ export const y2019c2: Question[] = [
     answer: 'B',
     explanation:
       '“取—改—存”不是原子操作，可能交错：两进程都先取 10，随后 P1 存 11、P2 存 9，则最终值为后存者（11 或 9）；若完全串行（一个进程三步做完另一个才开始），结果为 10。因此可能取值恰为 9、10、11。由于只有一次加一和一次减一，不存在使 x 偏离这组值的交错，这种共享数据被错误更新的现象称为“与时间有关的错误（竞争条件）”，需要互斥机制避免。',
+    visual: {
+      kind: 'seq',
+      title: 'x = x+1 与 x = x−1 的取—改—存交错（x 初值 10）',
+      actors: ['P1', 'P2', '共享变量 x'],
+      messages: [
+        { from: 'P1', to: '共享变量 x', label: '① 取 x 到寄存器 R1' },
+        { from: '共享变量 x', to: 'P1', label: '返回 10（R1=10）' },
+        { from: 'P2', to: '共享变量 x', label: '② 取 x 到寄存器 R2' },
+        { from: '共享变量 x', to: 'P2', label: '返回 10（R2=10）' },
+        { from: 'P1', to: '共享变量 x', label: '③ R1+1 存回：x=11' },
+        { from: 'P2', to: '共享变量 x', label: '④ R2−1 存回：x=9（覆盖）' },
+        { from: '共享变量 x', to: 'P1', label: '本交错终值 9' },
+        { from: '共享变量 x', to: 'P2', label: '③④ 颠倒得 11；全程串行得 10' },
+      ],
+    },
   },
   {
     id: 'q-2019-27',
@@ -135,6 +151,7 @@ export const y2019c2: Question[] = [
     topic: '死锁与安全状态',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'os-banker',
     score: 2,
     question:
       '用银行家算法避免死锁时，若检测发现系统当前处于不安全状态，则下列判断正确的是（ ）。',
@@ -157,6 +174,7 @@ export const y2019c2: Question[] = [
     topic: '页式存储',
     difficulty: 3,
     source: 'adapted',
+    templateId: 'os-paging-translate',
     score: 2,
     question:
       '某页式存储管理系统中，进程逻辑地址空间为 2 GB，页面大小为 8 KB，每个页表项占 4 B。若采用一级页表且页表常驻内存，则该进程的页表本身占用的存储空间为（ ）。',
@@ -164,6 +182,27 @@ export const y2019c2: Question[] = [
     answer: 'D',
     explanation:
       '页表项数 = 逻辑地址空间 ÷ 页面大小 = 2^31 ÷ 2^13 = 2^18 个，每项 4 B，页表共占 2^18 × 4 B = 2^20 B = 1 MB = 1024 KB。若把 2 GB 误算为 2^30×2 = 2^31 没错却忘记除以页面大小，或把每项 4 B 算成 2 B，就会得到 512 KB、256 KB 等错误结果。大逻辑空间导致一级页表过大，正是引入二级（多级）页表和页表分页调入的原因。',
+    visual: {
+      kind: 'flow',
+      title: '一级页表占用空间计算链（2 GB 空间 / 8 KB 页 / 4 B 表项）',
+      nodes: [
+        { id: 's', label: '逻辑地址空间\n2 GB = 2³¹ B', type: 'start' },
+        { id: 'p1', label: '页面大小 8 KB\n= 2¹³ B', type: 'proc' },
+        { id: 'p2', label: '页数 = 2³¹÷2¹³\n= 2¹⁸ 个表项', type: 'proc' },
+        { id: 'p3', label: '每项 4 B\n页表 = 2¹⁸×4 B', type: 'proc' },
+        { id: 'p4', label: '共 2²⁰ B = 1 MB\n= 1024 KB', type: 'proc' },
+        { id: 'p5', label: '一级页表过大\n正是引入二级\n页表的原因', type: 'proc' },
+        { id: 'e', label: '页表占 1024 KB\n（选 D）', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'p1' },
+        { from: 'p1', to: 'p2', label: '相除得页数' },
+        { from: 'p2', to: 'p3' },
+        { from: 'p3', to: 'p4', label: '相乘得总字节' },
+        { from: 'p4', to: 'p5' },
+        { from: 'p5', to: 'e' },
+      ],
+    },
   },
   {
     id: 'q-2019-29',
@@ -174,6 +213,7 @@ export const y2019c2: Question[] = [
     topic: '页面置换',
     difficulty: 3,
     source: 'adapted',
+    templateId: 'os-page-replace',
     score: 2,
     question:
       '某请求分页系统为进程 P 分配 3 个页框（初始为空），页面访问序列为 1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5。采用 LRU 置换算法，缺页次数为（ ）。',
@@ -181,6 +221,13 @@ export const y2019c2: Question[] = [
     answer: 'B',
     explanation:
       'LRU 逐条模拟（最近访问者排最后）：1 缺 [1]；2 缺 [1,2]；3 缺 [1,2,3]；4 缺，淘汰最久未用的 1 → [2,3,4]；1 缺，淘汰 2 → [3,4,1]；2 缺，淘汰 3 → [4,1,2]；5 缺，淘汰 4 → [1,2,5]；1、2 命中（刷新）；3 缺，淘汰 5 → [1,2,3]；4 缺，淘汰 1 → [2,3,4]；5 缺，淘汰 2 → [3,4,5]。共缺页 10 次。同一序列 FIFO 为 9 次，说明 LRU 并非在一切序列下都优于 FIFO。',
+    visual: {
+      kind: 'pages',
+      title: 'LRU 页面置换（3 框 × 访问串 1,2,3,4,1,2,5,1,2,3,4,5 → 缺页 10 次）',
+      algo: 'LRU',
+      frames: 3,
+      accesses: ['1', '2', '3', '4', '1', '2', '5', '1', '2', '3', '4', '5'],
+    },
   },
   {
     id: 'q-2019-30',
@@ -273,6 +320,29 @@ export const y2019c2: Question[] = [
     answer: 'C',
     explanation:
       '信噪比 30 dB 对应 S/N = 10^(30/10) = 1000。香农公式 C = W log₂(1 + S/N) = 4000 × log₂1001 ≈ 4000 × 9.97 ≈ 39.9 kb/s ≈ 40 kb/s。dB 与倍数的换算是第一易错点（30 dB 是 1000 倍而非 30 倍）；80 kb/s 是误用 10³ 当作 2^10 的粗算结果。奈奎斯特公式适用于无噪信道，本题给了信噪比，应选香农公式。',
+    visual: {
+      kind: 'flow',
+      title: '香农公式计算链（W = 4 kHz，信噪比 30 dB）',
+      nodes: [
+        { id: 's', label: '有噪信道\nW = 4 kHz\n信噪比 30 dB', type: 'start' },
+        { id: 'c0', label: '信道有噪声？', type: 'cond' },
+        { id: 'p0', label: '无噪信道才用\n奈氏公式 2W log₂V', type: 'proc' },
+        { id: 'p1', label: 'dB 化为倍数\n10^(30/10)\n= 1000 倍', type: 'proc' },
+        { id: 'p2', label: '香农公式\nC = W×log₂\n(1+S/N)', type: 'proc' },
+        { id: 'p3', label: '代入 W=4 kHz\nC = 4×log₂1001', type: 'proc' },
+        { id: 'p4', label: 'log₂1001≈9.97\nC ≈ 39.9 kb/s', type: 'proc' },
+        { id: 'e', label: 'C ≈ 40 kb/s\n（选 C）', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'c0' },
+        { from: 'c0', to: 'p1', label: '是：有噪声' },
+        { from: 'c0', to: 'p0', label: '否：无噪声' },
+        { from: 'p1', to: 'p2' },
+        { from: 'p2', to: 'p3' },
+        { from: 'p3', to: 'p4' },
+        { from: 'p4', to: 'e' },
+      ],
+    },
   },
   {
     id: 'q-2019-35',
@@ -300,6 +370,7 @@ export const y2019c2: Question[] = [
     topic: '子网划分',
     difficulty: 3,
     source: 'adapted',
+    templateId: 'cn-vlsm',
     score: 2,
     question:
       '某主机的 IP 地址为 206.120.85.19，子网掩码为 255.255.240.0。该主机所在子网的网络地址是（ ）。',
@@ -307,6 +378,29 @@ export const y2019c2: Question[] = [
     answer: 'A',
     explanation:
       '子网掩码 255.255.240.0 即 /20，第三字节的掩码 240 = 1111 0000B，故取 IP 与掩码按位与：85 = 0101 0101B 与 1111 0000B 得 0101 0000B = 80，网络地址为 206.120.80.0。选 84 是把 240 误当 252（/22）；选 85.0 相当于按 /24 计算；该子网的地址范围是 206.120.80.0 ～ 206.120.95.255，可用主机地址 2^12 − 2 = 4094 个。',
+    visual: {
+      kind: 'flow',
+      title: 'IP 与掩码按位与求网络地址（206.120.85.19，掩码 /20）',
+      nodes: [
+        { id: 's', label: '主机 IP\n206.120.85.19', type: 'start' },
+        { id: 'p1', label: '子网掩码\n255.255.240.0\n即 /20', type: 'proc' },
+        { id: 'p2', label: '前两字节掩码全 1\n206.120 原样保留', type: 'proc' },
+        { id: 'p3', label: '第三字节按位与\n85 ∧ 240', type: 'proc' },
+        { id: 'p4', label: '0101 0101\n∧ 1111 0000\n= 0101 0000\n即十进制 80', type: 'proc' },
+        { id: 'p5', label: '第四字节掩码全 0\n末字节清 0', type: 'proc' },
+        { id: 'p6', label: '子网块 2¹²=4096\n可用主机 4094', type: 'proc' },
+        { id: 'e', label: '网络地址\n206.120.80.0\n（选 A）', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'p1' },
+        { from: 'p1', to: 'p2' },
+        { from: 'p2', to: 'p3', label: '逐字节做与' },
+        { from: 'p3', to: 'p4' },
+        { from: 'p4', to: 'p5' },
+        { from: 'p5', to: 'p6', label: '范围 80.0~95.255' },
+        { from: 'p6', to: 'e' },
+      ],
+    },
   },
   {
     id: 'q-2019-37',
@@ -317,6 +411,7 @@ export const y2019c2: Question[] = [
     topic: '路由聚合',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'cn-vlsm',
     score: 2,
     question:
       '某单位拥有地址块 192.168.64.0/24 和 192.168.65.0/24，其边界路由器向外通告路由时应聚合为（ ）。',

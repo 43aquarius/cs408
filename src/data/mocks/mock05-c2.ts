@@ -162,6 +162,25 @@ export const mock05c2: Question[] = [
     ],
     explanation:
       '互斥信号量取值范围的通用结论：n 个进程共享时范围为 [1, −(n−1)]。物理意义分层记忆：1 = 无人进入；0 = 1 人进入、无人等待；−k = 1 人进入、k 人排队等待。负数的绝对值恒等于等待队列长度，绝不把临界区内那「1 人」重复计入。',
+    visual: {
+      kind: 'flow',
+      title: '互斥信号量 mutex 的取值演化（5 进程）',
+      nodes: [
+        { id: 's', label: '初值 mutex=1\n空闲无人使用', type: 'start' },
+        { id: 'a', label: '某进程 P 成功\n进入，值 1→0', type: 'proc' },
+        { id: 'b', label: '其余 4 个依次 P 阻塞\n值逐次降至 −4', type: 'proc' },
+        { id: 'c', label: '最小值 −4\n1 人运行 + 4 人等待', type: 'proc' },
+        { id: 'd', label: 'V 唤醒队首一人\n值逐次 +1 回升', type: 'proc' },
+        { id: 'e', label: '全部退出后值回 1\n最小 −4、最大 1', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'a' },
+        { from: 'a', to: 'b' },
+        { from: 'b', to: 'c' },
+        { from: 'c', to: 'd' },
+        { from: 'd', to: 'e' },
+      ],
+    },
   },
   {
     id: 'mock05-27',
@@ -214,6 +233,27 @@ export const mock05c2: Question[] = [
     ],
     explanation:
       '段页式地址三段划分从「由内向外」推导：先定页内偏移（页大小决定），再定段内页号（每段页数上限决定），最后把余下位全部留给段号。三段位数之和必须等于逻辑地址总位数。验算时用「段数 × 每段页数 × 页大小 = 地址空间」三因子互检，本题 128 × 32 × 4KB = 2^7 × 2^5 × 2^12 = 2^24 = 16MB。',
+    visual: {
+      kind: 'flow',
+      title: '段页式逻辑地址 24 位的位数拆分链',
+      nodes: [
+        { id: 's', label: '24 位逻辑地址\n页面 4KB、每段 32 页', type: 'start' },
+        { id: 'a', label: '页大小 4KB=2^12\n→ 页内偏移 12 位', type: 'proc' },
+        { id: 'b', label: '每段最多 32 页\n= 2^5 → 页号 5 位', type: 'proc' },
+        { id: 'c', label: '剩余 24−12−5\n= 7 位给段号', type: 'proc' },
+        { id: 'd', label: '验算：128×32×4KB\n= 2^24 = 16MB？', type: 'cond' },
+        { id: 'e', label: '是：段号 7 位\n页号 5、偏移 12', type: 'end' },
+        { id: 'f', label: '否：三段之和≠24\n位数划分有误', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'a' },
+        { from: 'a', to: 'b' },
+        { from: 'b', to: 'c' },
+        { from: 'c', to: 'd' },
+        { from: 'd', to: 'e', label: '是' },
+        { from: 'd', to: 'f', label: '否' },
+      ],
+    },
   },
   {
     id: 'mock05-29',
@@ -309,6 +349,7 @@ export const mock05c2: Question[] = [
     topic: '磁盘调度',
     difficulty: 3,
     source: 'mock',
+    templateId: 'os-disk-schedule',
     score: 2,
     question:
       '某磁盘磁道号从 0 到 199，当前磁头位于 72 号磁道，正沿磁道号**增大**方向移动，等待服务的请求依次为 30、88、20、65、170、45、132、10。采用 SCAN（电梯）算法且规定到达最大磁道号 199 后才折返，磁头移动的总磁道数为（　）。',
@@ -545,6 +586,7 @@ export const mock05c2: Question[] = [
     topic: 'TCP拥塞控制',
     difficulty: 3,
     source: 'mock',
+    templateId: 'cn-cwnd',
     score: 2,
     question:
       'TCP 连接建立后发送方维护拥塞窗口 cwnd，每经过一个 RTT 为一轮（每轮按确认全部到达后的窗口发送）。观测到 cwnd 随轮次的序列为：1、2、4、8、16、17、18、1、2、4、8、9、10（MSS）。据此判断，超时事件发生的位置与超时后新设置的慢开始门限 ssthresh 为（　）。',

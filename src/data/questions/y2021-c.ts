@@ -37,6 +37,7 @@ for (i = 1; i <= n; i = i * 2)
     topic: '栈',
     difficulty: 2,
     source: 'real',
+    templateId: 'ds-stack-sim',
     score: 2,
     question:
       '元素 a、b、c、d、e 依次进栈，过程中允许随时出栈。若出栈序列为 c、e、d、b、a，则栈的容量至少为（ ）。',
@@ -44,6 +45,26 @@ for (i = 1; i <= n; i = i * 2)
     answer: 'B',
     explanation:
       '要输出 c，须先压入 a、b、c（栈深 3）再弹出 c，栈中剩 a、b；接着要输出 e，而 d、e 在 c 之后输入，必须把 d、e 先压入，此刻栈内自底向顶为 a、b、d、e，深度达 4；随后 e、d、b、a 依次出栈。整个过程栈深最大为 4，故容量至少为 4，容量 3 时在压入 e 之前（a、b、d 再压 e）就已溢出。5、6 虽能完成但不是"至少"。',
+    visual: {
+      kind: 'sort',
+      title: '栈容量模拟：出栈序列 c、e、d、b、a（arr 为栈，右端为栈顶）',
+      frames: [
+        {
+          arr: ['—'],
+          note: '初始空栈；a、b、c、d、e 依次进栈，过程中允许随时出栈，目标按 c、e、d、b、a 交付',
+        },
+        { arr: ['a'], note: 'a 入栈（深度 1）：下一个要交付的是 c，a 只能先压在栈底' },
+        { arr: ['a', 'b'], note: 'b 入栈（深度 2）：栈顶还不是 c，继续压' },
+        { arr: ['a', 'b', 'c'], note: 'c 入栈（深度 3）：栈顶恰为 c，可立即出栈' },
+        { arr: ['a', 'b'], note: 'c 出栈：出栈序列第 1 个元素 c 达成，栈中剩 a、b' },
+        { arr: ['a', 'b', 'd'], note: '下一个要交付 e，而 d、e 在其后输入：先送 d 入栈（深度 3）' },
+        { arr: ['a', 'b', 'd', 'e'], note: 'e 入栈：栈内自底向顶 a、b、d、e，深度达 4，为全程最大' },
+        { arr: ['a', 'b', 'd'], note: 'e 出栈：序列推进为 c、e' },
+        { arr: ['a', 'b'], note: 'd 出栈：序列推进为 c、e、d' },
+        { arr: ['a'], note: 'b 出栈：序列推进为 c、e、d、b' },
+        { arr: ['—'], note: 'a 出栈：c、e、d、b、a 全部达成，最大栈深 4，容量至少为 4（选 B）' },
+      ],
+    },
   },
   {
     id: 'q-2021-03',
@@ -54,6 +75,7 @@ for (i = 1; i <= n; i = i * 2)
     topic: '循环队列',
     difficulty: 2,
     source: 'real',
+    templateId: 'ds-loop-queue',
     score: 2,
     question:
       '循环队列用一维数组 A[0..m−1] 存放，且约定 front 指向队头元素，rear 指向队尾元素本身（两者都指向实际元素）。初始时队列为空。当前队列中元素个数的计算式为（ ）。',
@@ -76,6 +98,7 @@ for (i = 1; i <= n; i = i * 2)
     topic: 'KMP',
     difficulty: 3,
     source: 'real',
+    templateId: 'ds-kmp',
     score: 2,
     question:
       '设模式串 t = "ababaa"。按约定 next[1] = 0，next[j]（j ≥ 2）等于使 p₁…p_{k−1} = p_{j−k+1}…p_{j−1} 成立的最大 k（无相等前后缀时为 1）。则 t 的 next 数组为（ ）。',
@@ -83,6 +106,27 @@ for (i = 1; i <= n; i = i * 2)
     answer: 'A',
     explanation:
       'next[j] 即"前 j−1 个字符的最长相等前后缀长度 + 1"：j=2（前缀 a）无相等前后缀 → 1；j=3（ab）无 → 1；j=4（aba）有 a（长 1）→ 2；j=5（abab）有 ab（长 2）→ 3；j=6（ababa）有 aba（长 3）→ 4。故 next = 0,1,1,2,3,4。选项 B 是"逐位加一"的错算；选项 C 用了 next[1]=1 的另一套约定；选项 D 把最后一位少算了一级。',
+    visual: {
+      kind: 'sort',
+      title: 'KMP next 数组逐位求解（模式串 t = ababaa，下标 1～6）',
+      frames: [
+        {
+          arr: ['—', '—', '—', '—', '—', '—'],
+          note: '模式串 ababaa；next[j] = 前 j−1 个字符的最长相等前后缀长度 + 1（无则 1），next[1]=0',
+        },
+        { arr: [0, '—', '—', '—', '—', '—'], pivot: 0, note: 'j=1：按约定 next[1]=0，匹配失败时 i、j 同时右移' },
+        { arr: [0, 1, '—', '—', '—', '—'], pivot: 1, note: 'j=2（前缀 a）：无相等前后缀 → next[2]=1' },
+        { arr: [0, 1, 1, '—', '—', '—'], pivot: 2, note: 'j=3（前缀 ab）：无相等前后缀 → next[3]=1' },
+        { arr: [0, 1, 1, 2, '—', '—'], pivot: 3, note: 'j=4（前缀 aba）：最长相等前后缀 a（长 1）→ next[4]=2' },
+        { arr: [0, 1, 1, 2, 3, '—'], pivot: 4, note: 'j=5（前缀 abab）：最长相等前后缀 ab（长 2）→ next[5]=3' },
+        {
+          arr: [0, 1, 1, 2, 3, 4],
+          pivot: 5,
+          settled: [5],
+          note: 'j=6（前缀 ababa）：最长相等前后缀 aba（长 3）→ next[6]=4，得 0,1,1,2,3,4（选 A）',
+        },
+      ],
+    },
   },
   {
     id: 'q-2021-05',
@@ -93,6 +137,7 @@ for (i = 1; i <= n; i = i * 2)
     topic: '二叉树性质',
     difficulty: 1,
     source: 'real',
+    templateId: 'ds-tree-count',
     score: 2,
     question:
       '某二叉树中有 5 个度为 2 的结点和 3 个度为 1 的结点，则该二叉树中叶结点（度为 0 的结点）的个数是（ ）。',
@@ -243,12 +288,34 @@ for (i = 1; i <= n; i = i * 2)
     topic: 'IEEE 754',
     difficulty: 2,
     source: 'real',
+    templateId: 'co-ieee754',
     score: 2,
     question: '某 IEEE 754 单精度浮点数的机器数表示为 C164 0000H，其对应的十进制真值是（ ）。',
     options: ['−14.25', '−12.75', '−7.125', '14.25'],
     answer: 'A',
     explanation:
       'C164 0000H = 1100 0001 0110 0100 0…0B：符号位 s = 1（负数）；阶码 e = 1000 0010B = 130，真指数 = 130 − 127 = 3；尾数位 110 0100 0…，隐含前导 1 得 1.1100100₂ = 1 + 0.5 + 0.25 + 0.03125 = 1.78125。真值 = −1.78125 × 2³ = −14.25。B 误在把尾数读成 1.1001100₂？——那是 −12.75（C14C 0000H）的编码；C 是 −7.125（指数或尾数少算一位）；D 漏掉符号位。',
+    visual: {
+      kind: 'flow',
+      title: 'IEEE 754 单精度：C164 0000H → −14.25（偏置 127）',
+      nodes: [
+        { id: 's', label: '机器数\nC164 0000H', type: 'start' },
+        { id: 'b', label: '1100 0001 0110\n0100 0…0B', type: 'proc' },
+        { id: 'sg', label: 's=1 → 负数', type: 'proc' },
+        { id: 'ex', label: '阶码 1000 0010B\n= 130', type: 'proc' },
+        { id: 'ex2', label: 'e=130−127=3', type: 'proc' },
+        { id: 'mn', label: '尾数 1.1100100₂\n=1.78125（含隐含1）', type: 'proc' },
+        { id: 'e', label: '−1.78125×2³\n= −14.25', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'b' },
+        { from: 'b', to: 'sg' },
+        { from: 'sg', to: 'ex' },
+        { from: 'ex', to: 'ex2' },
+        { from: 'ex2', to: 'mn' },
+        { from: 'mn', to: 'e' },
+      ],
+    },
   },
   {
     id: 'q-2021-14',
@@ -259,6 +326,7 @@ for (i = 1; i <= n; i = i * 2)
     topic: '补码加法',
     difficulty: 2,
     source: 'real',
+    templateId: 'co-complement',
     score: 2,
     question: '设 x、y 为 8 位补码整数：x = 7FH，y = 01H。执行加法 x + y，下列叙述正确的是（ ）。',
     options: [
@@ -301,6 +369,7 @@ for (i = 1; i <= n; i = i * 2)
     topic: 'Cache 映射',
     difficulty: 2,
     source: 'real',
+    templateId: 'co-cache-split',
     score: 2,
     question:
       '某计算机主存地址 32 位、按字节编址，Cache 数据区 8 KB、行长 32 B、直接映射。主存地址中标记（Tag）字段的位数为（ ）。',
@@ -308,6 +377,21 @@ for (i = 1; i <= n; i = i * 2)
     answer: 'A',
     explanation:
       '块内地址 log₂32 = 5 位；Cache 行数 = 8 KB / 32 B = 256 = 2^8，行号 8 位；标记 = 32 − 8 − 5 = 19 位。选项 B 是忘减 5 位块内地址的结果（32 − 8 = 24）；选项 C 是 4 路组相联（组号 6 位）的标记数；选项 D 是全相联映射（32 − 5 = 27）的标记数。',
+    visual: {
+      kind: 'flow',
+      title: '直接映射 Cache 地址拆分：32 位主存地址 → 标记 19 位',
+      nodes: [
+        { id: 's', label: '主存地址 32 位\n按字节编址', type: 'start' },
+        { id: 'b', label: '行长 32B=2⁵\n块内地址 5 位', type: 'proc' },
+        { id: 'l', label: '行数 8KB÷32B\n=256 行，行号 8 位', type: 'proc' },
+        { id: 't', label: '标记=32−8−5\n=19 位', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'b' },
+        { from: 'b', to: 'l' },
+        { from: 'l', to: 't' },
+      ],
+    },
   },
   {
     id: 'q-2021-17',
@@ -318,6 +402,7 @@ for (i = 1; i <= n; i = i * 2)
     topic: '相对寻址',
     difficulty: 2,
     source: 'real',
+    templateId: 'co-relative',
     score: 2,
     question:
       '某计算机按字节编址，转移指令采用相对寻址，由两个字节组成：第一字节为操作码，第二字节为相对位移量（补码表示），取指令时每取一个字节 PC 自动加 1。若某转移指令所在主存地址为 1000H，位移量字段内容为 FAH，则转移目标地址为（ ）。',
@@ -325,6 +410,21 @@ for (i = 1; i <= n; i = i * 2)
     answer: 'A',
     explanation:
       'FAH 是 −6 的 8 位补码。取指结束后 PC = 1000H + 2 = 1002H；目标地址 = (PC) + 位移量 = 1002H − 6 = 0FFCH。选项 B 忘记取指后 PC 已加 2（以 1000H 为基准计算）；选项 C 相当于把指令长度和位移量重复扣除；选项 D 把 FAH 当作正数 +6 处理。相对寻址以"执行时的 PC"为基准，这正是其支持程序浮动的原因。',
+    visual: {
+      kind: 'flow',
+      title: '相对寻址：1000H 处的两字节转移指令，位移量 FAH → 目标 0FFCH',
+      nodes: [
+        { id: 's', label: '指令地址 1000H\n指令长 2 字节', type: 'start' },
+        { id: 'p', label: '取指后 PC=1002H\n（1000H+2）', type: 'proc' },
+        { id: 'f', label: 'FAH 为 8 位补码\n= −6', type: 'proc' },
+        { id: 'e', label: '目标=(PC)+位移\n=1002H−6=0FFCH', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'p' },
+        { from: 'p', to: 'f' },
+        { from: 'f', to: 'e' },
+      ],
+    },
   },
   {
     id: 'q-2021-18',
@@ -377,6 +477,7 @@ for (i = 1; i <= n; i = i * 2)
     topic: '总线带宽',
     difficulty: 2,
     source: 'real',
+    templateId: 'co-bus-bandwidth',
     score: 2,
     question:
       '某同步总线的时钟频率为 100 MHz，每个时钟周期传送一次数据，数据线宽度为 32 位，该总线的带宽为（ ）。',
@@ -532,6 +633,7 @@ for (i = 1; i <= n; i = i * 2)
     topic: '页式地址',
     difficulty: 2,
     source: 'real',
+    templateId: 'os-paging-translate',
     score: 2,
     question:
       '某分页存储管理系统中页面大小为 4 KB，进程 P 的页表中"页号 2 → 页框号 9"。P 执行时访问逻辑地址 2A7FH，其对应的物理地址为（ ）。',
@@ -539,6 +641,23 @@ for (i = 1; i <= n; i = i * 2)
     answer: 'A',
     explanation:
       '页面大小 4 KB = 1000H，故页内偏移取低 12 位：逻辑地址 2A7FH 拆为页号 2、页内偏移 A7FH；查页表得页框号 9，物理地址 = 9 × 1000H + A7FH = 9A7FH。选项 B 是页号、页框号拼接方向搞反的结果；选项 C 把页框号多加了 1；选项 D 的偏移量少算了 1。',
+    visual: {
+      kind: 'flow',
+      title: '分页地址变换：2A7FH → 9A7FH（页大小 4 KB，页号 2 → 页框号 9）',
+      nodes: [
+        { id: 's', label: '逻辑地址 2A7FH', type: 'start' },
+        { id: 'sp', label: '页大小 4KB=2¹²\n低 12 位为页内偏移', type: 'proc' },
+        { id: 'pp', label: '拆分：页号 2\n页内偏移 A7FH', type: 'proc' },
+        { id: 'pt', label: '查页表\n页号 2 → 页框 9', type: 'proc' },
+        { id: 'e', label: '拼接 9×1000H\n+A7FH=9A7FH', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'sp' },
+        { from: 'sp', to: 'pp' },
+        { from: 'pp', to: 'pt' },
+        { from: 'pt', to: 'e' },
+      ],
+    },
   },
   {
     id: 'q-2021-29',
@@ -640,6 +759,7 @@ for (i = 1; i <= n; i = i * 2)
     topic: '子网划分',
     difficulty: 2,
     source: 'real',
+    templateId: 'cn-vlsm',
     score: 2,
     question:
       '将 IP 地址块 192.168.75.0/24 平均划分为 4 个子网，则第 2 个子网（子网序号从 1 开始）的网络地址与广播地址分别为（ ）。',
@@ -652,6 +772,23 @@ for (i = 1; i <= n; i = i * 2)
     answer: 'A',
     explanation:
       '4 等分子网需再借 2 位，掩码为 /26，每个子网 64 个地址：第 1 个占 0～63、第 2 个占 64～127、第 3 个占 128～191、第 4 个占 192～255。第 2 个子网主机号全 0 的网络地址为 192.168.75.64，主机号全 1 的广播地址为 192.168.75.127。选项 B 把广播地址错写成最大可用主机地址（126）；选项 C、D 分别是第 1、第 3 个子网的边界。',
+    visual: {
+      kind: 'flow',
+      title: '192.168.75.0/24 平均划分 4 个子网：第 2 个子网 64～127',
+      nodes: [
+        { id: 's', label: '192.168.75.0\n/24 等分 4 段', type: 'start' },
+        { id: 'b', label: '再借 2 位 → /26\n每段 2⁶=64 个地址', type: 'proc' },
+        { id: 'r1', label: '第 1 段 0～63\n第 2 段 64～127', type: 'proc' },
+        { id: 'r2', label: '第 3 段 128～191\n第 4 段 192～255', type: 'proc' },
+        { id: 'e', label: '第 2 段 64～127\n网络 .64 广播 .127', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'b' },
+        { from: 'b', to: 'r1' },
+        { from: 'r1', to: 'r2' },
+        { from: 'r2', to: 'e' },
+      ],
+    },
   },
   {
     id: 'q-2021-35',
@@ -684,6 +821,7 @@ for (i = 1; i <= n; i = i * 2)
     topic: '以太网',
     difficulty: 2,
     source: 'real',
+    templateId: 'cn-minframe',
     score: 2,
     question: '100 Mb/s 快速以太网仍保持 64 B 的最小帧长。据此，其冲突域内最大单向传播时延为（ ）。',
     options: ['2.56 μs', '5.12 μs', '25.6 μs', '51.2 μs'],

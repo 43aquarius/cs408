@@ -34,6 +34,7 @@ export const y2024c1: Question[] = [
     topic: '循环队列',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'ds-loop-queue',
     score: 2,
     question:
       '循环队列采用数组 Q[0…M−1] 存放元素，队头指针 front 指向队头元素，队尾指针 rear 指向队尾元素（rear 所指位置存有元素）。则该队列当前的元素个数为（ ）。',
@@ -56,6 +57,7 @@ export const y2024c1: Question[] = [
     topic: '栈与队列',
     difficulty: 2,
     source: 'real',
+    templateId: 'ds-stack-sim',
     score: 2,
     question:
       '元素 a、b、c、d、e 依次进栈，允许进栈与出栈操作交替进行，则下列序列中不可能的出栈序列是（ ）。',
@@ -63,6 +65,28 @@ export const y2024c1: Question[] = [
     answer: 'C',
     explanation:
       '逐项模拟：选项 A 中 a、b 进栈后 b 出栈，c 进栈即出，a 出栈，d、e 进栈后 e、d 依次出栈，可实现。选项 B 中 a、b、c 进栈后 c、b 出栈，d、e 进栈后 e、d 出栈，最后 a 出栈，可实现。选项 D 中五个元素全部进栈后逆序出栈，可实现。选项 C 中 d 第一个出栈，说明 a、b、c、d 均已入栈且 a 位于栈底，e 进出栈之后下一个能出栈的只能是 c 而不是 a，故不可能。',
+    visual: {
+      kind: 'sort',
+      title: '选项 C（d e a b c）栈模拟：无法交付 a（arr 为栈，右端为栈顶）',
+      frames: [
+        {
+          arr: ['—'],
+          note: '目标出栈序列 d e a b c；元素 a~e 依次进栈，允许进出交替',
+        },
+        { arr: ['a'], note: '要第一个出 d：a 先进栈，压在栈底' },
+        { arr: ['a', 'b'], note: 'b 进栈（栈深 2）' },
+        { arr: ['a', 'b', 'c'], note: 'c 进栈（栈深 3）' },
+        { arr: ['a', 'b', 'c', 'd'], note: 'd 进栈（栈深 4）：栈顶恰为 d' },
+        { arr: ['a', 'b', 'c'], compared: [2], note: 'd 出栈：序列达成 d' },
+        { arr: ['a', 'b', 'c', 'e'], note: 'e 进栈：栈顶恰为 e' },
+        { arr: ['a', 'b', 'c'], compared: [2], note: 'e 出栈：序列达成 d e' },
+        {
+          arr: ['a', 'b', 'c'],
+          compared: [2],
+          note: '下一个要 a，但栈顶是 c，a 被 c、b 压住且已无元素可进栈——无法弹出 a，序列 C 非法（选 C）',
+        },
+      ],
+    },
   },
   {
     id: 'q-2024-04',
@@ -73,6 +97,7 @@ export const y2024c1: Question[] = [
     topic: '二叉树遍历',
     difficulty: 2,
     source: 'real',
+    templateId: 'ds-traversal-restore',
     score: 2,
     question:
       '某二叉树的先序遍历序列为 A B D E C F G，中序遍历序列为 D B E A F C G，则其后序遍历序列是（ ）。',
@@ -90,6 +115,7 @@ export const y2024c1: Question[] = [
     topic: '树的性质',
     difficulty: 2,
     source: 'real',
+    templateId: 'ds-tree-count',
     score: 2,
     question:
       '若某树中度为 3、2、1 的结点个数分别为 2、1、2，则该树中的叶结点个数是（ ）。',
@@ -107,6 +133,7 @@ export const y2024c1: Question[] = [
     topic: '哈夫曼树',
     difficulty: 3,
     source: 'real',
+    templateId: 'ds-huffman',
     score: 2,
     question:
       '对字符 a、b、c、d、e，其使用频率分别为 0.05、0.15、0.25、0.25、0.30。采用哈夫曼编码时，平均每个字符的编码长度（比特数）最少为（ ）。',
@@ -114,6 +141,64 @@ export const y2024c1: Question[] = [
     answer: 'D',
     explanation:
       '取权重 {5, 15, 25, 25, 30}（×100）构造哈夫曼树：5 与 15 合并成 20，20 与其中一个 25 合并成 45，另一个 25 与 30 合并成 55，45 与 55 合并为根。于是频率 0.30 与两个 0.25 的字符编码长度为 2 位，0.05 与 0.15 的字符编码长度为 3 位，平均长度 = 0.30×2 + 0.25×2 + 0.25×2 + 0.05×3 + 0.15×3 = 2.2 比特。哈夫曼树的带权路径长度 WPL 最小，任何其他前缀编码的平均长度都不会更小。',
+    visual: {
+      kind: 'tree',
+      title: '哈夫曼树 {5,15,25,25,30}（频率×100）：平均码长 2.2',
+      steps: [
+        {
+          nodes: [
+            { id: 'a', label: '5' }, { id: 'b', label: '15' },
+            { id: 'c', label: '25' }, { id: 'd', label: '25' }, { id: 'e', label: '30' },
+          ],
+          note: '初始森林：a=5、b=15、c=25、d=25、e=30（对应频率 0.05~0.30）',
+        },
+        {
+          nodes: [
+            { id: 'n1', label: '20' },
+            { id: 'a', label: '5', parent: 'n1' }, { id: 'b', label: '15', parent: 'n1' },
+            { id: 'c', label: '25' }, { id: 'd', label: '25' }, { id: 'e', label: '30' },
+          ],
+          highlight: ['n1', 'a', 'b'],
+          note: '第 1 次合并：最小两权 5 与 15 → 新根 20；WPL 贡献 20',
+        },
+        {
+          nodes: [
+            { id: 'n2', label: '45' },
+            { id: 'n1', label: '20', parent: 'n2' },
+            { id: 'a', label: '5', parent: 'n1' }, { id: 'b', label: '15', parent: 'n1' },
+            { id: 'c', label: '25', parent: 'n2' },
+            { id: 'd', label: '25' }, { id: 'e', label: '30' },
+          ],
+          highlight: ['n2', 'n1', 'c'],
+          note: '第 2 次合并：{20,25,25,30} 中最小两权 20 与 25 → 45；累计 20+45=65',
+        },
+        {
+          nodes: [
+            { id: 'n3', label: '55' },
+            { id: 'n2', label: '45', parent: 'n3' },
+            { id: 'n1', label: '20', parent: 'n2' },
+            { id: 'a', label: '5', parent: 'n1' }, { id: 'b', label: '15', parent: 'n1' },
+            { id: 'c', label: '25', parent: 'n2' },
+            { id: 'd', label: '25', parent: 'n3' }, { id: 'e', label: '30', parent: 'n3' },
+          ],
+          highlight: ['n3', 'd', 'e'],
+          note: '第 3 次合并：25 与 30 → 55；累计 20+45+55=120',
+        },
+        {
+          nodes: [
+            { id: 'r', label: '100' },
+            { id: 'n2', label: '45', parent: 'r' },
+            { id: 'n1', label: '20', parent: 'n2' },
+            { id: 'a', label: '5', parent: 'n1' }, { id: 'b', label: '15', parent: 'n1' },
+            { id: 'c', label: '25', parent: 'n2' },
+            { id: 'n3', label: '55', parent: 'r' },
+            { id: 'd', label: '25', parent: 'n3' }, { id: 'e', label: '30', parent: 'n3' },
+          ],
+          highlight: ['r'],
+          note: '第 4 次合并：45 与 55 → 根 100；WPL=20+45+55+100=220，平均码长 220/100=2.2 比特（a、b 深度 3，c、d、e 深度 2），选 D',
+        },
+      ],
+    },
   },
   {
     id: 'q-2024-07',
@@ -162,12 +247,42 @@ export const y2024c1: Question[] = [
     topic: 'B树',
     difficulty: 2,
     source: 'real',
+    templateId: 'ds-btree-overflow',
     score: 2,
     question: '一棵含有 20 个关键字的 5 阶 B 树，其高度（不计外部失败结点）最少为（ ）。',
     options: ['2', '3', '4', '5'],
     answer: 'A',
     explanation:
       '5 阶 B 树中每个结点最多含 4 个关键字、最多分出 5 棵子树。高度为 2 时：根结点装满 4 个关键字并分出 5 个孩子，孩子层最多容纳 5×4 = 20 个关键字，合计 4 + 20 = 24 ≥ 20，故 20 个关键字两层即可放下；而高度为 1 时根结点至多容纳 4 个关键字，不够用。注意本题按"不含失败结点"计高度，若把外部结点层计入则再加 1。',
+    visual: {
+      kind: 'tree',
+      title: '高度 2 的 5 阶 B 树最多容纳 4+5×4=24 个关键字',
+      steps: [
+        {
+          nodes: [{ id: 'r', label: '根4键' }],
+          note: '高度 1（仅根结点）：5 阶 B 树每个结点最多 4 个关键字，4 < 20，放不下',
+        },
+        {
+          nodes: [
+            { id: 'r', label: '根4键' },
+            { id: 'c1', label: '4键', parent: 'r' }, { id: 'c2', label: '4键', parent: 'r' },
+            { id: 'c3', label: '4键', parent: 'r' }, { id: 'c4', label: '4键', parent: 'r' },
+            { id: 'c5', label: '4键', parent: 'r' },
+          ],
+          note: '高度 2 最大构型：根 4 键分出 5 棵子树，孩子层最多 5×4=20 个关键字',
+        },
+        {
+          nodes: [
+            { id: 'r', label: '根4键' },
+            { id: 'c1', label: '4键', parent: 'r' }, { id: 'c2', label: '4键', parent: 'r' },
+            { id: 'c3', label: '4键', parent: 'r' }, { id: 'c4', label: '4键', parent: 'r' },
+            { id: 'c5', label: '4键', parent: 'r' },
+          ],
+          highlight: ['r', 'c1', 'c2', 'c3', 'c4', 'c5'],
+          note: '合计 4+20=24 ≥ 20，两层即可放下：高度最少为 2（选 A）；若把外部失败结点层计入则再加 1',
+        },
+      ],
+    },
   },
   {
     id: 'q-2024-10',
@@ -178,6 +293,7 @@ export const y2024c1: Question[] = [
     topic: '散列表',
     difficulty: 2,
     source: 'real',
+    templateId: 'ds-hash-asl',
     score: 2,
     question:
       '散列函数 H(key) = key mod 7，用链地址法处理冲突，依次插入关键字 8、15、22、36、14（同一条链上后插入者链接在链尾）。在等概率条件下查找每个关键字成功时，平均比较次数为（ ）。',
@@ -185,6 +301,51 @@ export const y2024c1: Question[] = [
     answer: 'B',
     explanation:
       '8、15、22、36 mod 7 均等于 1，在同一条链上依次排成 8→15→22→36；14 mod 7 = 0，单独成链。查找成功时：14 与 8 各比较 1 次，15 比较 2 次，22 比较 3 次，36 比较 4 次，ASL = (1 + 1 + 2 + 3 + 4) / 5 = 2.2。链地址法的查找长度只取决于各链的长度，装填因子越小链越短、性能越好。',
+    visual: {
+      kind: 'tree',
+      title: '链地址法：H(key)=key mod 7 的两条链（成功 ASL=2.2）',
+      steps: [
+        {
+          nodes: [{ id: 'k8', label: '8' }],
+          note: '8 mod 7 = 1：1 号链空，8 作为链首（查找 8 比较 1 次）',
+        },
+        {
+          nodes: [{ id: 'k8', label: '8' }, { id: 'k15', label: '15', parent: 'k8' }],
+          highlight: ['k15'],
+          note: '15 mod 7 = 1 同链冲突：后插入者接到链尾（查找 15 沿链比较 2 次）',
+        },
+        {
+          nodes: [
+            { id: 'k8', label: '8' },
+            { id: 'k15', label: '15', parent: 'k8' },
+            { id: 'k22', label: '22', parent: 'k15' },
+          ],
+          highlight: ['k22'],
+          note: '22 mod 7 = 1：链变 8→15→22（查找 22 比较 3 次）',
+        },
+        {
+          nodes: [
+            { id: 'k8', label: '8' },
+            { id: 'k15', label: '15', parent: 'k8' },
+            { id: 'k22', label: '22', parent: 'k15' },
+            { id: 'k36', label: '36', parent: 'k22' },
+          ],
+          highlight: ['k36'],
+          note: '36 mod 7 = 1：链变 8→15→22→36（查找 36 比较 4 次）',
+        },
+        {
+          nodes: [
+            { id: 'k8', label: '8' },
+            { id: 'k15', label: '15', parent: 'k8' },
+            { id: 'k22', label: '22', parent: 'k15' },
+            { id: 'k36', label: '36', parent: 'k22' },
+            { id: 'k14', label: '14' },
+          ],
+          highlight: ['k14'],
+          note: '14 mod 7 = 0：0 号链单独成链（比较 1 次）。成功 ASL=(1+2+3+4+1)/5=2.2，选 B',
+        },
+      ],
+    },
   },
   {
     id: 'q-2024-11',
@@ -212,6 +373,7 @@ export const y2024c1: Question[] = [
     topic: '补码表示',
     difficulty: 2,
     source: 'real',
+    templateId: 'co-complement',
     score: 2,
     question:
       '某计算机按字节编址、采用小端方式存放数据，int 型变量占 4 字节。若 int x = −100，则 x 的 4 个字节中最高有效字节的内容（十六进制）是（ ）。',
@@ -229,6 +391,7 @@ export const y2024c1: Question[] = [
     topic: 'IEEE 754',
     difficulty: 2,
     source: 'real',
+    templateId: 'co-ieee754',
     score: 2,
     question: 'IEEE 754 单精度浮点数可表示的规格化负数中，绝对值最大的是（ ）。',
     options: [
@@ -250,6 +413,7 @@ export const y2024c1: Question[] = [
     topic: '浮点精度',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'co-ieee754',
     score: 2,
     question:
       'C 程序中执行 float x = 0.1f; 之后，x 中保存的值与十进制 0.1 并不相等。其根本原因是（ ）。',
@@ -272,6 +436,7 @@ export const y2024c1: Question[] = [
     topic: 'Cache 映射',
     difficulty: 2,
     source: 'real',
+    templateId: 'co-cache-split',
     score: 2,
     question:
       '某机主存地址空间为 32 位，按字节编址；其 Cache 数据区容量为 32 KB，块大小 16 B，采用 2 路组相联映射方式。该主存地址中标记（Tag）字段占（ ）位。',
@@ -364,6 +529,7 @@ export const y2024c1: Question[] = [
     topic: '总线',
     difficulty: 1,
     source: 'real',
+    templateId: 'co-bus-bandwidth',
     score: 2,
     question:
       '某同步总线时钟频率为 100 MHz，每个时钟周期在总线上传送一次数据，数据线宽度 32 位，则该总线的数据传输率为（ ）。',

@@ -11,6 +11,7 @@ export const y2010c1: Question[] = [
     topic: '栈与队列',
     difficulty: 2,
     source: 'real',
+    templateId: 'ds-stack-sim',
     score: 2,
     question:
       '若元素 a、b、c、d、e 依次进入初始为空的栈 S，且允许在任意时刻出栈（出栈后不再入栈）。下列出栈序列中，不可能的是（ ）。',
@@ -35,6 +36,25 @@ export const y2010c1: Question[] = [
     answer: 'C',
     explanation:
       '4 最先出队，说明 1、2、3 已全部入队且 4 位于右端，出队 4 之后剩下的元素按"右端栈（后进先出）+ 左端队列（先进先出）"弹出。逐一构造：选项 A 把 1 放左端、2、3 放右端（1 | 2 3 4）得 4 3 2 1；选项 B 把 2 放右端、1、3 放左端（3 1 | 2 4）得 4 2 1 3；选项 D 把 1、2、3 全放左端（3 2 1 | 4）得 4 1 2 3。而选项 D′类序列 4 1 3 2 要求弹出 1 后再弹 3，但 1 出队后右端已空，只能按左端先进先出次序弹出 2、3，无法先出 3，故 4 1 3 2 不可能，选 C。一般结论：以 4 开头时后三个元素只能是 123、213、312、321 四种之一。',
+    visual: {
+      kind: 'flow',
+      title: '输出受限双端队列：4 1 3 2 为何不可能',
+      nodes: [
+        { id: 's', label: '目标序列\n4 1 3 2', type: 'start' },
+        { id: 'p1', label: '4 要第一个出队\n1、2、3 须先入队\n且 4 从右端入', type: 'proc' },
+        { id: 'p2', label: '要第 2 个出 1\n2、3 须在 1 左侧\n队列为 3 2 1 4', type: 'proc' },
+        { id: 'p3', label: '出队 4 → 出队 1', type: 'proc' },
+        { id: 'c', label: '下一个要出 3\n但右端是 2', type: 'cond' },
+        { id: 'e', label: '3 被挡在 2 左侧\n4 1 3 2 不可能', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'p1' },
+        { from: 'p1', to: 'p2' },
+        { from: 'p2', to: 'p3' },
+        { from: 'p3', to: 'c' },
+        { from: 'c', to: 'e' },
+      ],
+    },
   },
   {
     id: 'q-2010-03',
@@ -99,6 +119,7 @@ export const y2010c1: Question[] = [
     topic: '二叉树遍历',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'ds-traversal-restore',
     score: 2,
     question:
       '已知一棵二叉树的先序遍历序列为 a b d e c f，中序遍历序列为 d b e a c f，则其后序遍历序列是（ ）。',
@@ -106,6 +127,35 @@ export const y2010c1: Question[] = [
     answer: 'A',
     explanation:
       '先序首字符 a 为根；在中序中定位 a，其左段 d b e 为左子树、右段 c f 为右子树。左子树先序为 b d e，故 b 为左子树根，结合中序 d b e 得 d 为 b 的左孩子、e 为 b 的右孩子；右子树先序为 c f，c 为根，中序 c f 说明 f 是 c 的右孩子。还原出树 a(b(d,e), c(-,f))，后序为 d e b f c a。先序/中序可唯一确定二叉树，再递归求后序是必考基本功。',
+    visual: {
+      kind: 'tree',
+      title: '先序 a b d e c f + 中序 d b e a c f 还原二叉树',
+      steps: [
+        {
+          nodes: [{ id: 'a', label: 'a' }],
+          highlight: ['a'],
+          note: '先序首字符 a 为根；中序中 a 左侧的 d b e 是左子树，右侧的 c f 是右子树',
+        },
+        {
+          nodes: [
+            { id: 'a', label: 'a' },
+            { id: 'b', label: 'b', parent: 'a' }, { id: 'c', label: 'c', parent: 'a' },
+          ],
+          highlight: ['b', 'c'],
+          note: '左子树先序为 b d e，根是 b；右子树先序为 c f，根是 c：b、c 分别挂为 a 的左右孩子',
+        },
+        {
+          nodes: [
+            { id: 'a', label: 'a' },
+            { id: 'b', label: 'b', parent: 'a' }, { id: 'c', label: 'c', parent: 'a' },
+            { id: 'd', label: 'd', parent: 'b' }, { id: 'e', label: 'e', parent: 'b' },
+            { id: 'f', label: 'f', parent: 'c' },
+          ],
+          highlight: ['d', 'e', 'f'],
+          note: '中序 d b e 说明 d、e 是 b 的左、右孩子；中序 c f 说明 f 是 c 的右孩子；后序遍历得 d e b f c a',
+        },
+      ],
+    },
   },
   {
     id: 'q-2010-07',
@@ -132,6 +182,7 @@ export const y2010c1: Question[] = [
     topic: '折半查找',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'ds-bsearch-asl',
     score: 2,
     question:
       '对有序表 {5, 10, 15, 20, 25, 30, 35, 40, 45}（元素下标为 1～9，mid 取 ⌊(low+high)/2⌋）进行折半查找，查找关键字 40 时依次与待查关键字比较的元素是（ ）。',
@@ -139,6 +190,45 @@ export const y2010c1: Question[] = [
     answer: 'A',
     explanation:
       '第一次 low=1、high=9，mid=5，与 25 比较，40 > 25，low=6；第二次 mid=(6+9)/2=7，与 35 比较，40 > 35，low=8；第三次 mid=(8+9)/2=8，与 40 比较，查找成功。比较序列为 25、35、40，共 3 次。折半查找每比较一次把查找区间缩小一半，长度 9 的表最多比较 ⌈log₂(9+1)⌉ = 4 次，写比较序列时必须严格按区间中点计算，不能凭位置直觉取"20、30"等。',
+    visual: {
+      kind: 'tree',
+      title: '折半查找 40：判定树上的比较路径',
+      steps: [
+        {
+          nodes: [
+            { id: 'n25', label: '25' },
+            { id: 'n10', label: '10', parent: 'n25' }, { id: 'n35', label: '35', parent: 'n25' },
+            { id: 'n5', label: '5', parent: 'n10' }, { id: 'n15', label: '15', parent: 'n10' },
+            { id: 'n30', label: '30', parent: 'n35' }, { id: 'n40', label: '40', parent: 'n35' },
+            { id: 'n20', label: '20', parent: 'n15' }, { id: 'n45', label: '45', parent: 'n40' },
+          ],
+          highlight: ['n25'],
+          note: '第 1 次：low=1、high=9，mid=5，与 25 比较，40 > 25，转入右半区',
+        },
+        {
+          nodes: [
+            { id: 'n25', label: '25' },
+            { id: 'n10', label: '10', parent: 'n25' }, { id: 'n35', label: '35', parent: 'n25' },
+            { id: 'n5', label: '5', parent: 'n10' }, { id: 'n15', label: '15', parent: 'n10' },
+            { id: 'n30', label: '30', parent: 'n35' }, { id: 'n40', label: '40', parent: 'n35' },
+            { id: 'n20', label: '20', parent: 'n15' }, { id: 'n45', label: '45', parent: 'n40' },
+          ],
+          highlight: ['n25', 'n35'],
+          note: '第 2 次：low=6、high=9，mid=7，与 35 比较，40 > 35，继续向右',
+        },
+        {
+          nodes: [
+            { id: 'n25', label: '25' },
+            { id: 'n10', label: '10', parent: 'n25' }, { id: 'n35', label: '35', parent: 'n25' },
+            { id: 'n5', label: '5', parent: 'n10' }, { id: 'n15', label: '15', parent: 'n10' },
+            { id: 'n30', label: '30', parent: 'n35' }, { id: 'n40', label: '40', parent: 'n35' },
+            { id: 'n20', label: '20', parent: 'n15' }, { id: 'n45', label: '45', parent: 'n40' },
+          ],
+          highlight: ['n25', 'n35', 'n40'],
+          note: '第 3 次：low=8、high=9，mid=8，与 40 相等，查找成功；比较序列为 25、35、40，共 3 次',
+        },
+      ],
+    },
   },
   {
     id: 'q-2010-09',
@@ -165,6 +255,7 @@ export const y2010c1: Question[] = [
     topic: 'B 树',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'ds-btree-overflow',
     score: 2,
     question: '在一棵 5 阶 B 树中，除根结点外的所有结点至少含有的关键字个数是（ ）。',
     options: ['1', '2', '3', '4'],
@@ -181,6 +272,7 @@ export const y2010c1: Question[] = [
     topic: '拓扑排序',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'ds-topo-aoe',
     score: 2,
     question:
       '某有向图 G 的顶点集 V = {a, b, c, d, e}，弧集 E = {<a,b>, <a,c>, <b,d>, <d,e>}。下列顶点序列中，不是 G 的拓扑序列的是（ ）。',
@@ -188,6 +280,40 @@ export const y2010c1: Question[] = [
     answer: 'D',
     explanation:
       '拓扑序列要求每条弧 <u,v> 的 u 都排在 v 之前。本图约束为 a→b、a→c、b→d、d→e。选项 A、B、C 中四个约束均满足（注意 c 只要求排在 a 之后，排最后也合法）。选项 D 中 d 排在 b 之前，违反弧 <b,d> 的次序要求，故不是拓扑序列。拓扑序列通常不唯一，本题满足约束的序列共 5 种，判断时逐条核对约束即可。',
+    visual: {
+      kind: 'graph',
+      title: '拓扑约束检查：a→b、a→c、b→d、d→e',
+      nodes: [
+        { id: 'a', x: 8, y: 50 },
+        { id: 'b', x: 38, y: 20 },
+        { id: 'c', x: 38, y: 80 },
+        { id: 'd', x: 70, y: 20 },
+        { id: 'e', x: 95, y: 50 },
+      ],
+      edges: [
+        { from: 'a', to: 'b', directed: true },
+        { from: 'a', to: 'c', directed: true },
+        { from: 'b', to: 'd', directed: true },
+        { from: 'd', to: 'e', directed: true },
+      ],
+      steps: [
+        {
+          activeEdges: ['a-b', 'a-c', 'b-d', 'd-e'],
+          activeNodes: ['a', 'b', 'c', 'd', 'e'],
+          note: '四条弧给出四个先后约束：a 先于 b、c；b 先于 d；d 先于 e',
+        },
+        {
+          activeEdges: ['a-b', 'a-c'],
+          activeNodes: ['a'],
+          note: '选项 D（a d b c e）：a 排在最前，弧 <a,b>、<a,c> 的次序要求满足',
+        },
+        {
+          activeEdges: ['b-d'],
+          activeNodes: ['b', 'd'],
+          note: '但 D 中 d（第 2 位）排在 b（第 3 位）之前，违反弧 <b,d>，故 D 不是拓扑序列；A、B、C 逐条核对均满足',
+        },
+      ],
+    },
   },
   {
     id: 'q-2010-12',
@@ -210,6 +336,25 @@ export const y2010c1: Question[] = [
     answer: 'A',
     explanation:
       '选项 A：1024 = 2^10，尾数只需 1 位有效数字，float 可精确表示，(int)(float)1024 仍为 1024，为真。选项 B：(int)2.5 = 2，再转 float 是 2.0 ≠ 2.5。选项 C：float 尾数仅 24 位（含隐含位），π 转成 float 丢失精度，再转回 double 也不等于原 π。选项 D：(int)2.5 = 2，(int)π = 3，两者不等。核心规律：int→float 在数值超过 2^24 时可能失真，double→float 必须舍入，而 int→double 总是精确的。',
+    visual: {
+      kind: 'flow',
+      title: '四个类型转换表达式的真值检查',
+      nodes: [
+        { id: 's', label: 'i=1024, f=2.5\nd=π（double）', type: 'start' },
+        { id: 'p1', label: 'A：1024=2^10\nfloat 可精确表示\n往返转换不变 → 真', type: 'proc' },
+        { id: 'p2', label: 'B：(int)2.5=2\n再转 float 得 2.0\n2.0≠2.5 → 假', type: 'proc' },
+        { id: 'p3', label: 'C：π 转 float\n尾数 24 位装不下\n回转 double 已失真', type: 'proc' },
+        { id: 'p4', label: 'D：(int)f=2\n(int)d=3\n2≠3 → 假', type: 'proc' },
+        { id: 'e', label: '只有 A 为真', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'p1' },
+        { from: 'p1', to: 'p2' },
+        { from: 'p2', to: 'p3' },
+        { from: 'p3', to: 'p4' },
+        { from: 'p4', to: 'e' },
+      ],
+    },
   },
   {
     id: 'q-2010-13',
@@ -269,6 +414,7 @@ export const y2010c1: Question[] = [
     topic: 'Cache 映射',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'co-cache-split',
     score: 2,
     question:
       '某计算机主存地址为 32 位，Cache 数据区容量为 16 KB，块大小为 16 B，采用 2 路组相联映射。则主存地址中标记（Tag）字段的位数为（ ）。',
@@ -324,6 +470,7 @@ export const y2010c1: Question[] = [
     topic: '指令流水线',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'co-pipeline',
     score: 2,
     question:
       '某指令流水线由 4 个功能段组成，每段耗时 1 个时钟周期。若连续输入 10 条指令且不发生任何相关与停顿，则完成这 10 条指令共需（ ）个时钟周期。',
@@ -331,6 +478,23 @@ export const y2010c1: Question[] = [
     answer: 'A',
     explanation:
       '第 1 条指令流完 4 段需 4 个周期（流水线建立期）；之后每个周期末段流出 1 条指令，剩余 9 条再需 9 个周期，总数 T = 4 + (10 − 1) = 13 个周期。一般公式 T = k + (n − 1)，k 为段数、n 为指令条数。选项 40 是串行执行的时间（4 × 10），体现不出流水线的重叠；流水线加速比 = 40 ÷ 13 ≈ 3.08，接近但永远小于段数 4。',
+    visual: {
+      kind: 'pipeline',
+      title: '4 段流水线连续执行 10 条指令（T = 13 拍）',
+      stages: ['S1', 'S2', 'S3', 'S4'],
+      instrs: [
+        { name: 'I1', delay: 0, note: '第 1 条指令建立流水线' },
+        { name: 'I2', delay: 1 },
+        { name: 'I3', delay: 2 },
+        { name: 'I4', delay: 3 },
+        { name: 'I5', delay: 4 },
+        { name: 'I6', delay: 5 },
+        { name: 'I7', delay: 6 },
+        { name: 'I8', delay: 7 },
+        { name: 'I9', delay: 8 },
+        { name: 'I10', delay: 9, note: '末条指令第 13 拍完成：T = 4 + 10 - 1 = 13' },
+      ],
+    },
   },
   {
     id: 'q-2010-20',

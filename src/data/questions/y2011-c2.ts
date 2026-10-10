@@ -11,6 +11,7 @@ export const y2011c2: Question[] = [
     topic: 'CPU 性能',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'co-performance',
     score: 2,
     question:
       '某计算机的主频为 1.8 GHz，程序 P 共含 9×10^7 条指令，平均每条指令需要 4 个时钟周期（CPI = 4），则执行程序 P 所需的时间约为（ ）。',
@@ -103,6 +104,13 @@ export const y2011c2: Question[] = [
     answer: 'A',
     explanation:
       'Belady 异常是 FIFO 的"专利"：它按进入内存的先后次序淘汰，与页面将来的访问情况无关，不满足栈式性质（k 个页框时的驻留集不保证包含 k−1 个页框时的驻留集），页框增多反而可能把"还有用的老页面"提前挤出去。LRU 与 OPT 是栈式算法，缺页次数随页框数单调不增；CLOCK 作为 LRU 的近似，也不会出现 Belady 异常。经典反例序列 1,2,3,4,1,2,5,1,2,3,4,5 在 3 框时缺页 9 次、4 框时缺页 10 次。',
+    visual: {
+      kind: 'pages',
+      title: 'FIFO 的 Belady 异常：4 框缺页 10 次 > 3 框 9 次',
+      algo: 'FIFO',
+      frames: 4,
+      accesses: ['1', '2', '3', '4', '1', '2', '5', '1', '2', '3', '4', '5'],
+    },
   },
   {
     id: 'q-2011-27',
@@ -226,6 +234,7 @@ export const y2011c2: Question[] = [
     topic: '以太网 MAC 帧',
     difficulty: 1,
     source: 'real',
+    templateId: 'cn-minframe',
     score: 2,
     question: '以太网 V2 的 MAC 帧中，数据字段的最小长度是（ ）。',
     options: ['46 字节', '64 字节', '1500 字节', '1518 字节'],
@@ -242,6 +251,7 @@ export const y2011c2: Question[] = [
     topic: '子网划分',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'cn-vlsm',
     score: 2,
     question: '主机的 IP 地址为 192.168.1.100/28，该主机所在子网的广播地址是（ ）。',
     options: ['192.168.1.110', '192.168.1.111', '192.168.1.127', '192.168.1.255'],
@@ -258,6 +268,7 @@ export const y2011c2: Question[] = [
     topic: '路由聚合',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'cn-vlsm',
     score: 2,
     question: '将 202.118.1.0/26 与 202.118.1.64/26 两条路由进行聚合（构成超网），最精确的聚合地址块是（ ）。',
     options: ['202.118.1.0/25', '202.118.1.0/24', '202.118.1.128/25', '202.118.1.0/26'],
@@ -274,6 +285,7 @@ export const y2011c2: Question[] = [
     topic: 'TCP 序号与确认',
     difficulty: 1,
     source: 'adapted',
+    templateId: 'cn-tcp-seq',
     score: 2,
     question: '主机甲向主机乙发送一个 TCP 报文段，其序号 seq = 200，携带 100 字节数据。乙正确接收后，发给甲的确认号是（ ）。',
     options: ['200', '299', '300', '301'],

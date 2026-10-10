@@ -92,6 +92,7 @@ export const y2025c2: Question[] = [
     topic: '处理机调度',
     difficulty: 2,
     source: 'real',
+    templateId: 'os-schedule-metrics',
     score: 2,
     question:
       '单处理机系统中，4 个进程同时到达，估计运行时间分别为 10、6、3、9 个单位时间。采用不可抢占式短进程优先（SJF）调度时，平均等待时间是（ ）。',
@@ -172,6 +173,7 @@ export const y2025c2: Question[] = [
     topic: '页面置换',
     difficulty: 3,
     source: 'real',
+    templateId: 'os-page-replace',
     score: 2,
     question:
       '在一个请求分页系统中，进程 P 获得三个页框（初始全为空），其页面访问序列为 1、2、3、1、2、4、1、2、3、4。采用 LRU（最近最久未使用）置换算法，缺页次数共为（ ）次。',
@@ -179,6 +181,13 @@ export const y2025c2: Question[] = [
     answer: 'B',
     explanation:
       '逐次模拟（驻留集按"最近使用"先后排列）：访问 1 缺页 [1]；2 缺页 [1,2]；3 缺页 [1,2,3]；访问 1、2 命中并刷新其"最近使用"位置；访问 4 缺页，淘汰最久未使用的 3 → [1,2,4]；访问 1、2 命中；访问 3 缺页，此时最久未使用的是 4（1、2 刚被访问过）→ [1,2,3]；访问 4 缺页，淘汰 1 → [2,3,4]。缺页共 6 次。LRU 在命中时会刷新最近使用时间，这是它与 FIFO 的本质区别。',
+    visual: {
+      kind: 'pages',
+      title: 'LRU 页面置换（3 页框：缺页 6 次、命中 4 次）',
+      algo: 'LRU',
+      frames: 3,
+      accesses: ['1', '2', '3', '1', '2', '4', '1', '2', '3', '4'],
+    },
   },
   {
     id: 'q-2025-30',
@@ -227,6 +236,7 @@ export const y2025c2: Question[] = [
     topic: '磁盘调度',
     difficulty: 3,
     source: 'real',
+    templateId: 'os-disk-schedule',
     score: 2,
     question:
       '某磁盘当前磁头位于 100 号磁道，等待服务的磁道访问请求依次为 55、58、39、18、90、160、150、38、184。采用最短寻道时间优先（SSTF）调度算法，磁头移动的总磁道数是（ ）。',
@@ -234,6 +244,27 @@ export const y2025c2: Question[] = [
     answer: 'B',
     explanation:
       'SSTF 每次选择距当前磁头最近的请求：100→90（10）→58（32）→55（3）→39（16）→38（1）→18（20）→150（132）→160（10）→184（24），总计 10+32+3+16+1+20+132+10+24 = 248。SSTF 平均寻道距离短，但远离磁头的请求（如本例中的 184 号）可能长期得不到服务而产生饥饿；SCAN（电梯）算法则保证每个磁道都有确定的访问时机，不会饥饿。',
+    visual: {
+      kind: 'flow',
+      title: 'SSTF 磁盘调度：100 道起的移动序列（共 248 道）',
+      nodes: [
+        { id: 's', label: '磁头在 100 号道\nSSTF：就近服务', type: 'start' },
+        { id: 'p1', label: '100→90→58\n10+32=42 道', type: 'proc' },
+        { id: 'p2', label: '58→55→39\n3+16=19 道', type: 'proc' },
+        { id: 'p3', label: '39→38→18\n1+20=21 道', type: 'proc' },
+        { id: 'p4', label: '18→150：132 道\n（远端最后服务）', type: 'proc' },
+        { id: 'p5', label: '150→160：10 道\n160→184：24 道', type: 'proc' },
+        { id: 'e1', label: '10+32+3+16+1\n+20+132+10+24\n=248 道；远端\n请求易饥饿', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'p1' },
+        { from: 'p1', to: 'p2' },
+        { from: 'p2', to: 'p3' },
+        { from: 'p3', to: 'p4' },
+        { from: 'p4', to: 'p5' },
+        { from: 'p5', to: 'e1' },
+      ],
+    },
   },
   {
     id: 'q-2025-33',
@@ -266,6 +297,23 @@ export const y2025c2: Question[] = [
     answer: 'B',
     explanation:
       '信噪比分贝值 = 10·log₁₀(S/N)，30 dB 对应 S/N = 1000。香农公式 C = W·log₂(1 + S/N) = 3000 × log₂1001 ≈ 3000 × 9.97 ≈ 29.9 kb/s ≈ 30 kb/s。"dB 与倍数的换算（每 +10 dB 即 ×10）"是解题第一步也是最易卡壳的一步；香农公式给出有噪声信道的理论极限，无法通过增加码元状态数突破。',
+    visual: {
+      kind: 'flow',
+      title: '香农公式：3kHz、30dB 的极限速率',
+      nodes: [
+        { id: 's', label: 'W=3kHz\n信噪比 30dB', type: 'start' },
+        { id: 'p1', label: '30dB→1000 倍\n（每 +10dB 即×10）', type: 'proc' },
+        { id: 'p2', label: 'C=W·log₂\n(1+S/N)', type: 'proc' },
+        { id: 'p3', label: 'log₂1001≈9.97\nC≈29.9kb/s', type: 'proc' },
+        { id: 'e1', label: '≈30kb/s：噪声\n信道的理论上限\n增加码元状态数\n也无法突破', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'p1' },
+        { from: 'p1', to: 'p2' },
+        { from: 'p2', to: 'p3' },
+        { from: 'p3', to: 'e1' },
+      ],
+    },
   },
   {
     id: 'q-2025-35',
@@ -314,6 +362,7 @@ export const y2025c2: Question[] = [
     topic: '子网划分',
     difficulty: 2,
     source: 'real',
+    templateId: 'cn-vlsm',
     score: 2,
     question:
       '某单位获得地址块 202.118.1.0/24，需要划分为两个子网：子网 A 至少容纳 120 台主机，子网 B 至少容纳 60 台主机。两个子网的前缀长度应分别取（ ）。',
@@ -321,6 +370,23 @@ export const y2025c2: Question[] = [
     answer: 'A',
     explanation:
       '子网 A：扣除网络地址与广播地址后可用地址须 ≥ 120，/25 的块大小 128、可用 126 ≥ 120 ✓，/26 可用 62 不够；子网 B：/26 可用 62 ≥ 60 ✓，/27 可用 30 不够。故 A 取 /25（202.118.1.0/25）、B 取 /26（202.118.1.128/26），两个子网恰好不重叠且地址不浪费。解题套路：按 2^h − 2 ≥ 主机数求主机位数 h，再由 32 − h 得前缀长度。',
+    visual: {
+      kind: 'flow',
+      title: 'VLSM：/24 划出 A（≥120 台）与 B（≥60 台）',
+      nodes: [
+        { id: 's', label: '202.118.1.0/24\n划两个子网', type: 'start' },
+        { id: 'pr', label: '可用主机数\n=2^h−2', type: 'proc' },
+        { id: 'p1', label: 'A 需 ≥120：\n/25→126 够\n/26→62 不够', type: 'proc' },
+        { id: 'p2', label: 'B 需 ≥60：\n/26→62 够\n/27→30 不够', type: 'proc' },
+        { id: 'e1', label: 'A=.0/25\nB=.128/26\n可用 126 与 62\n恰好不重叠', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'pr' },
+        { from: 'pr', to: 'p1' },
+        { from: 'p1', to: 'p2' },
+        { from: 'p2', to: 'e1' },
+      ],
+    },
   },
   {
     id: 'q-2025-38',
@@ -338,6 +404,29 @@ export const y2025c2: Question[] = [
     answer: 'A',
     explanation:
       '/22 的块大小为 4 个 C 类网段：192.168.8.0/22 覆盖第三字节 8~11，目的地址第三字节 11 落入其中，匹配表项①；192.168.12.0/22 覆盖 12~15，不匹配；默认路由前缀最短。按最长前缀匹配原则应选①，转发给 R1。判断时可将第三字节写成二进制（11 = 0000 1011）与前 6 位 000010 比对，/22 即前两字节 16 位加第三字节高 6 位。',
+    visual: {
+      kind: 'flow',
+      title: '最长前缀匹配：192.168.11.100 的转发',
+      nodes: [
+        { id: 's', label: '收到 IP 分组\n目的 192.168.\n11.100', type: 'start' },
+        { id: 'p1', label: '第三字节 11\n=0000 1011B', type: 'proc' },
+        { id: 'p2', label: '①/22 覆盖 8~11\n11 命中①', type: 'proc' },
+        { id: 'p3', label: '②/22 覆盖 12~15\n11 不命中', type: 'proc' },
+        { id: 'p4', label: '③默认 0.0.0.0/0\n恒命中', type: 'proc' },
+        { id: 'c1', label: '多表项命中：\n取最长前缀', type: 'cond' },
+        { id: 'e1', label: '①/22 最长\n转发给 R1', type: 'end' },
+        { id: 'e2', label: '全不命中才丢弃', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'p1' },
+        { from: 'p1', to: 'p2' },
+        { from: 'p2', to: 'p3' },
+        { from: 'p3', to: 'p4' },
+        { from: 'p4', to: 'c1' },
+        { from: 'c1', to: 'e1', label: '①（/22）＞默认（/0）' },
+        { from: 'c1', to: 'e2', label: '全不命中时' },
+      ],
+    },
   },
   {
     id: 'q-2025-39',

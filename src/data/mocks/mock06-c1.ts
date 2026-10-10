@@ -167,6 +167,50 @@ export const mock06c1: Question[] = [
     ],
     explanation:
       '后序线索中求前驱的判定次序：先看右孩子（有则前驱即右孩子——因为后序最后访问子树根，右子树整体在根之前结束，其最后结点即右子树的根），无右孩子看左孩子，两者皆无（叶结点）则沿 lchild 线索。后序序列 D E B F G C A 可逐位核对：B 的前驱是 E ✓。顺带一提：叶结点 F 的后序前驱为线索，指向 B（序列中 F 紧跟在 B 之后倒过来即 B 是 F 的前驱）。',
+    visual: {
+      kind: 'tree',
+      title: '后序线索二叉树：B 的后序前驱',
+      steps: [
+        {
+          nodes: [
+            { id: 'A', label: 'A' },
+            { id: 'B', label: 'B', parent: 'A' },
+            { id: 'C', label: 'C', parent: 'A' },
+            { id: 'D', label: 'D', parent: 'B' },
+            { id: 'E', label: 'E', parent: 'B' },
+            { id: 'F', label: 'F', parent: 'C' },
+            { id: 'G', label: 'G', parent: 'C' },
+          ],
+          note: '题给二叉树：A 为根，左、右孩子为 B、C；B 的左、右孩子为 D、E；C 的左、右孩子为 F、G（D、E、F、G 均为叶）',
+        },
+        {
+          nodes: [
+            { id: 'A', label: 'A' },
+            { id: 'B', label: 'B', parent: 'A' },
+            { id: 'C', label: 'C', parent: 'A' },
+            { id: 'D', label: 'D', parent: 'B' },
+            { id: 'E', label: 'E', parent: 'B' },
+            { id: 'F', label: 'F', parent: 'C' },
+            { id: 'G', label: 'G', parent: 'C' },
+          ],
+          highlight: ['D', 'E', 'B'],
+          note: '后序遍历（左子树 → 右子树 → 根）得 D E B F G C A：B 的子树最先完成，紧邻 B 之前被访问的是 D、E',
+        },
+        {
+          nodes: [
+            { id: 'A', label: 'A' },
+            { id: 'B', label: 'B', parent: 'A' },
+            { id: 'C', label: 'C', parent: 'A' },
+            { id: 'D', label: 'D', parent: 'B' },
+            { id: 'E', label: 'E', parent: 'B' },
+            { id: 'F', label: 'F', parent: 'C' },
+            { id: 'G', label: 'G', parent: 'C' },
+          ],
+          highlight: ['E'],
+          note: 'B 的后序前驱 = E。规则：B 有右孩子 → 前驱取其右子树中最后被访问的结点，即右孩子 E（叶结点）；若无右孩子才看左孩子 D，若 B 为叶则走 lchild 线索',
+        },
+      ],
+    },
   },
   {
     id: 'mock06-05',
@@ -231,6 +275,7 @@ export const mock06c1: Question[] = [
     topic: '关键路径',
     difficulty: 3,
     source: 'mock',
+    templateId: 'ds-topo-aoe',
     score: 2,
     question:
       '某 AOE 网含事件 v1～v5 与如下活动（弧上数字为持续时间，单位天）：a1: v1→v2 = 6，a2: v1→v3 = 4，a3: v2→v4 = 5，a4: v3→v4 = 8，a5: v2→v5 = 7，a6: v4→v5 = 3。该工程的关键路径长度与关键路径为（　）。',
@@ -543,6 +588,53 @@ export const mock06c1: Question[] = [
     ],
     explanation:
       '原码一位乘法三步走：① 符号位单独处理（两数符号异或），数值部分取绝对值；② 仿手工竖式：从乘数最低位起，每步「加被乘数（当乘数位为 1）或不加（为 0）+ 部分积右移一位」，共 4 步；③ 拼接符号。本题乘数 0.1001 的 1 出现在最低位与最高位，两个部分积按位权错开 3 位相加得 0.01011010，再添负号。与补码乘法（Booth）不同，原码乘法始终对绝对值运算，符号与数值完全分离。',
+    visual: {
+      kind: 'sort',
+      title: '原码一位乘法 [A:Q] 寄存器演化（前 4 位部分积 A、后 4 位乘数 Q）',
+      frames: [
+        {
+          arr: ['0', '0', '0', '0', '1', '0', '0', '1'],
+          note: '初始：部分积 A=0000，乘数 Q=1001；数值位取绝对值运算，符号位 1⊕0 留待最后单独处理',
+        },
+        {
+          arr: ['1', '0', '1', '0', '1', '0', '0', '1'],
+          compared: [7],
+          note: '第 1 步：Q 最低位=1，A 加被乘数 1010：0000+1010=1010（尚未移位）',
+        },
+        {
+          arr: ['0', '1', '0', '1', '0', '1', '0', '0'],
+          note: '第 1 步右移：[A:Q] 整体右移一位，A 的末位挤入 Q 高位；A=0101、Q=0100',
+        },
+        {
+          arr: ['0', '1', '0', '1', '0', '1', '0', '0'],
+          compared: [7],
+          note: '第 2 步：Q 最低位=0，不加被乘数，仅右移',
+        },
+        {
+          arr: ['0', '0', '1', '0', '1', '0', '1', '0'],
+          note: '第 2 步右移后：A=0010、Q=1010',
+        },
+        {
+          arr: ['0', '0', '1', '0', '1', '0', '1', '0'],
+          compared: [7],
+          note: '第 3 步：Q 最低位=0，不加被乘数，仅右移',
+        },
+        {
+          arr: ['0', '0', '0', '1', '0', '1', '0', '1'],
+          note: '第 3 步右移后：A=0001、Q=0101',
+        },
+        {
+          arr: ['1', '0', '1', '1', '0', '1', '0', '1'],
+          compared: [7],
+          note: '第 4 步：Q 最低位=1，A 加被乘数：0001+1010=1011（尚未移位）',
+        },
+        {
+          arr: ['0', '1', '0', '1', '1', '0', '1', '0'],
+          settled: [0, 1, 2, 3, 4, 5, 6, 7],
+          note: '第 4 步右移后 [A:Q]=0101 1010，数值积 0.01011010；符号 1⊕0=1，[x×y]原 = 1.01011010',
+        },
+      ],
+    },
   },
   {
     id: 'mock06-14',
@@ -554,6 +646,7 @@ export const mock06c1: Question[] = [
     topic: '多体交叉',
     difficulty: 2,
     source: 'mock',
+    templateId: 'co-pipeline',
     score: 2,
     question:
       '某主存由 4 个存储体组成，采用低位交叉编址（连续地址依次分布于相邻存储体）。各体存取周期 240ns，总线传送周期 60ns（体数恰为 240/60 = 4）。CPU 以流水方式连续读取 8 个字，所需时间为（　）。',
@@ -671,6 +764,29 @@ export const mock06c1: Question[] = [
     ],
     explanation:
       '扩展操作码的通用算式：第 k 级格式的可用条数 = 剩余前缀数 × 2^地址字段位数。本题层级简单（只有两级），一步到位：8 × 2^6 = 512。若还要求继续向下扩展出零地址指令，则每个前缀须各留 1 个编码作下一级标志，一地址最多 8×(2^6 − 1) + ... 逐级递推；「要不要留标志」必须逐字审题。三地址→二地址→一地址→零地址的嵌套结构是同一思想的逐级展开。',
+    visual: {
+      kind: 'flow',
+      title: '扩展操作码：一地址指令条数的计算链',
+      nodes: [
+        { id: 's', label: '指令字 16 位\n地址码字段 6 位', type: 'start' },
+        { id: 'a', label: '4 位操作码\n共 16 种编码', type: 'proc' },
+        { id: 'b', label: '二地址用 8 种\n剩 8 个扩展前缀', type: 'proc' },
+        { id: 'c', label: '一地址操作码 10 位\n前缀4位+自由6位', type: 'proc' },
+        { id: 'd', label: '还继续扩展\n零地址指令？', type: 'cond' },
+        { id: 'e', label: '是：每前缀留\n1 标志 → 504 条', type: 'end' },
+        { id: 'f', label: '否：前缀下编码\n可全部用满', type: 'proc' },
+        { id: 'g', label: '8×2^6 = 512 条\n（本题答案）', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'a' },
+        { from: 'a', to: 'b' },
+        { from: 'b', to: 'c' },
+        { from: 'c', to: 'd' },
+        { from: 'd', to: 'e', label: '是' },
+        { from: 'd', to: 'f', label: '否' },
+        { from: 'f', to: 'g' },
+      ],
+    },
   },
   {
     id: 'mock06-19',

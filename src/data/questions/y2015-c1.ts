@@ -74,6 +74,22 @@ for (i = 1; i <= n; i *= 2)
     answer: 'A',
     explanation:
       '按运算次序逐步转换：先算 (a + b) 得 ab+；再乘 c 得 ab+c*；最后减 d 得 ab+c*d−。B 对应 a*(b+c) − d，是忽略了括号改变了结合次序；C 对应 (a+b) − (c*d)，把减号和乘号的作用对象弄反；D 对应 a*b − (c+d)。中缀转后缀的机械方法是操作数直接输出、运算符按优先级进栈出栈。',
+    visual: {
+      kind: 'sort',
+      title: '中缀转后缀：操作符栈逐字符演化',
+      frames: [
+        { arr: ['('], note: '扫描 (：左括号直接入栈（深度 1）' },
+        { arr: ['('], note: '扫描 a：操作数直接输出，后缀式暂为 a' },
+        { arr: ['(', '+'], note: '扫描 +：栈顶为 (，加号入栈（深度 2）' },
+        { arr: ['(', '+'], note: '扫描 b：输出 b，后缀式暂为 ab' },
+        { arr: ['空'], note: '扫描 )：弹出 + 输出、( 出栈丢弃，后缀式暂为 ab+' },
+        { arr: ['*'], note: '扫描 *：栈空入栈（深度 1）' },
+        { arr: ['*'], note: '扫描 c：输出 c，后缀式暂为 ab+c' },
+        { arr: ['−'], note: '扫描 −：栈顶 * 优先级更高，先弹出输出再入栈 −，后缀式暂为 ab+c*' },
+        { arr: ['−'], note: '扫描 d：输出 d，后缀式暂为 ab+c*d' },
+        { arr: ['空'], note: '扫描结束：弹出 −。最终后缀式 ab+c*d−，选 A' },
+      ],
+    },
   },
   {
     id: 'q-2015-05',
@@ -84,6 +100,7 @@ for (i = 1; i <= n; i *= 2)
     topic: '二叉排序树',
     difficulty: 2,
     source: 'real',
+    templateId: 'ds-bst-delete',
     score: 2,
     question:
       '从某二叉排序树（BST）中删除一个结点后，随即把该结点的关键字重新插入该 BST，则所得 BST 与原 BST 相比（ ）。',
@@ -140,6 +157,7 @@ for (i = 1; i <= n; i *= 2)
     topic: '堆的调整',
     difficulty: 2,
     source: 'real',
+    templateId: 'ds-heap-op',
     score: 2,
     question:
       '已知小根堆的关键字按层序存放在数组 8, 15, 10, 21, 34, 16, 12（下标从 1 开始）中，删除堆顶元素并重新调整成堆后，数组中的关键字序列是（ ）。',
@@ -152,6 +170,15 @@ for (i = 1; i <= n; i *= 2)
     answer: 'A',
     explanation:
       '删除堆顶 8 后，把最后一个元素 12 放到堆顶，数组变为 12, 15, 10, 21, 34, 16；12 与其较小孩子 10 比较（12 > 10）交换，得 10, 15, 12, 21, 34, 16；此时 12 的孩子只有 21、34，无需继续交换。注意堆的调整只沿被筛结点的一条路径进行，其余元素位置不变，故 B、C、D 中大面积移动元素的序列都不可能是调整结果。',
+    visual: {
+      kind: 'sort',
+      title: '小根堆删除堆顶后的下调过程',
+      frames: [
+        { arr: [8, 15, 10, 21, 34, 16, 12], pivot: 0, note: '初始小根堆（下标 1–7），堆顶 8 待删除' },
+        { arr: [12, 15, 10, 21, 34, 16], pivot: 0, compared: [1, 2], note: '删除 8，末元素 12 补到堆顶；12 与较小孩子 10 比较，12 > 10 需交换' },
+        { arr: [10, 15, 12, 21, 34, 16], settled: [0], compared: [5], note: '交换后 10 就位堆顶；12 落到 3 号位，孩子只剩 16（12 < 16），调整结束：10,15,12,21,34,16，选 A' },
+      ],
+    },
   },
   {
     id: 'q-2015-09',
@@ -178,6 +205,7 @@ for (i = 1; i <= n; i *= 2)
     topic: 'KMP算法',
     difficulty: 3,
     source: 'real',
+    templateId: 'ds-kmp',
     score: 2,
     question:
       '已知字符串 s 为 "ababaaababaa"，采用教材约定 next[1] = 0、next[j] 等于 j−1 前串的最长相等前后缀长度加 1，则 s 的 next 数组（j 从 1 到 12）是（ ）。',
@@ -190,6 +218,25 @@ for (i = 1; i <= n; i *= 2)
     answer: 'A',
     explanation:
       '按定义逐位计算（next[1]=0、next[2]=1）：j=3 时前串 "ab" 无相等前后缀取 1；j=4 时前串 "aba" 最长相等前后缀为 "a"，取 2；j=5 时 "abab" 有 "ab"，取 3；j=6 时 "ababa" 有 "aba"，取 4；j=7 时前串 "ababaa" 只匹配 "a"，取 2；j=8 时 "ababaaa" 匹配 "a"，取 2；j=9 时 "ababaaab" 匹配 "ab"，取 3；j=10 时匹配 "aba" 取 4；j=11 时匹配 "abab" 取 5；j=12 时匹配 "ababa" 取 6。故 next = 0 1 1 2 3 4 2 2 3 4 5 6。B、C 是在中段 aa 处算错前后缀；D 是把整体加 1 后的错位结果。',
+    visual: {
+      kind: 'sort',
+      title: 'KMP：next 数组逐位推导（j = 1..12）',
+      frames: [
+        { arr: ['a', 'b', 'a', 'b', 'a', 'a', 'a', 'b', 'a', 'b', 'a', 'a'], note: '模式串 s = "ababaaababaa"；约定 next[1] = 0，next[j] = 前 j−1 个字符的最长相等前后缀长度 + 1' },
+        { arr: [0, 1, '—', '—', '—', '—', '—', '—', '—', '—', '—', '—'], compared: [1], note: 'j=2：前串 "a" 无相等前后缀 → next[2] = 1' },
+        { arr: [0, 1, 1, '—', '—', '—', '—', '—', '—', '—', '—', '—'], compared: [2], note: 'j=3：前串 "ab" 无相等前后缀 → next[3] = 1' },
+        { arr: [0, 1, 1, 2, '—', '—', '—', '—', '—', '—', '—', '—'], compared: [3], note: 'j=4：前串 "aba" 最长相等前后缀 "a"（长 1）→ next[4] = 2' },
+        { arr: [0, 1, 1, 2, 3, '—', '—', '—', '—', '—', '—', '—'], compared: [4], note: 'j=5：前串 "abab" 有 "ab"（长 2）→ next[5] = 3' },
+        { arr: [0, 1, 1, 2, 3, 4, '—', '—', '—', '—', '—', '—'], compared: [5], note: 'j=6：前串 "ababa" 有 "aba"（长 3）→ next[6] = 4' },
+        { arr: [0, 1, 1, 2, 3, 4, 2, '—', '—', '—', '—', '—'], compared: [6], note: 'j=7：前串 "ababaa" 只剩 "a"（长 1）→ next[7] = 2' },
+        { arr: [0, 1, 1, 2, 3, 4, 2, 2, '—', '—', '—', '—'], compared: [7], note: 'j=8：前串 "ababaaa" 只剩 "a"（长 1）→ next[8] = 2' },
+        { arr: [0, 1, 1, 2, 3, 4, 2, 2, 3, '—', '—', '—'], compared: [8], note: 'j=9：前串 "ababaaab" 有 "ab"（长 2）→ next[9] = 3' },
+        { arr: [0, 1, 1, 2, 3, 4, 2, 2, 3, 4, '—', '—'], compared: [9], note: 'j=10：前串 "ababaaaba" 有 "aba"（长 3）→ next[10] = 4' },
+        { arr: [0, 1, 1, 2, 3, 4, 2, 2, 3, 4, 5, '—'], compared: [10], note: 'j=11：前串 "ababaaabab" 有 "abab"（长 4）→ next[11] = 5' },
+        { arr: [0, 1, 1, 2, 3, 4, 2, 2, 3, 4, 5, 6], compared: [11], note: 'j=12：前串 "ababaaababa" 有 "ababa"（长 5）→ next[12] = 6' },
+        { arr: [0, 1, 1, 2, 3, 4, 2, 2, 3, 4, 5, 6], settled: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], note: 'next = 0 1 1 2 3 4 2 2 3 4 5 6，选 A；B、C 在中段连续 a 处把前后缀算长，D 是整体 +1 的错位结果' },
+      ],
+    },
   },
   {
     id: 'q-2015-11',
@@ -200,6 +247,7 @@ for (i = 1; i <= n; i *= 2)
     topic: '折半查找',
     difficulty: 2,
     source: 'real',
+    templateId: 'ds-bsearch-asl',
     score: 2,
     question:
       '对长度为 12 的有序表采用折半查找，在等概率情况下，查找成功的平均查找长度（平均比较次数）为（ ）。',
@@ -207,6 +255,76 @@ for (i = 1; i <= n; i *= 2)
     answer: 'A',
     explanation:
       '画出 12 个元素的折半查找判定树：第 1 层 1 个元素，第 2 层 2 个，第 3 层 4 个，剩下的 12 − 7 = 5 个元素落在第 4 层。ASL = (1×1 + 2×2 + 3×4 + 4×5) / 12 = (1 + 4 + 12 + 20) / 12 = 37/12 ≈ 3.08。B、C、D 都对应第 4 层元素个数数错（4 个、6 个、7 个）的情形。求 ASL 必须按层统计元素个数，切忌凭感觉估算层数。',
+    visual: {
+      kind: 'tree',
+      title: '12 个元素折半查找判定树与 ASL',
+      steps: [
+        {
+          nodes: [
+            { id: 'r6', label: '6' },
+            { id: 'r3', label: '3', parent: 'r6' }, { id: 'r9', label: '9', parent: 'r6' },
+            { id: 'r1', label: '1', parent: 'r3' }, { id: 'r4', label: '4', parent: 'r3' },
+            { id: 'r7', label: '7', parent: 'r9' }, { id: 'r11', label: '11', parent: 'r9' },
+            { id: 'r2', label: '2', parent: 'r1' }, { id: 'r5', label: '5', parent: 'r4' },
+            { id: 'r8', label: '8', parent: 'r7' },
+            { id: 'r10', label: '10', parent: 'r11' }, { id: 'r12', label: '12', parent: 'r11' },
+          ],
+          note: '判定树：mid=⌊(1+12)/2⌋=6 为根，左右子区间递归建树；结点标注元素位置',
+        },
+        {
+          nodes: [
+            { id: 'r6', label: '6' },
+            { id: 'r3', label: '3', parent: 'r6' }, { id: 'r9', label: '9', parent: 'r6' },
+            { id: 'r1', label: '1', parent: 'r3' }, { id: 'r4', label: '4', parent: 'r3' },
+            { id: 'r7', label: '7', parent: 'r9' }, { id: 'r11', label: '11', parent: 'r9' },
+            { id: 'r2', label: '2', parent: 'r1' }, { id: 'r5', label: '5', parent: 'r4' },
+            { id: 'r8', label: '8', parent: 'r7' },
+            { id: 'r10', label: '10', parent: 'r11' }, { id: 'r12', label: '12', parent: 'r11' },
+          ],
+          highlight: ['r6'],
+          note: '第 1 层 1 个元素（根 6），比较 1 次',
+        },
+        {
+          nodes: [
+            { id: 'r6', label: '6' },
+            { id: 'r3', label: '3', parent: 'r6' }, { id: 'r9', label: '9', parent: 'r6' },
+            { id: 'r1', label: '1', parent: 'r3' }, { id: 'r4', label: '4', parent: 'r3' },
+            { id: 'r7', label: '7', parent: 'r9' }, { id: 'r11', label: '11', parent: 'r9' },
+            { id: 'r2', label: '2', parent: 'r1' }, { id: 'r5', label: '5', parent: 'r4' },
+            { id: 'r8', label: '8', parent: 'r7' },
+            { id: 'r10', label: '10', parent: 'r11' }, { id: 'r12', label: '12', parent: 'r11' },
+          ],
+          highlight: ['r3', 'r9'],
+          note: '第 2 层 2 个元素（3、9），各比较 2 次',
+        },
+        {
+          nodes: [
+            { id: 'r6', label: '6' },
+            { id: 'r3', label: '3', parent: 'r6' }, { id: 'r9', label: '9', parent: 'r6' },
+            { id: 'r1', label: '1', parent: 'r3' }, { id: 'r4', label: '4', parent: 'r3' },
+            { id: 'r7', label: '7', parent: 'r9' }, { id: 'r11', label: '11', parent: 'r9' },
+            { id: 'r2', label: '2', parent: 'r1' }, { id: 'r5', label: '5', parent: 'r4' },
+            { id: 'r8', label: '8', parent: 'r7' },
+            { id: 'r10', label: '10', parent: 'r11' }, { id: 'r12', label: '12', parent: 'r11' },
+          ],
+          highlight: ['r1', 'r4', 'r7', 'r11'],
+          note: '第 3 层 4 个元素（1、4、7、11），各比较 3 次',
+        },
+        {
+          nodes: [
+            { id: 'r6', label: '6' },
+            { id: 'r3', label: '3', parent: 'r6' }, { id: 'r9', label: '9', parent: 'r6' },
+            { id: 'r1', label: '1', parent: 'r3' }, { id: 'r4', label: '4', parent: 'r3' },
+            { id: 'r7', label: '7', parent: 'r9' }, { id: 'r11', label: '11', parent: 'r9' },
+            { id: 'r2', label: '2', parent: 'r1' }, { id: 'r5', label: '5', parent: 'r4' },
+            { id: 'r8', label: '8', parent: 'r7' },
+            { id: 'r10', label: '10', parent: 'r11' }, { id: 'r12', label: '12', parent: 'r11' },
+          ],
+          highlight: ['r2', 'r5', 'r8', 'r10', 'r12'],
+          note: '第 4 层 5 个元素；ASL = (1×1 + 2×2 + 3×4 + 4×5)/12 = 37/12 ≈ 3.08，选 A',
+        },
+      ],
+    },
   },
   {
     id: 'q-2015-12',
@@ -217,6 +335,7 @@ for (i = 1; i <= n; i *= 2)
     topic: 'CPU性能',
     difficulty: 2,
     source: 'real',
+    templateId: 'co-performance',
     score: 2,
     question:
       '某计算机主频为 2 GHz，某程序共执行 10^10 条指令，平均每条指令需要 3 个时钟周期（CPI = 3），则该程序的 CPU 执行时间约为（ ）。',
@@ -234,6 +353,7 @@ for (i = 1; i <= n; i *= 2)
     topic: '补码表示',
     difficulty: 2,
     source: 'real',
+    templateId: 'co-complement',
     score: 2,
     question: '用 3 个 1 和 5 个 0 组成的 8 位二进制补码，能表示的最小整数是（ ）。',
     options: ['1000 0011', '1000 1110', '1111 1000', '1110 0011'],
@@ -310,6 +430,7 @@ for (i = 1; i <= n; i *= 2)
     topic: 'Cache直接映射',
     difficulty: 2,
     source: 'real',
+    templateId: 'co-cache-split',
     score: 2,
     question:
       '某计算机主存 16 MB，按字节编址（主存地址 24 位）；Cache 数据区 64 KB，行长 32 B，采用直接映射。主存地址 24 位应划分为（ ）。',
@@ -322,6 +443,23 @@ for (i = 1; i <= n; i *= 2)
     answer: 'A',
     explanation:
       '行长 32 B = 2^5，块内地址 5 位；Cache 行数 = 64 KB / 32 B = 2^11 = 2048 行，行号 11 位；剩余 24 − 11 − 5 = 8 位作标记。求解次序固定："先块内、再行号、余下全是 Tag"。B 把行数少算一半；C 把标记与行号位数互换；D 把行长误当作 64 B。直接映射中行号也称行索引（index），主存块号 mod 行数即为其唯一可去的行。',
+    visual: {
+      kind: 'flow',
+      title: '直接映射 Cache：主存地址 24 位三段拆分',
+      nodes: [
+        { id: 's', label: '主存地址 24 位\n（16MB 按字节编址）', type: 'start' },
+        { id: 'p1', label: '行长 32B = 2^5\n块内地址 5 位', type: 'proc' },
+        { id: 'p2', label: '行数 64KB/32B\n= 2048 = 2^11\n行号 11 位', type: 'proc' },
+        { id: 'p3', label: '标记 = 24−11−5\n= 8 位（Tag）', type: 'proc' },
+        { id: 'e1', label: 'Tag 8 + 行号 11\n+ 块内 5 = 24 位', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'p1', label: '先块内' },
+        { from: 'p1', to: 'p2', label: '再行号' },
+        { from: 'p2', to: 'p3', label: '余下全作 Tag' },
+        { from: 'p3', to: 'e1', label: '自检：8+11+5=24' },
+      ],
+    },
   },
   {
     id: 'q-2015-18',
@@ -332,6 +470,7 @@ for (i = 1; i <= n; i *= 2)
     topic: '流水线吞吐率',
     difficulty: 2,
     source: 'real',
+    templateId: 'co-pipeline',
     score: 2,
     question:
       '某 5 段指令流水线每段耗时 1 个时钟周期，连续输入 n 条互不相关的指令共需 5 + (n − 1) 个时钟周期。当 n 很大时，该流水线的最大（稳态）吞吐率约为（ ）。',

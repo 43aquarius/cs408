@@ -3,6 +3,7 @@
  * 用法：bun scripts/verify-curated.ts ds
  */
 import type { Question } from '../src/data/types'
+import { TEMPLATES } from '../src/data/templates'
 
 const ROOT = process.cwd()
 const subj = process.argv[2]
@@ -68,6 +69,12 @@ async function main() {
       if (['sort'].includes(v.kind ?? '') && (v.frames?.length ?? 0) < 2) errs.push(`${where}: visual ${v.kind} 步数不足`)
       if (['tree', 'graph'].includes(v.kind ?? '') && (v.steps?.length ?? 0) < 2) errs.push(`${where}: visual ${v.kind} 步数不足`)
       if (v.kind === 'pages' && (v.accesses?.length ?? 0) < 4) errs.push(`${where}: visual pages 序列过短`)
+    }
+    // templateId 必须在注册表且学科匹配
+    if (q.templateId) {
+      if (!TEMPLATES[q.templateId]) errs.push(`${where}: templateId '${q.templateId}' 不在模板注册表`)
+      else if (TEMPLATES[q.templateId].subject !== q.subject)
+        errs.push(`${where}: templateId '${q.templateId}' 学科不匹配（模板属 ${TEMPLATES[q.templateId].subject}）`)
     }
 
     if (q.type === 'single') {

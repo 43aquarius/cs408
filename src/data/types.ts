@@ -146,6 +146,11 @@ export interface Question {
   optionExplanations?: string[]
   /** 动画 / 图示讲解 */
   visual?: VisualSpec
+  /**
+   * 通用解题模板 id（见 src/data/templates）：
+   * 该题属于相对固定的题型时，讲解区附上这一题型的通用解法步骤。
+   */
+  templateId?: string
 }
 
 export const SUBJECTS: Record<

@@ -34,6 +34,7 @@ for (k = 1; k <= n; k *= 2)
     topic: '栈的输出序列',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'ds-stack-sim',
     score: 2,
     question:
       '设栈的输入序列为 1, 2, 3, 4, 5（按此顺序依次进栈，进栈和出栈操作可以交替进行），则下列序列中不可能的出栈序列是（ ）。',
@@ -85,6 +86,7 @@ for (k = 1; k <= n; k *= 2)
     topic: '哈夫曼树',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'ds-huffman',
     score: 2,
     question:
       '一棵哈夫曼树共有 199 个结点，对其进行哈夫曼编码，共能得到（ ）种不同的编码（即可编码的不同字符数）。',
@@ -102,6 +104,7 @@ for (k = 1; k <= n; k *= 2)
     topic: '二叉排序树',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'ds-bst-delete',
     score: 2,
     question:
       '从二叉排序树中删除一个度为 2 的结点 p 时，为保持二叉排序树的中序有序性，可以用（ ）替代（顶替）被删结点。',
@@ -131,6 +134,48 @@ for (k = 1; k <= n; k *= 2)
     answer: 'C',
     explanation:
       '权值互不相等时最小生成树唯一，I 正确（若有两棵不同的 MST，交换差异边可产生更小的权和，矛盾）。权值最小的边不属于任何环上的“唯一最大权边”，故必在最小生成树中，II 正确。权值最大的边若处于某个回路中（回路中它最大），按回路性质将被排除在最小生成树之外，因此 III 不一定成立、叙述错误。综上只有 III 错误。',
+    visual: {
+      kind: 'graph',
+      title: 'Kruskal 选边示例：权值互异时最大边可能被排除',
+      nodes: [
+        { id: 'A', x: 15, y: 30 },
+        { id: 'B', x: 45, y: 15 },
+        { id: 'C', x: 85, y: 45 },
+        { id: 'D', x: 50, y: 85 },
+      ],
+      edges: [
+        { from: 'A', to: 'B', w: 1 },
+        { from: 'B', to: 'C', w: 2 },
+        { from: 'C', to: 'D', w: 3 },
+        { from: 'A', to: 'C', w: 8 },
+      ],
+      steps: [
+        {
+          note: '示例图各边权值互不相同：A-B=1、B-C=2、C-D=3、A-C=8，按 Kruskal 思想从小到大考察每条边',
+        },
+        {
+          activeEdges: ['A-B'],
+          activeNodes: ['A', 'B'],
+          note: '权值最小的边 A-B=1 不在任何回路上，必入 MST——叙述 II 成立',
+        },
+        {
+          activeEdges: ['A-B', 'B-C'],
+          activeNodes: ['A', 'B', 'C'],
+          note: 'B-C=2 与已选边不成环，加入',
+        },
+        {
+          activeEdges: ['A-B', 'B-C', 'C-D'],
+          activeNodes: ['A', 'B', 'C', 'D'],
+          note: '已有 n−1=3 条边，MST 唯一确定（叙述 I 成立）：权和 1+2+3=6',
+        },
+        {
+          activeEdges: ['A-B', 'B-C', 'C-D'],
+          activeNodes: ['A', 'B', 'C', 'D'],
+          labels: { A: '回路最大边', C: '不入 MST' },
+          note: '最大边 A-C=8 与树上路径 A-B-C 构成回路且为回路最大权边，按回路性质被排除——叙述 III 不一定成立，选 C',
+        },
+      ],
+    },
   },
   {
     id: 'q-2019-08',
@@ -141,6 +186,7 @@ for (k = 1; k <= n; k *= 2)
     topic: '最短路径',
     difficulty: 2,
     source: 'real',
+    templateId: 'ds-dijkstra',
     score: 2,
     question:
       '利用 Dijkstra 算法求从某源点到其余各顶点的最短路径时，下列说法中正确的是（ ）。',
@@ -163,6 +209,7 @@ for (k = 1; k <= n; k *= 2)
     topic: '散列表',
     difficulty: 3,
     source: 'adapted',
+    templateId: 'ds-hash-asl',
     score: 2,
     question:
       '将关键字序列 14, 36, 42, 38, 40, 15, 19, 12 依次插入表长为 11 的散列表，散列函数 H(key) = key mod 11，用线性探测法处理冲突。则在等概率情况下，查找成功的平均查找长度为（ ）。',
@@ -170,6 +217,64 @@ for (k = 1; k <= n; k *= 2)
     answer: 'B',
     explanation:
       '各关键字的散列与探测过程：14→3（1 次）；36→3 冲突放 4（2 次）；42→9（1 次）；38→5（1 次）；40→7（1 次）；15→4 冲突，5 冲突，放 6（3 次）；19→8（1 次）；12→1（1 次）。查找成功的 ASL = (1+2+1+1+1+3+1+1) ÷ 8 = 11/8。注意线性探测法下“同义词”与“非同义词”的探测长度会叠加，这正是堆积现象推高 ASL 的原因。',
+    visual: {
+      kind: 'sort',
+      title: '线性探测法建表与成功 ASL（H(key) = key mod 11）',
+      frames: [
+        {
+          arr: ['—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—'],
+          note: '表长 11、初始全空；依次插入 14、36、42、38、40、15、19、12',
+        },
+        {
+          arr: ['—', '—', '—', 14, '—', '—', '—', '—', '—', '—', '—'],
+          compared: [3],
+          settled: [3],
+          note: '插入 14：H(14)=3 空位，1 次比较直接落位',
+        },
+        {
+          arr: ['—', '—', '—', 14, 36, '—', '—', '—', '—', '—', '—'],
+          compared: [3, 4],
+          settled: [4],
+          note: '插入 36：H(36)=3 被 14 占用，向后探测 4 号空位（2 次比较）',
+        },
+        {
+          arr: ['—', '—', '—', 14, 36, '—', '—', '—', '—', 42, '—'],
+          compared: [9],
+          settled: [9],
+          note: '插入 42：H(42)=9 空位（1 次）',
+        },
+        {
+          arr: ['—', '—', '—', 14, 36, 38, '—', '—', '—', 42, '—'],
+          compared: [5],
+          settled: [5],
+          note: '插入 38：H(38)=5 空位（1 次）',
+        },
+        {
+          arr: ['—', '—', '—', 14, 36, 38, '—', 40, '—', 42, '—'],
+          compared: [7],
+          settled: [7],
+          note: '插入 40：H(40)=7 空位（1 次）',
+        },
+        {
+          arr: ['—', '—', '—', 14, 36, 38, 15, 40, '—', 42, '—'],
+          compared: [4, 5, 6],
+          settled: [6],
+          note: '插入 15：H(15)=4，4、5 号被 36、38 占用，6 号落位（3 次）——非同义词也被探测，即堆积',
+        },
+        {
+          arr: ['—', '—', '—', 14, 36, 38, 15, 40, 19, 42, '—'],
+          compared: [8],
+          settled: [8],
+          note: '插入 19：H(19)=8 空位（1 次）',
+        },
+        {
+          arr: ['—', 12, '—', 14, 36, 38, 15, 40, 19, 42, '—'],
+          compared: [1],
+          settled: [1],
+          note: '插入 12：H(12)=1 空位（1 次）。成功 ASL = (1+2+1+1+1+3+1+1) ÷ 8 = 11/8，选 B',
+        },
+      ],
+    },
   },
   {
     id: 'q-2019-10',
@@ -214,6 +319,7 @@ for (k = 1; k <= n; k *= 2)
     topic: 'IEEE 754',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'co-ieee754',
     score: 2,
     question:
       '将十进制数 12.75 存入采用 IEEE 754 单精度（float）格式的变量中，该变量的机器数（十六进制表示）为（ ）。',
@@ -295,6 +401,7 @@ for (k = 1; k <= n; k *= 2)
     topic: 'Cache 映射',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'co-cache-split',
     score: 2,
     question:
       '某机主存按字节编址，主存地址空间为 32 位。若数据 Cache 的容量为 32 KB，块大小为 32 B，采用直接映射方式，则主存地址中的标记（Tag）字段为（ ）位。',
@@ -312,6 +419,7 @@ for (k = 1; k <= n; k *= 2)
     topic: '相对寻址',
     difficulty: 3,
     source: 'adapted',
+    templateId: 'co-relative',
     score: 2,
     question:
       '某计算机主存按字节编址，相对转移指令由 4 个字节组成，位于主存地址 2000H 处，指令中的位移量字段为 D8H（8 位补码）。取指令时每取一个字节 PC 自动加 1，则该转移指令成功转移后的目标地址是（ ）。',
@@ -319,6 +427,27 @@ for (k = 1; k <= n; k *= 2)
     answer: 'A',
     explanation:
       '指令占 4 字节，取指结束后 PC = 2000H + 4 = 2004H。位移量 D8H 是 8 位补码，最高位为 1，表示负数，其值为 −28H。目标地址 = 当前 PC + 位移量 = 2004H − 28H = 1FDCH。常见错误：忘记取指后 PC 已加 4（误得 1FD8H），或把 D8H 当正数计算（误得 2028H 一类的正向地址）。相对寻址以“下一条指令地址”为基准，这一规则必须牢记。',
+    visual: {
+      kind: 'flow',
+      title: '相对寻址目标地址计算（指令在 2000H，位移量 D8H）',
+      nodes: [
+        { id: 's', label: '相对转移指令\n存放在 2000H\n（4 字节指令）', type: 'start' },
+        { id: 'p1', label: '取指：逐字节取出\nPC 每取 1 字节加 1', type: 'proc' },
+        { id: 'p2', label: '取指结束\nPC = 2000H + 4\n= 2004H', type: 'proc' },
+        { id: 'p3', label: '位移量 D8H\n8 位补码最高位 1', type: 'proc' },
+        { id: 'p4', label: '负数：符号扩展\nD8H → −28H', type: 'proc' },
+        { id: 'p5', label: 'EA = (PC) + 位移\n= 2004H − 28H', type: 'proc' },
+        { id: 'e', label: '目标地址 1FDCH\n（选 A）', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'p1' },
+        { from: 'p1', to: 'p2', label: '4 字节取完' },
+        { from: 'p2', to: 'p3', label: '进入执行阶段' },
+        { from: 'p3', to: 'p4', label: '按补码求真值' },
+        { from: 'p4', to: 'p5' },
+        { from: 'p5', to: 'e' },
+      ],
+    },
   },
   {
     id: 'q-2019-18',
@@ -373,6 +502,7 @@ for (k = 1; k <= n; k *= 2)
     topic: '总线带宽',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'co-bus-bandwidth',
     score: 2,
     question:
       '某同步总线共有 32 根数据线，每个时钟周期可在数据线上传送一次数据，总线时钟频率为 100 MHz，则该总线的数据传输率（带宽）为（ ）。',

@@ -5,7 +5,8 @@
  *   bun scripts/verify-bank.ts               校验所有已存在的年份
  *   bun scripts/verify-bank.ts --strict      18 套（2009-2026）必须齐全
  */
-import type { Question } from '../src/data/types'
+import type { Question, VisualSpec } from '../src/data/types'
+import { TEMPLATES } from '../src/data/templates'
 
 const ROOT = process.cwd()
 const QDIR = `${ROOT}/src/data/questions`
@@ -36,6 +37,109 @@ const BIG_SCORE_RULES: Array<{ nums: number[]; sum: number; label: string }> = [
 ]
 
 const PLACEHOLDER_RE = /TODO|FIXME|待补充|此处省略|（略）|\(略\)|占位符|XXXX+|\?\?\?+/
+
+/** 校验 visual 动画/图示规范（口径与 verify-mocks 一致） */
+function checkVisual(v: VisualSpec | undefined, where: string, errs: string[], warns: string[]): boolean {
+  if (!v) return false
+  const w = `${where} visual`
+  if (!v.title || v.title.length < 2) errs.push(`${w}: 缺少 title`)
+  switch (v.kind) {
+    case 'sort': {
+      if (!v.frames || v.frames.length < 2) errs.push(`${w}: sort 至少 2 帧`)
+      v.frames?.forEach((f, i) => {
+        if (!f.arr || f.arr.length === 0) errs.push(`${w}[${i}]: arr 为空`)
+        if (!f.note || f.note.length < 4) errs.push(`${w}[${i}]: note 过短`)
+        if (f.range && (f.range[0] < 0 || f.range[1] >= (f.arr?.length ?? 0)))
+          errs.push(`${w}[${i}]: range 越界`)
+      })
+      break
+    }
+    case 'tree': {
+      if (!v.steps || v.steps.length < 2) errs.push(`${w}: tree 至少 2 步`)
+      v.steps?.forEach((s, i) => {
+        if (!s.nodes || s.nodes.length === 0) errs.push(`${w}[${i}]: nodes 为空`)
+        const ids = new Set(s.nodes.map((n) => n.id))
+        if (ids.size !== s.nodes.length) errs.push(`${w}[${i}]: 节点 id 重复`)
+        s.nodes.forEach((n) => {
+          if (n.parent && !ids.has(n.parent)) errs.push(`${w}[${i}]: 节点 ${n.id} 的 parent ${n.parent} 不在本步 nodes 中`)
+          if (!n.label || n.label.length > 6) warns.push(`${w}[${i}]: 节点 ${n.id} label 过长（>6 字）`)
+        })
+        if (!s.note || s.note.length < 4) errs.push(`${w}[${i}]: note 过短`)
+      })
+      break
+    }
+    case 'graph': {
+      if (!v.nodes || v.nodes.length < 2) errs.push(`${w}: nodes 至少 2 个`)
+      if (!v.steps || v.steps.length < 2) errs.push(`${w}: steps 至少 2 步`)
+      const ids = new Set(v.nodes?.map((n) => n.id) ?? [])
+      v.nodes?.forEach((n) => {
+        if (n.x < 0 || n.x > 100 || n.y < 0 || n.y > 100) errs.push(`${w}: 节点 ${n.id} 坐标越界（0-100）`)
+      })
+      v.edges?.forEach((e) => {
+        if (!ids.has(e.from) || !ids.has(e.to)) errs.push(`${w}: 边 ${e.from}-${e.to} 引用不存在的节点`)
+      })
+      v.steps?.forEach((s, i) => {
+        s.activeEdges?.forEach((k) => {
+          const [f, t] = k.split('-')
+          if (!ids.has(f) || !ids.has(t)) errs.push(`${w}[${i}]: activeEdge ${k} 引用不存在的节点`)
+        })
+        if (!s.note || s.note.length < 4) errs.push(`${w}[${i}]: note 过短`)
+      })
+      break
+    }
+    case 'pages': {
+      if (!v.accesses || v.accesses.length < 4) errs.push(`${w}: accesses 至少 4 项`)
+      if (!v.frames || v.frames < 1 || v.frames > 8) errs.push(`${w}: frames 应为 1-8`)
+      if (!['FIFO', 'LRU', 'CLOCK', 'OPT'].includes(v.algo)) errs.push(`${w}: algo 非法`)
+      break
+    }
+    case 'cwnd': {
+      if (!v.points || v.points.length < 4) errs.push(`${w}: points 至少 4 项`)
+      v.points?.forEach((p, i) => {
+        if (p.cwnd < 1) errs.push(`${w}[${i}]: cwnd 应 ≥1`)
+        if (i > 0 && p.round <= v.points[i - 1].round) errs.push(`${w}[${i}]: round 必须递增`)
+      })
+      break
+    }
+    case 'pipeline': {
+      if (!v.stages || v.stages.length < 2) errs.push(`${w}: stages 至少 2 段`)
+      if (!v.instrs || v.instrs.length < 2) errs.push(`${w}: instrs 至少 2 条`)
+      let prev = -1
+      v.instrs?.forEach((ins, i) => {
+        if (ins.delay < 0) errs.push(`${w}[${i}]: delay 应 ≥0`)
+        if (ins.delay < prev) errs.push(`${w}[${i}]: delay 应按序不减（顺序发射）`)
+        prev = ins.delay
+      })
+      break
+    }
+    case 'seq': {
+      if (!v.actors || v.actors.length < 2 || v.actors.length > 4) errs.push(`${w}: actors 应为 2-4 个`)
+      const names = new Set(v.actors ?? [])
+      if (!v.messages || v.messages.length < 2) errs.push(`${w}: messages 至少 2 条`)
+      v.messages?.forEach((m, i) => {
+        if (!names.has(m.from) || !names.has(m.to)) errs.push(`${w}[${i}]: from/to 必须是 actors 之一`)
+        if (!m.label) errs.push(`${w}[${i}]: 缺 label`)
+      })
+      break
+    }
+    case 'flow': {
+      if (!v.nodes || v.nodes.length < 3) errs.push(`${w}: nodes 至少 3 个`)
+      const ids = new Set(v.nodes?.map((n) => n.id) ?? [])
+      v.nodes?.forEach((n) => {
+        if (!['start', 'proc', 'cond', 'end'].includes(n.type)) errs.push(`${w}: 节点 ${n.id} type 非法`)
+        if (n.label && n.label.split('\n').some((l) => l.length > 14)) warns.push(`${w}: 节点 ${n.id} label 行过长`)
+      })
+      v.edges?.forEach((e, i) => {
+        if (!ids.has(e.from) || !ids.has(e.to)) errs.push(`${w}: 边[${i}] 引用不存在的节点`)
+      })
+      if (!v.nodes?.some((n) => n.type === 'start')) warns.push(`${w}: 缺少 start 节点`)
+      break
+    }
+    default:
+      errs.push(`${w}: 未知 kind`)
+  }
+  return true
+}
 
 async function loadYear(y: number): Promise<{ c: Question[]; a: Question[] } | null> {
   try {
@@ -81,6 +185,14 @@ function checkQuestion(q: Question, y: number, errs: string[], warns: string[]):
       errs.push(`${where}: 综合题 answerText 缺失或过短`)
     if (q.options || q.answer) errs.push(`${where}: 综合题不应有 options/answer`)
   }
+
+  // templateId 必须在注册表中
+  if (q.templateId) {
+    if (!TEMPLATES[q.templateId]) errs.push(`${where}: templateId '${q.templateId}' 不在模板注册表`)
+    else if (TEMPLATES[q.templateId].subject !== q.subject)
+      errs.push(`${where}: templateId '${q.templateId}' 学科不匹配（模板属 ${TEMPLATES[q.templateId].subject}）`)
+  }
+  checkVisual(q.visual, where, errs, warns)
 }
 
 async function main(): Promise<void> {

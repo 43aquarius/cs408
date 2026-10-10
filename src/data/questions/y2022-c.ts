@@ -54,6 +54,7 @@ for (int i = 1; i <= n; i *= 2)
     topic: '栈与队列',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'ds-stack-sim',
     score: 2,
     question:
       '设栈 S 的输入序列为 1、2、3、4、5，元素依次进栈，允许进栈与出栈操作交替进行，则下列序列中，不可能是 S 的输出序列的是（ ）。',
@@ -61,6 +62,41 @@ for (int i = 1; i <= n; i *= 2)
     answer: 'C',
     explanation:
       '逐项模拟：要使 4 第一个出栈，须先压入 1、2、3、4，再弹出 4、3；接着压入 5 并弹出，得到前缀 4 3 5，此时栈内自底向顶剩 1、2，下一个出栈的只能是 2 而不可能先弹出 1，故"4 3 5 1 2"无法实现。A、B、D 都能通过合法的进栈/出栈交错得到。判定技巧：出栈序列中若出现"大、小、…"的模式，检查其后元素是否满足栈的后进先出约束。',
+    visual: {
+      kind: 'sort',
+      title: '选项 C「4 3 5 1 2」的栈模拟（arr 为栈，右端为栈顶，— 为空）',
+      frames: [
+        {
+          arr: ['—', '—', '—', '—'],
+          note: '输入序列 1~5 依次进栈，目标出栈序列 4 3 5 1 2：逐项模拟检验选项 C',
+        },
+        {
+          arr: [1, 2, 3, 4],
+          settled: [3],
+          note: '要第一个弹出 4：须先把 1、2、3、4 全部压栈，栈深达 4',
+        },
+        {
+          arr: [1, 2, 3, '—'],
+          settled: [2],
+          note: '弹出 4（已输出 4），栈顶恰为下一个目标 3',
+        },
+        {
+          arr: [1, 2, '—', '—'],
+          settled: [1],
+          note: '弹出 3（已输出 4 3）；下一目标 5 不在栈中，压入 5',
+        },
+        {
+          arr: [1, 2, 5, '—'],
+          settled: [2],
+          note: '5 入栈：栈顶恰为目标 5，立即弹出（已输出 4 3 5）',
+        },
+        {
+          arr: [1, 2, '—', '—'],
+          compared: [1],
+          note: '只剩目标 1 2，但栈顶为 2：必须先弹 2 才能到 1，与目标顺序矛盾，序列非法，选 C',
+        },
+      ],
+    },
   },
   {
     id: 'q-2022-04',
@@ -71,6 +107,7 @@ for (int i = 1; i <= n; i *= 2)
     topic: '二叉树性质',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'ds-tree-count',
     score: 2,
     question: '若一棵完全二叉树共有 124 个结点，则其中叶结点的个数是（ ）。',
     options: ['61', '62', '63', '31'],
@@ -87,6 +124,7 @@ for (int i = 1; i <= n; i *= 2)
     topic: '二叉树遍历',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'ds-traversal-restore',
     score: 2,
     question:
       '已知某二叉树的先序遍历序列为 ABDGCEF，中序遍历序列为 DGBAECF，则其后序遍历序列是（ ）。',
@@ -94,6 +132,53 @@ for (int i = 1; i <= n; i *= 2)
     answer: 'C',
     explanation:
       '先序首字符 A 为根；中序中 A 左侧的 DGB 对应左子树（其先序为 BDG），右侧的 ECF 对应右子树（其先序为 CEF）。递归分解：B 为左子树之根，D 为 B 的左孩子且 G 为 D 的右孩子；C 为右子树之根，E、F 分别为其左、右孩子。还原后按"左右根"得后序 G D B E F C A，即 GDBEFCA。其余选项在 D、G、E 的相对次序上出错。',
+    visual: {
+      kind: 'tree',
+      title: '先序 ABDGCEF + 中序 DGBAECF 还原二叉树',
+      steps: [
+        {
+          nodes: [{ id: 'A', label: 'A' }],
+          highlight: ['A'],
+          note: '先序首字符 A 为根；中序 DGBAECF 中 A 左侧 DGB 为左子树、右侧 ECF 为右子树',
+        },
+        {
+          nodes: [
+            { id: 'A', label: 'A' },
+            { id: 'B', label: 'B', parent: 'A' },
+            { id: 'D', label: 'D', parent: 'B' },
+            { id: 'G', label: 'G', parent: 'D' },
+          ],
+          highlight: ['B', 'D', 'G'],
+          note: '左子树先序 BDG → B 为根；中序 DGB 中 D、G 均在 B 左侧：D 为 B 的左孩子，G 为 D 的右孩子',
+        },
+        {
+          nodes: [
+            { id: 'A', label: 'A' },
+            { id: 'B', label: 'B', parent: 'A' },
+            { id: 'D', label: 'D', parent: 'B' },
+            { id: 'G', label: 'G', parent: 'D' },
+            { id: 'C', label: 'C', parent: 'A' },
+            { id: 'E', label: 'E', parent: 'C' },
+            { id: 'F', label: 'F', parent: 'C' },
+          ],
+          highlight: ['C', 'E', 'F'],
+          note: '右子树先序 CEF → C 为根；中序 ECF：E 为 C 的左孩子、F 为 C 的右孩子',
+        },
+        {
+          nodes: [
+            { id: 'A', label: 'A' },
+            { id: 'B', label: 'B', parent: 'A' },
+            { id: 'D', label: 'D', parent: 'B' },
+            { id: 'G', label: 'G', parent: 'D' },
+            { id: 'C', label: 'C', parent: 'A' },
+            { id: 'E', label: 'E', parent: 'C' },
+            { id: 'F', label: 'F', parent: 'C' },
+          ],
+          highlight: ['G', 'D', 'B', 'E', 'F', 'C', 'A'],
+          note: '后序（左右根）：G D B E F C A，即 GDBEFCA，选 C',
+        },
+      ],
+    },
   },
   {
     id: 'q-2022-06',
@@ -128,6 +213,47 @@ for (int i = 1; i <= n; i *= 2)
     answer: 'D',
     explanation:
       '当存在权值相同的边时，选择不同的等权边可以得到权值和相同的多棵最小生成树，Ⅰ 正确；若各边权值互不相同，每一步被选中的边都唯一，最小生成树必唯一，Ⅱ 正确；最小生成树不唯一时，Prim（从顶点扩张）与 Kruskal（按边全局排序）在等权边上的选择可能不同，得到的生成树也可能不同（但总权值相同），Ⅲ 正确。故三条均正确。',
+    visual: {
+      kind: 'graph',
+      title: '等权边使最小生成树不唯一',
+      nodes: [
+        { id: 'A', x: 20, y: 25 },
+        { id: 'B', x: 80, y: 25 },
+        { id: 'C', x: 20, y: 75 },
+        { id: 'D', x: 80, y: 75 },
+      ],
+      edges: [
+        { from: 'A', to: 'B', w: 1 },
+        { from: 'C', to: 'D', w: 1 },
+        { from: 'A', to: 'C', w: 2 },
+        { from: 'B', to: 'D', w: 2 },
+      ],
+      steps: [
+        {
+          note: '四边形含等权边：A−B 与 C−D 权均为 1，A−C 与 B−D 权均为 2',
+        },
+        {
+          activeEdges: ['A-B', 'C-D'],
+          activeNodes: ['A', 'B', 'C', 'D'],
+          note: 'Kruskal 全局按权排序：先选两条权 1 的边 A−B、C−D（形成两个连通分量）',
+        },
+        {
+          activeEdges: ['A-B', 'C-D', 'A-C'],
+          activeNodes: ['A', 'B', 'C', 'D'],
+          note: '再从权 2 的边中任选一条连接两分量（如 A−C）：MST₁ 权和 1+1+2=4',
+        },
+        {
+          activeEdges: ['A-B', 'B-D', 'C-D'],
+          activeNodes: ['A', 'B', 'C', 'D'],
+          note: 'Prim 从 A 逐点扩张：A−B(1)→B−D(2)→C−D(1)：MST₂ 权和仍为 4，两树不同 → Ⅰ、Ⅲ 成立',
+        },
+        {
+          activeEdges: ['A-B', 'B-D', 'C-D'],
+          activeNodes: ['A', 'B', 'C', 'D'],
+          note: 'Ⅱ：若各边权互不相同，每一步被选中的边都唯一，MST 必唯一。Ⅰ、Ⅱ、Ⅲ 均正确，选 D',
+        },
+      ],
+    },
   },
   {
     id: 'q-2022-08',
@@ -159,6 +285,7 @@ for (int i = 1; i <= n; i *= 2)
     topic: 'B 树',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'ds-btree-overflow',
     score: 2,
     question: '在一棵 m 阶 B 树（m ≥ 3）中，除根结点以外的所有非终端（非叶）结点至少具有（ ）。',
     options: ['⌊m/2⌋ 棵子树', '⌈m/2⌉ − 1 棵子树', '⌈m/2⌉ 棵子树', 'm − 1 棵子树'],
@@ -175,6 +302,7 @@ for (int i = 1; i <= n; i *= 2)
     topic: '折半查找',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'ds-bsearch-asl',
     score: 2,
     question:
       '对长度为 11 的有序顺序表进行折半查找（判定树视为平衡），在等概率条件下查找成功的平均查找长度是（ ）。',
@@ -192,6 +320,7 @@ for (int i = 1; i <= n; i *= 2)
     topic: '快速排序',
     difficulty: 3,
     source: 'real',
+    templateId: 'ds-quicksort',
     score: 2,
     question:
       '对关键字序列 (49, 38, 65, 97, 76, 13, 27, 50) 做一趟快速排序：以第 1 个元素 49 为枢轴，从序列两端交替向中间扫描、搬移元素，一趟结束后所得序列为（ ）。',
@@ -204,6 +333,44 @@ for (int i = 1; i <= n; i *= 2)
     answer: 'A',
     explanation:
       '模拟"挖坑—填坑"过程：枢轴 49 暂存，右端扫描找小于 49 者，27 填入首位；左端扫描找大于 49 者，65 填入右端空位；13、97 依次交换位置；指针相遇处（原第 4 位）放入 49。结果左部 27、38、13 均 < 49，右部 76、97、65、50 均 > 49。B 是两端"交换法"变体的结果，与题述搬移方式不符；C、D 中出现了不满足划分性质的元素次序。',
+    visual: {
+      kind: 'sort',
+      title: '快速排序一趟划分（挖坑法，枢轴 49，— 为坑位）',
+      frames: [
+        {
+          arr: [49, 38, 65, 97, 76, 13, 27, 50],
+          pivot: 0,
+          note: '枢轴 49 暂存，位置 0 成为坑；j 从右端向左找小于 49 的元素',
+        },
+        {
+          arr: [27, 38, 65, 97, 76, 13, '—', 50],
+          settled: [0],
+          note: 'a[6]=27<49：填入坑 0，坑移到 6；i 从左端向右找大于 49 的元素',
+        },
+        {
+          arr: [27, 38, '—', 97, 76, 13, 65, 50],
+          settled: [6],
+          note: 'a[2]=65>49：填入坑 6，坑移到 2；j 继续向左找小于 49 的元素',
+        },
+        {
+          arr: [27, 38, 13, 97, 76, '—', 65, 50],
+          settled: [2],
+          note: 'a[5]=13<49：填入坑 2，坑移到 5；i 向右找大于 49 的元素',
+        },
+        {
+          arr: [27, 38, 13, '—', 76, 97, 65, 50],
+          settled: [5],
+          note: 'a[3]=97>49：填入坑 5，坑移到 3；j 向左扫描，i 与 j 在位置 3 相遇',
+        },
+        {
+          arr: [27, 38, 13, 49, 76, 97, 65, 50],
+          pivot: 3,
+          settled: [3],
+          range: [0, 7],
+          note: '枢轴 49 归位于 3：左侧 27、38、13 均 <49，右侧 76、97、65、50 均 >49，选 A',
+        },
+      ],
+    },
   },
   {
     id: 'q-2022-12',
@@ -214,6 +381,7 @@ for (int i = 1; i <= n; i *= 2)
     topic: 'IEEE 754',
     difficulty: 2,
     source: 'real',
+    templateId: 'co-ieee754',
     score: 2,
     question:
       '某计算机采用 IEEE 754 单精度格式表示 float 型变量 x。若 x 的机器数（十六进制）为 40D0 0000H，则 x 的十进制值是（ ）。',
@@ -221,6 +389,29 @@ for (int i = 1; i <= n; i *= 2)
     answer: 'B',
     explanation:
       '40D00000H 展开为 0 10000001 1010000…0：数符为 0（正数）；阶码字段为 1000 0001B = 129，指数 = 129 − 127 = 2；尾数 = 1.101₂ = 1.625。故 x = 1.625 × 2² = 6.5。C 误把尾数按 1101₂ = 13 直接读出（丢掉了隐含的 1 与小数点位置）；A 相当于按指数 1 计算；D 把数符取反。',
+    visual: {
+      kind: 'flow',
+      title: 'IEEE 754 单精度：40D00000H → 真值 6.5',
+      nodes: [
+        { id: 's', label: '机器数\n40D00000H', type: 'start' },
+        { id: 'p1', label: '拆位：0 10000001\n1010…0（尾数23位）', type: 'proc' },
+        { id: 'p2', label: '数符 0 → 正数', type: 'proc' },
+        { id: 'p3', label: '阶码 10000001B\n=129', type: 'proc' },
+        { id: 'p4', label: '指数 e\n=129−127=2', type: 'proc' },
+        { id: 'p5', label: '尾数 1.101₂\n=1.625（含隐含 1）', type: 'proc' },
+        { id: 'p6', label: 'x=1.625×2²\n=6.5', type: 'proc' },
+        { id: 'e', label: '答案 B：6.5', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'p1' },
+        { from: 'p1', to: 'p2' },
+        { from: 'p2', to: 'p3' },
+        { from: 'p3', to: 'p4' },
+        { from: 'p4', to: 'p5' },
+        { from: 'p5', to: 'p6' },
+        { from: 'p6', to: 'e' },
+      ],
+    },
   },
   {
     id: 'q-2022-13',
@@ -231,6 +422,7 @@ for (int i = 1; i <= n; i *= 2)
     topic: '补码加减',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'co-complement',
     score: 2,
     question:
       '某机器字长 8 位，采用补码表示整数。设 [x]补 = FEH，[y]补 = 82H，则 [x + y]补 及溢出判断的正确结论是（ ）。',
@@ -290,6 +482,7 @@ for (int i = 1; i <= n; i *= 2)
     topic: '相对寻址',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'co-relative',
     score: 2,
     question:
       '某机器按字节编址，转移指令由 2 个字节组成，存放在主存地址 2008H 处，其位移量字段内容为 FCH（补码表示）。取指令时每取 1 个字节 PC 自动加 1，则该转移指令成功转移后的目标地址是（ ）。',
@@ -297,6 +490,23 @@ for (int i = 1; i <= n; i *= 2)
     answer: 'B',
     explanation:
       '相对寻址的目标地址以"执行时的 PC"为基准：取完 2 字节指令后 PC 已从 2008H 增至 200AH；位移量 FCH 是 8 位补码 −4，目标地址 = 200AH − 4 = 2006H。A 用指令地址 2008H 直接加减（忘掉指令自身的 2 字节增量）；C 是取指后的 PC 值本身，未加位移量。',
+    visual: {
+      kind: 'flow',
+      title: '相对寻址：目标地址 = 执行时 PC + 位移量',
+      nodes: [
+        { id: 's', label: '转移指令\n存放在 2008H', type: 'start' },
+        { id: 'p1', label: '指令长 2 字节\n取指后 PC=200AH', type: 'proc' },
+        { id: 'p2', label: 'FCH 为 8 位补码\n真值 = −4', type: 'proc' },
+        { id: 'p3', label: '目标 = 200AH−4\n= 2006H', type: 'proc' },
+        { id: 'e', label: '选 B：2006H', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'p1' },
+        { from: 'p1', to: 'p2' },
+        { from: 'p2', to: 'p3' },
+        { from: 'p3', to: 'e' },
+      ],
+    },
   },
   {
     id: 'q-2022-17',
@@ -365,6 +575,7 @@ for (int i = 1; i <= n; i *= 2)
     topic: '总线带宽',
     difficulty: 1,
     source: 'adapted',
+    templateId: 'co-bus-bandwidth',
     score: 2,
     question:
       '某同步总线共有 32 根数据线，总线时钟频率为 66 MHz，每个时钟周期传送 1 次数据，则该总线的最大数据传输率（带宽）为（ ）。',
@@ -489,6 +700,7 @@ for (int i = 1; i <= n; i *= 2)
     topic: '死锁与安全',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'os-banker',
     score: 2,
     question:
       '下列关于死锁与安全状态的叙述中，正确的是（ ）。\nⅠ. 系统处于死锁状态时必定处于不安全状态\nⅡ. 系统处于不安全状态时必定会发生死锁\nⅢ. 银行家算法属于死锁避免策略',
@@ -669,6 +881,7 @@ for (int i = 1; i <= n; i *= 2)
     topic: '子网划分',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'cn-vlsm',
     score: 2,
     question:
       '某主机的 IP 地址为 192.168.1.70，子网掩码为 255.255.255.192，则该主机所在子网的广播地址是（ ）。',
@@ -676,6 +889,25 @@ for (int i = 1; i <= n; i *= 2)
     answer: 'C',
     explanation:
       '掩码 255.255.255.192 即 /26：70 = 0100 0110B，子网位取前两位 01，网络地址为 192.168.1.64，块大小 64，子网范围 .64～.127，主机位全 1 得广播地址 192.168.1.127。B 是按 /27 计算的结果；D 是默认 C 类（/24）网段的广播地址；A 是网络地址。',
+    visual: {
+      kind: 'flow',
+      title: '/26 子网：网络地址与广播地址',
+      nodes: [
+        { id: 's', label: '主机 IP .70\n掩码末字节 192', type: 'start' },
+        { id: 'p1', label: '192=1100 0000B\n借 2 位 → /26', type: 'proc' },
+        { id: 'p2', label: '70=0100 0110B\n子网位=01', type: 'proc' },
+        { id: 'p3', label: '块大小 64\n子网 .64～.127', type: 'proc' },
+        { id: 'p4', label: '网络地址\n192.168.1.64', type: 'proc' },
+        { id: 'e', label: '广播 .127 → 选 C', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'p1' },
+        { from: 'p1', to: 'p2' },
+        { from: 'p2', to: 'p3' },
+        { from: 'p3', to: 'p4' },
+        { from: 'p4', to: 'e' },
+      ],
+    },
   },
   {
     id: 'q-2022-38',

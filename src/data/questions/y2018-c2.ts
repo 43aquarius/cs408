@@ -11,6 +11,7 @@ export const y2018c2: Question[] = [
     topic: '指令流水线',
     difficulty: 3,
     source: 'adapted',
+    templateId: 'co-pipeline',
     score: 2,
     question:
       '某 5 段指令流水线（IF、ID、EX、MEM、WB），每段耗时 1 个时钟周期，采用旁路（转发）技术消除 ALU 结果的数据相关，但 load 指令之后紧跟使用其装入数据的指令（load-use 相关）仍需插入 1 个气泡。现有如下指令序列：\nI1: lw R1, 0(R2)\nI2: add R3, R1, R4\nI3: sub R5, R5, R6\nI4: and R7, R8, R9\nI5: or R10, R11, R12\nI6: sw R3, 4(R2)\n执行这 6 条指令共需（ ）个时钟周期。',
@@ -18,6 +19,19 @@ export const y2018c2: Question[] = [
     answer: 'B',
     explanation:
       '理想情况下 T = k + (n − 1) = 5 + (6 − 1) = 10 个周期。序列中只有 I2 立即使用 I1（load）装入的数据，属于 load-use 相关：装入的数据在 I1 的 MEM 段末尾才可用，而 I2 的 EX 段与前一条指令的 MEM 段重叠，转发路径来不及送到，必须暂停 1 个周期。故总周期数 = 10 + 1 = 11。I3～I6 之间互不相关或可由转发解决，不再增加停顿。',
+    visual: {
+      kind: 'pipeline',
+      title: '5 段流水线 6 条指令：load-use 气泡（共 11 拍）',
+      stages: ['IF', 'ID', 'EX', 'MEM', 'WB'],
+      instrs: [
+        { name: 'I1: lw R1,0(R2)', delay: 0, note: '装入的数据要到 MEM 段（拍 3）末尾才可用' },
+        { name: 'I2: add R3,R1,R4', delay: 2, note: '立即使用 R1：load-use 相关插 1 个气泡，EX 推迟到拍 4（MEM→EX 前递）' },
+        { name: 'I3: sub R5,R5,R6', delay: 3, note: '与前后指令无相关，恢复每拍一条' },
+        { name: 'I4: and R7,R8,R9', delay: 4, note: '无相关' },
+        { name: 'I5: or R10,R11,R12', delay: 5, note: '无相关' },
+        { name: 'I6: sw R3,4(R2)', delay: 6, note: 'R3 由 I2 产生，转发及时送达，不再停顿；总时间 5+6−1+1=11 拍（选 B）' },
+      ],
+    },
   },
   {
     id: 'q-2018-22',
@@ -88,6 +102,7 @@ export const y2018c2: Question[] = [
     topic: '作业调度',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'os-schedule-metrics',
     score: 2,
     question:
       '单处理机系统中，进程 P1、P2、P3、P4 在 0 时刻同时到达，所需的运行时间分别为 8、4、6、2（单位为时间片个数）。采用短作业优先（SJF，非抢占）调度算法，则平均周转时间为（ ）。',
@@ -129,6 +144,31 @@ export const y2018c2: Question[] = [
     answer: 'B',
     explanation:
       '最坏情况是每个进程都已获得 x − 1 个资源且尚未完成：此时若剩余资源仍能使某一进程满足最大需求，它就能运行完并归还资源，系统不死锁。条件为 3(x − 1) + 1 ≤ 9，解得 x ≤ 11/3，即 x 最大取 3。验证：3 个进程各持有 2 个（共 6 个），剩 3 个，任一进程再申请 1 个即可完成释放；若 x = 4，各持 3 个时资源耗尽，互相等待而死锁。',
+    visual: {
+      kind: 'flow',
+      title: '最坏情况不死锁：3 进程 9 资源求 x 上限',
+      nodes: [
+        { id: 's', label: '3 进程共享\n9 个同类资源', type: 'start' },
+        { id: 'p1', label: '每进程完成前\n最多申请 x 个', type: 'proc' },
+        { id: 'p2', label: '最坏：各已获\nx−1 个', type: 'proc' },
+        { id: 'c1', label: '剩余 9−3(x−1)\n≥ 1 ？', type: 'cond' },
+        { id: 'p3', label: '至少一进程可\n凑足 x 完成', type: 'proc' },
+        { id: 'p5', label: '3(x−1)≤8\nx≤11/3', type: 'proc' },
+        { id: 'e1', label: 'x 最大取 3\n（选 B）', type: 'end' },
+        { id: 'd1', label: '资源用尽\n谁也动不了', type: 'proc' },
+        { id: 'de', label: '死锁（x=4：\n各持 3 剩 0）', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'p1' },
+        { from: 'p1', to: 'p2' },
+        { from: 'p2', to: 'c1' },
+        { from: 'c1', to: 'p3', label: '是' },
+        { from: 'p3', to: 'p5' },
+        { from: 'p5', to: 'e1' },
+        { from: 'c1', to: 'd1', label: '否' },
+        { from: 'd1', to: 'de' },
+      ],
+    },
   },
   {
     id: 'q-2018-28',
@@ -177,6 +217,7 @@ export const y2018c2: Question[] = [
     topic: '位示图',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'os-bitmap',
     score: 2,
     question:
       '某文件系统的磁盘容量为 4 GB，物理块大小为 4 KB。若采用位示图管理磁盘块的分配与回收（每个二进制位对应一个磁盘块），则位示图至少需要（ ）KB。',
@@ -266,6 +307,7 @@ export const y2018c2: Question[] = [
     topic: '争用期',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'cn-minframe',
     score: 2,
     question:
       '传统以太网（10 Mb/s，CSMA/CD）的最小帧长为 64 字节，该最小帧长对应的一个争用期（冲突窗口）时间为（ ）。',
@@ -317,6 +359,27 @@ export const y2018c2: Question[] = [
     answer: 'B',
     explanation:
       '192.168.10.100 既属于 192.168.10.0/24，又属于 192.168.10.64/26（该块范围是 .64～.127，.100 在其中）。当多个表项都匹配时，路由器按最长前缀匹配选择网络前缀最长（最具体）的一条，故转发给 R2。多条匹配路由是正常现象，并不会丢弃，也不是随机选择。',
+    visual: {
+      kind: 'flow',
+      title: '最长前缀匹配：/26 优先于 /24',
+      nodes: [
+        { id: 's', label: '目的地址\n192.168.10.100', type: 'start' },
+        { id: 'p1', label: '/24：.100 匹配\n候选 R1（/24）', type: 'proc' },
+        { id: 'p2', label: '/26：.100 匹配\n候选 R2（/26）', type: 'proc' },
+        { id: 'c1', label: '多表项匹配？', type: 'cond' },
+        { id: 'p3', label: '最长前缀优先\n/26 > /24', type: 'proc' },
+        { id: 'e1', label: '转发 R2（选 B）', type: 'end' },
+        { id: 'e2', label: '唯一匹配项\n即转发', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'p1' },
+        { from: 'p1', to: 'p2' },
+        { from: 'p2', to: 'c1' },
+        { from: 'c1', to: 'p3', label: '是' },
+        { from: 'p3', to: 'e1' },
+        { from: 'c1', to: 'e2', label: '否' },
+      ],
+    },
   },
   {
     id: 'q-2018-38',
@@ -344,6 +407,7 @@ export const y2018c2: Question[] = [
     topic: 'TCP 确认号',
     difficulty: 2,
     source: 'adapted',
+    templateId: 'cn-tcp-seq',
     score: 2,
     question:
       '主机 A 向主机 B 发送一个 TCP 报文段：序号字段 seq = 501，数据部分长 200 字节（此前数据已被 B 正确确认）。B 正确收到该报文段后，返回的确认报文段中确认号字段 ack 的值为（ ）。',

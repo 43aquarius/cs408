@@ -108,6 +108,7 @@ export const mock05c1: Question[] = [
     topic: '二叉树遍历',
     difficulty: 3,
     source: 'mock',
+    templateId: 'ds-traversal-restore',
     score: 2,
     question:
       '已知某二叉树的中序遍历序列为 DBEGAFCH，后序遍历序列为 DGEBFHCA，则其前序遍历序列为（　）。',
@@ -191,6 +192,50 @@ export const mock05c1: Question[] = [
     ],
     explanation:
       '树转二叉树（孩子—兄弟表示）后，某结点的右子树 = 它的全部右侧兄弟及这些兄弟的后代。本题 B 的右侧兄弟为 C、D，C 的后代为 G，故 B 的右子树共 3 个结点。推论：根结点 A 没有兄弟，转换后根的右子树必为空——这也是判断此类转换的常用固定结论。',
+    visual: {
+      kind: 'tree',
+      title: '树 T 转孩子—兄弟二叉树（B 的右子树）',
+      steps: [
+        {
+          nodes: [
+            { id: 'A', label: 'A' },
+            { id: 'B', label: 'B', parent: 'A' },
+            { id: 'C', label: 'C', parent: 'A' },
+            { id: 'D', label: 'D', parent: 'A' },
+            { id: 'E', label: 'E', parent: 'B' },
+            { id: 'F', label: 'F', parent: 'B' },
+            { id: 'G', label: 'G', parent: 'C' },
+          ],
+          note: '原树 T（一般树，允许一个结点有多个孩子）：A 的孩子为 B、C、D；B 的孩子为 E、F；C 的孩子为 G',
+        },
+        {
+          nodes: [
+            { id: 'A', label: 'A' },
+            { id: 'B', label: 'B', parent: 'A' },
+            { id: 'E', label: 'E', parent: 'B' },
+            { id: 'F', label: 'F', parent: 'E' },
+            { id: 'C', label: 'C', parent: 'B' },
+            { id: 'G', label: 'G', parent: 'C' },
+            { id: 'D', label: 'D', parent: 'C' },
+          ],
+          highlight: ['B', 'E', 'C'],
+          note: '按「长子作左孩子、兄弟挂右链」转换：A 左挂长子 B；B 左挂长子 E、右挂兄弟 C；C 左挂长子 G、右挂兄弟 D；E 右挂兄弟 F',
+        },
+        {
+          nodes: [
+            { id: 'A', label: 'A' },
+            { id: 'B', label: 'B', parent: 'A' },
+            { id: 'E', label: 'E', parent: 'B' },
+            { id: 'F', label: 'F', parent: 'E' },
+            { id: 'C', label: 'C', parent: 'B' },
+            { id: 'G', label: 'G', parent: 'C' },
+            { id: 'D', label: 'D', parent: 'C' },
+          ],
+          highlight: ['C', 'G', 'D'],
+          note: 'B 的右子树 = 右链上的兄弟 C 及其后代（C 的左孩子 G、C 的右孩子 D），共 {C, G, D} 3 个结点；E、F 在 B 的左子树方向，不计入',
+        },
+      ],
+    },
   },
   {
     id: 'mock05-07',
@@ -278,6 +323,7 @@ export const mock05c1: Question[] = [
     topic: '折半查找',
     difficulty: 3,
     source: 'mock',
+    templateId: 'ds-bsearch-asl',
     score: 2,
     question:
       '对含有 16 个元素的有序表按 mid = ⌊(low + high)/2⌋ 取中点进行折半查找，其判定树第 1～5 层的结点数分别为 1、2、4、8、1。则等概率下查找成功的平均查找长度为（　）。',
@@ -377,6 +423,7 @@ export const mock05c1: Question[] = [
     topic: '堆与优先队列',
     difficulty: 2,
     source: 'mock',
+    templateId: 'ds-heap-op',
     score: 2,
     question:
       '用数组（下标从 0 开始）存储的小顶堆实现优先队列，当前堆中元素依次为 5、20、8、30、25。现将元素 3 插入优先队列，按标准插入算法调整后，数组内容为（　）。',
@@ -505,6 +552,7 @@ export const mock05c1: Question[] = [
     topic: '存储器扩展',
     difficulty: 1,
     source: 'mock',
+    templateId: 'co-chip-extend',
     score: 2,
     question: '用 64K×8 位的 SRAM 芯片构成 256K×32 位的存储器，共需芯片（　）。',
     options: ['4 片', '16 片', '8 片', '32 片'],
@@ -672,6 +720,7 @@ export const mock05c1: Question[] = [
     topic: '总线带宽',
     difficulty: 2,
     source: 'mock',
+    templateId: 'co-bus-bandwidth',
     score: 2,
     question:
       '某同步总线时钟频率为 100MHz，数据线宽度 32 位，每个时钟周期在总线上传送一次数据。用该总线连续传送 8MB 数据（忽略传送间隙与控制开销）所需时间约为（　）。',

@@ -160,6 +160,7 @@ export const y2016c2: Question[] = [
     topic: '位示图',
     difficulty: 2,
     source: 'real',
+    templateId: 'os-bitmap',
     score: 2,
     question: '某磁盘共有 4096 个物理块，用位示图管理其空闲空间，每个字 32 位。则位示图共需（ ）个字。',
     options: ['32', '64', '128', '4096'],
@@ -176,6 +177,7 @@ export const y2016c2: Question[] = [
     topic: '磁盘调度',
     difficulty: 3,
     source: 'real',
+    templateId: 'os-disk-schedule',
     score: 2,
     question:
       '磁头当前位于 100 号磁道，正在向磁道号增大方向移动，待访问磁道依次为 55、58、39、18、90、160、150、38、184。采用 SCAN（电梯）算法，磁头移动的磁道数总量为（ ）。',
@@ -183,6 +185,29 @@ export const y2016c2: Question[] = [
     answer: 'C',
     explanation:
       'SCAN 沿当前方向服务到该方向最后一个请求（本题到 184），再折返服务其余请求：100→150→160→184 移动 84 道；折返 184→90→58→55→39→38→18 移动 184 − 18 = 166 道；合计 84 + 166 = 250。若采用先来先服务或最短寻道优先，移动量与本结果均不同；注意 LOOK 变体到达两端最大/最小请求即折返，本题数值恰好相同。',
+    visual: {
+      kind: 'flow',
+      title: 'SCAN 电梯算法：磁头共移动 250 道',
+      nodes: [
+        { id: 's', label: '磁头在 100 道\n向磁道号增大方向', type: 'start' },
+        { id: 'u1', label: '上行服务\n150→160→184', type: 'proc' },
+        { id: 'u2', label: '移动 184−100\n= 84 道', type: 'proc' },
+        { id: 'd1', label: '折返下行\n90→58→55\n→39→38→18', type: 'proc' },
+        { id: 'd2', label: '移动 184−18\n= 166 道', type: 'proc' },
+        { id: 't', label: '合计 84+166\n= 250 道', type: 'proc' },
+        { id: 'f1', label: '对比 SSTF：\n每次选最近请求\n共移动 248 道', type: 'proc' },
+        { id: 'e', label: 'SCAN 共 250 道\n（答案 C）', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'u1' },
+        { from: 'u1', to: 'u2' },
+        { from: 'u2', to: 'd1' },
+        { from: 'd1', to: 'd2' },
+        { from: 'd2', to: 't' },
+        { from: 't', to: 'f1' },
+        { from: 'f1', to: 'e' },
+      ],
+    },
   },
   {
     id: 'q-2016-31',
@@ -214,6 +239,7 @@ export const y2016c2: Question[] = [
     topic: '单缓冲',
     difficulty: 3,
     source: 'real',
+    templateId: 'os-buffer-time',
     score: 2,
     question:
       '某设备把一块数据从设备传送到缓冲区需 96 μs，缓冲区把数据传送到用户工作区需 24 μs，CPU 处理（分析）一块数据需 52 μs。采用单缓冲时，每处理一块数据平均花费（ ）。',
@@ -221,6 +247,27 @@ export const y2016c2: Question[] = [
     answer: 'A',
     explanation:
       '单缓冲下设备输入（T = 96）与 CPU 处理（C = 52）可并行（数据在不同空间），但"缓冲区→工作区"的传送（M = 24）需要 CPU 参与且独占缓冲区，无法与 T、C 重叠。每块时间 = max(T, C) + M = max(96, 52) + 24 = 120 μs。双缓冲时改为 max(T, M + C)，读者可对比记忆。',
+    visual: {
+      kind: 'flow',
+      title: '单缓冲：稳态每块 = max(T,C)+M',
+      nodes: [
+        { id: 's', label: 'T=96 M=24 C=52\n（单位 μs）', type: 'start' },
+        { id: 't1', label: '设备送块入缓冲区\nT=96', type: 'proc' },
+        { id: 't2', label: '缓冲区→工作区\nM=24（CPU 参与）', type: 'proc' },
+        { id: 't3', label: 'CPU 处理 C=52\n与下一块的 T 并行', type: 'proc' },
+        { id: 't4', label: '稳态每块\nmax(T,C)+M', type: 'proc' },
+        { id: 'e', label: '=max(96,52)+24\n= 120 μs', type: 'end' },
+        { id: 'd', label: '双缓冲对比：\nmax(T,M+C)\n= 96 μs', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 't1' },
+        { from: 't1', to: 't2' },
+        { from: 't2', to: 't3' },
+        { from: 't3', to: 't4' },
+        { from: 't4', to: 'e' },
+        { from: 't4', to: 'd' },
+      ],
+    },
   },
   {
     id: 'q-2016-33',
@@ -231,6 +278,7 @@ export const y2016c2: Question[] = [
     topic: '快速以太网',
     difficulty: 2,
     source: 'real',
+    templateId: 'cn-minframe',
     score: 2,
     question:
       '快速以太网 100BASE-T 把数据率从 10 Mb/s 提高到 100 Mb/s，同时仍保持最小帧长 64 B 不变，其采取的措施是（ ）。',
@@ -290,6 +338,7 @@ export const y2016c2: Question[] = [
     topic: '子网与广播地址',
     difficulty: 2,
     source: 'real',
+    templateId: 'cn-vlsm',
     score: 2,
     question: '主机 202.118.78.5 的子网掩码为 255.255.255.192，则其所在子网的广播地址是（ ）。',
     options: ['202.118.78.63', '202.118.78.127', '202.118.78.255', '202.118.78.0'],

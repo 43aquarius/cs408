@@ -12,6 +12,7 @@ export const mock03c1: Question[] = [
     topic: '循环双端队列',
     difficulty: 2,
     source: 'mock',
+    templateId: 'ds-loop-queue',
     score: 2,
     question:
       '某循环双端队列存放在数组 A[0..7] 中（容量 8），约定 front 指向队头元素、rear 指向队尾元素的下一位置，初始队空且 front = rear = 3。操作规则：队尾入队——先存 A[rear] 再令 rear = (rear+1) mod 8；队头入队——先令 front = (front−1+8) mod 8 再存 A[front]；队头出队——取出 A[front] 后令 front = (front+1) mod 8。现依次执行：队尾入 a、队尾入 b、队头入 c、队头出队 1 次、队尾入 d。全部完成后，队列中元素（从队头到队尾）及 front、rear 的值分别为（　）。',
@@ -150,6 +151,7 @@ export const mock03c1: Question[] = [
     topic: '哈夫曼树',
     difficulty: 2,
     source: 'mock',
+    templateId: 'ds-huffman',
     score: 2,
     question: '以权值集合 {2, 4, 5, 7, 9, 11} 构造哈夫曼树，其带权路径长度 WPL 为（　）。',
     options: ['109', '98', '93', '82'],
@@ -332,6 +334,7 @@ export const mock03c1: Question[] = [
     topic: '堆',
     difficulty: 3,
     source: 'mock',
+    templateId: 'ds-heap-op',
     score: 2,
     question:
       '小顶堆存于数组（下标从 0 开始）：15、20、30、50、40、45。先删除堆顶元素，再把 10 插入堆中（两步均按堆的调整规则进行）。最终数组内容为（　）。',
@@ -461,6 +464,7 @@ export const mock03c1: Question[] = [
     topic: '补码溢出',
     difficulty: 2,
     source: 'mock',
+    templateId: 'co-complement',
     score: 2,
     question:
       '机器字长 8 位（补码表示，含符号位）。x = 65、y = −98，用补码加法实现 x − y（即计算 65 − (−98)）。运算的机器结果与溢出判断为（　）。',
@@ -565,6 +569,7 @@ export const mock03c1: Question[] = [
     topic: 'Cache映射',
     difficulty: 3,
     source: 'mock',
+    templateId: 'co-cache-split',
     score: 2,
     question:
       '某计算机主存容量 128MB，按字节编址；Cache 数据区容量 16KB，块大小 32B，采用 2 路组相联映射。主存地址中标记（Tag）字段的位数为（　）。',
@@ -578,6 +583,29 @@ export const mock03c1: Question[] = [
     ],
     explanation:
       '组相联地址三段划分：Tag | 组号 | 块内偏移，其中组数 = Cache 行数 ÷ 路数。本题：27 位地址、组号 8 位、块内 5 位，Tag = 14 位。同参数下四种映射的 Tag 对照：直接映射 13、2 路 14、4 路 15、全相联 22——路数每翻倍 Tag 增 1 位，比较器由 1 套扩展到行数套。',
+    visual: {
+      kind: 'flow',
+      title: '2 路组相联的地址划分推导',
+      nodes: [
+        { id: 's', label: '开始\n求 Tag 位数', type: 'start' },
+        { id: 'a', label: '主存 128MB\n地址 27 位', type: 'proc' },
+        { id: 'b', label: '块 32B = 2^5\n偏移 5 位', type: 'proc' },
+        { id: 'c', label: 'Cache 16KB/32B\n行数 512', type: 'proc' },
+        { id: 'd', label: '2 路一组\n组数 256，组号 8 位', type: 'proc' },
+        { id: 'e', label: 'Tag = 27−8−5\n= 14 位', type: 'proc' },
+        { id: 'f', label: '对照：直接映射 13\n4 路 15、全相联 22', type: 'proc' },
+        { id: 'g', label: '结束', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'a' },
+        { from: 'a', to: 'b' },
+        { from: 'b', to: 'c' },
+        { from: 'c', to: 'd' },
+        { from: 'd', to: 'e' },
+        { from: 'e', to: 'f' },
+        { from: 'f', to: 'g' },
+      ],
+    },
   },
   {
     id: 'mock03-17',
@@ -589,6 +617,7 @@ export const mock03c1: Question[] = [
     topic: '相对寻址',
     difficulty: 2,
     source: 'mock',
+    templateId: 'co-relative',
     score: 2,
     question:
       '某机器按字节编址，转移指令字长 2B，采用相对寻址，位移量用 8 位补码表示。该转移指令存放在主存地址 2000H 处，指令中位移量字段为 E2H。取指后（PC 自动加 2），转移目标地址为（　）。',
@@ -669,6 +698,7 @@ export const mock03c1: Question[] = [
     topic: '流水线加速比',
     difficulty: 2,
     source: 'mock',
+    templateId: 'co-pipeline',
     score: 2,
     question:
       '某 6 段流水线各段耗时均为 10ns，连续执行 25 条指令（数据无关、无其他停顿）。与每条指令完全串行执行相比，该流水线的加速比约为（　）。',

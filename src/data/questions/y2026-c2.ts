@@ -11,6 +11,7 @@ export const y2026c2: Question[] = [
     topic: '总线带宽',
     difficulty: 1,
     source: 'real',
+    templateId: 'co-bus-bandwidth',
     score: 2,
     question:
       '某同步总线的时钟频率为 100 MHz，数据线宽度为 64 位，每个时钟周期可完成一次数据传送。该总线的最大数据传输率（带宽）为（ ）。',
@@ -91,6 +92,7 @@ export const y2026c2: Question[] = [
     topic: '处理机调度',
     difficulty: 2,
     source: 'real',
+    templateId: 'os-schedule-metrics',
     score: 2,
     question:
       '某系统在时刻 0 仅有进程 P1 到达，P2、P3、P4 分别于时刻 1、2、3 到达，它们的服务时间依次为 5、3、1、7（时间单位 ms）。采用非抢占式短作业优先（SJF）调度算法，则 4 个进程的平均周转时间为（ ）。',
@@ -98,6 +100,31 @@ export const y2026c2: Question[] = [
     answer: 'A',
     explanation:
       '模拟：0 时刻只有 P1，先运行 P1（0–5）；5 时刻就绪的是 P2（剩 3）、P3（1）、P4（7），选最短的 P3（5–6），再选 P2（6–9），最后 P4（9–16）。各进程周转时间：P1 = 5 − 0 = 5，P2 = 9 − 1 = 8，P3 = 6 − 2 = 4，P4 = 16 − 3 = 13，平均 = (5 + 8 + 4 + 13)/4 = 7.5 ms。选 8.0 是按 FCFS 计算（顺序 P1、P2、P3、P4）的结果，注意 SJF 是"就绪者中最短"而非"全局最短"，非抢占式下已运行的作业不会被赶走。',
+    visual: {
+      kind: 'flow',
+      title: '非抢占 SJF：平均周转 7.5 ms（对照 FCFS 8.0 ms）',
+      nodes: [
+        { id: 's', label: '到达 0,1,2,3\n服务 5,3,1,7', type: 'start' },
+        { id: 'c1', label: '调度算法？', type: 'cond' },
+        { id: 'p1', label: 'SJF：0 时仅 P1\nP1 跑 0~5', type: 'proc' },
+        { id: 'p2', label: '5 时就绪 P2P3P4\n最短 P3：5~6', type: 'proc' },
+        { id: 'p3', label: '再 P2：6~9\n最后 P4：9~16', type: 'proc' },
+        { id: 'p4', label: '周转 P1=5 P2=8\nP3=4 P4=13', type: 'proc' },
+        { id: 'e1', label: '平均=30÷4\n=7.5 ms', type: 'end' },
+        { id: 'f1', label: 'FCFS 按到达序\nP1P2P3P4 连跑', type: 'proc' },
+        { id: 'f2', label: '周转 5,7,7,13\n平均=8.0 ms', type: 'end' },
+      ],
+      edges: [
+        { from: 's', to: 'c1' },
+        { from: 'c1', to: 'p1', label: 'SJF' },
+        { from: 'c1', to: 'f1', label: 'FCFS' },
+        { from: 'p1', to: 'p2' },
+        { from: 'p2', to: 'p3' },
+        { from: 'p3', to: 'p4' },
+        { from: 'p4', to: 'e1' },
+        { from: 'f1', to: 'f2' },
+      ],
+    },
   },
   {
     id: 'q-2026-26',
@@ -142,6 +169,7 @@ export const y2026c2: Question[] = [
     topic: '快表与访存',
     difficulty: 2,
     source: 'real',
+    templateId: 'os-paging-translate',
     score: 2,
     question:
       '某分页存储管理系统配有快表（TLB）：访问快表需 10 ns，访问一次主存需 100 ns，页表常驻主存。进程访存时先查快表：命中则直接得到物理块号并访主存一次取出数据；未命中则先访主存查页表、再访主存取数据（无论命中与否，查快表的时间都计入）。若快表命中率为 90%，则每次访存的平均时间为（ ）。',
@@ -235,6 +263,7 @@ export const y2026c2: Question[] = [
     topic: '时延带宽积',
     difficulty: 2,
     source: 'real',
+    templateId: 'cn-latency',
     score: 2,
     question:
       '两台主机之间的链路长度为 1000 km，信号传播速率为 2×10^8 m/s，链路的数据传输率为 100 Mb/s。该链路的时延带宽积（以比特为单位）为（ ）。',
@@ -286,6 +315,7 @@ export const y2026c2: Question[] = [
     topic: 'CSMA/CD',
     difficulty: 2,
     source: 'real',
+    templateId: 'cn-minframe',
     score: 2,
     question:
       '某采用 CSMA/CD 协议的网络数据传输率为 100 Mb/s，网络两端点间最大距离为 1 km，信号传播速率为 2×10^8 m/s。为保证冲突检测有效，该网络的最小帧长应为（ ）。',
@@ -341,6 +371,7 @@ export const y2026c2: Question[] = [
     topic: 'TCP确认号',
     difficulty: 2,
     source: 'real',
+    templateId: 'cn-tcp-seq',
     score: 2,
     question:
       '主机 B 通过 TCP 连接正确收到了主机 A 发来的一个报文段：其序号字段 seq = 400，数据部分长 300 字节。主机 B 回送的确认报文段中确认号字段的值应为（ ）。',

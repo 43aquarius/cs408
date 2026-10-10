@@ -124,6 +124,7 @@ export const mock08c2: Question[] = [
     topic: '信号量次序',
     difficulty: 3,
     source: 'mock',
+    templateId: 'os-pv-model',
     score: 2,
     question: '在生产者-消费者问题中，生产者进程的正确代码是先执行 P(empty)（申请空缓冲区）再执行 P(mutex)（申请缓冲区互斥锁）。若把这两个 P 操作的顺序颠倒，其余代码不变，则（　）。',
     options: [
@@ -203,6 +204,7 @@ export const mock08c2: Question[] = [
     topic: '页面置换',
     difficulty: 3,
     source: 'mock',
+    templateId: 'os-page-replace',
     score: 2,
     question: '对页面访问序列 4、3、2、1、4、3、5、4、3、2、1、5（初始页框为空），FIFO 置换算法在 3 个页框时缺页 9 次、4 个页框时缺页 10 次。据此及算法性质，下列说法正确的是（　）。',
     options: [
@@ -378,6 +380,7 @@ export const mock08c2: Question[] = [
     topic: '时延带宽积',
     difficulty: 2,
     source: 'mock',
+    templateId: 'cn-latency',
     score: 2,
     question: '两结点间链路长度 1000 km，信号传播速率 2×10^8 m/s，链路带宽（数据率）为 100 Mb/s。该链路的时延带宽积为（　）。',
     options: ['5×10^5 bit', '5×10^5 字节', '6.25×10^4 bit', '2×10^8 bit'],
@@ -527,6 +530,7 @@ export const mock08c2: Question[] = [
     topic: 'IP分片',
     difficulty: 2,
     source: 'mock',
+    templateId: 'cn-fragment',
     score: 2,
     question: '一个总长度为 1500B 的 IP 数据报（首部 20B，无选项字段，DF = 0）经一条 MTU = 620B 的链路转发。分片后第 2 片的片偏移字段值与 MF 标志分别为（　）。',
     options: ['片偏移 75，MF = 1', '片偏移 600，MF = 1', '片偏移 150，MF = 1', '片偏移 75，MF = 0'],
@@ -573,6 +577,7 @@ export const mock08c2: Question[] = [
     topic: 'TCP确认号',
     difficulty: 3,
     source: 'mock',
+    templateId: 'cn-tcp-seq',
     score: 2,
     question: '主机甲向主机乙发送 TCP 数据：先发出覆盖序号 1701～2000 的段（尚未到达乙），随后发出 seq = 2001、携带 300B 数据的段（覆盖 2001～2300），该段正确到达乙。乙立即回复确认，确认号为（　）。',
     options: ['1701', '2301', '2001', '2000'],
@@ -585,6 +590,16 @@ export const mock08c2: Question[] = [
     ],
     explanation:
       '确认号语义三句话：确认号 = 期望的下一字节序号 = 连续接收前缀的末尾 + 1；乱序到达的数据被缓存但不推进确认号；对同一确认号的重复达到 3 次即触发快速重传。本题乙只能确认到 1700，故确认号 1701。做此类题先画数轴标出「连续段」与「空洞」，确认号永远落在空洞起点上。',
+    visual: {
+      kind: 'seq',
+      title: '累积确认：乱序段已到，确认号停在缺口 1701',
+      actors: ['主机甲', '主机乙'],
+      messages: [
+        { from: '主机甲', to: '主机乙', label: 'seq=1701（1701～2000，在途未到达）' },
+        { from: '主机甲', to: '主机乙', label: 'seq=2001（2001～2300，已到暂存）' },
+        { from: '主机乙', to: '主机甲', label: 'ACK ack=1701（连续前缀止于 1700）' },
+      ],
+    },
   },
   {
     id: 'mock08-40',
