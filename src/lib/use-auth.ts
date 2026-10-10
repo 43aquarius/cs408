@@ -104,14 +104,16 @@ async function pullMerge(): Promise<void> {
       records: typeof p.records
       daily: typeof p.daily
       exams: typeof p.exams
+      favorites: typeof p.favorites
       syncedAt: number
-    }>('/api/sync', { records: p.records, daily: p.daily, exams: p.exams })
+    }>('/api/sync', { records: p.records, daily: p.daily, exams: p.exams, favorites: p.favorites })
     applying = true
     try {
       useProgress.setState({
         records: res.records,
         daily: res.daily,
         exams: res.exams,
+        favorites: res.favorites,
       })
     } finally {
       applying = false
@@ -137,6 +139,7 @@ async function push(force = false): Promise<void> {
       records: p.records,
       daily: p.daily,
       exams: p.exams,
+      favorites: p.favorites,
       force,
     })
     useAuth.setState({ syncStatus: 'ok', lastSyncAt: res.syncedAt || Date.now() })

@@ -29,10 +29,11 @@ model Session {
 
 /** 每用户一份云端做题进度（JSON 快照，同步时逐字段合并） */
 model SyncState {
-  userId    String   @id
-  records   String   @default("{}")
-  daily     String   @default("{}")
-  exams     String   @default("[]")
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  updatedAt DateTime @updatedAt
+  userId     String   @id
+  records    String   @default("{}")
+  daily      String   @default("{}")
+  exams      String   @default("[]")
+  favorites  String   @default("{}")
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  updatedAt  DateTime @updatedAt
 }

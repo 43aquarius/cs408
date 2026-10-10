@@ -9,6 +9,7 @@ import { letterOf, TYPE_LABEL } from '@/data/types'
 import type { Question } from '@/data/types'
 import { VisualPlayer } from '@/components/visuals/visual-player'
 import { SolutionTemplate } from '@/components/solution-template'
+import { QuestionFavNote } from '@/components/fav-note'
 import { useProgress } from '@/lib/store'
 import { cn } from '@/lib/utils'
 
@@ -35,6 +36,7 @@ export function QuestionBody({
 }: QuestionBodyProps) {
   const submitAnswer = useProgress((s) => s.submitAnswer)
   const markApplication = useProgress((s) => s.markApplication)
+  const hasRecord = useProgress((s) => !!s.records[q.id])
   const [selected, setSelected] = React.useState<string | null>(null)
   const [revealed, setRevealed] = React.useState(false)
   const [selfMarked, setSelfMarked] = React.useState<'mastered' | 'unmastered' | null>(null)
@@ -272,6 +274,11 @@ export function QuestionBody({
           <p className="mb-1 font-mono text-xs font-semibold text-primary">✦ 解析</p>
           <RichText text={q.explanation} className="text-sm text-foreground/85" />
         </div>
+      )}
+
+      {/* 收藏 + 备注（作答后 / 复盘模式 / 综合题 / 曾做过均展示） */}
+      {(answered || mode === 'review' || q.type === 'application' || hasRecord) && (
+        <QuestionFavNote qid={q.id} />
       )}
     </div>
   )

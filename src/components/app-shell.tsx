@@ -19,6 +19,7 @@ import { QuestionsView } from '@/components/views/questions-view'
 import { PracticeView } from '@/components/views/practice-view'
 import { ExamView } from '@/components/views/exam-view'
 import { WrongBookView } from '@/components/views/wrong-book-view'
+import { FavoritesView } from '@/components/views/favorites-view'
 import { NotesView } from '@/components/views/notes-view'
 import { StatsView } from '@/components/views/stats-view'
 import { AboutView } from '@/components/views/about-view'
@@ -33,6 +34,7 @@ const NAV: Array<{ id: ViewId; label: string }> = [
   { id: 'practice', label: '刷题训练' },
   { id: 'exam', label: '模拟考试' },
   { id: 'wrong', label: '错题本' },
+  { id: 'favorites', label: '收藏夹' },
   { id: 'notes', label: '经验笔记' },
   { id: 'stats', label: '数据统计' },
   { id: 'about', label: '关于' },
@@ -44,6 +46,7 @@ const VIEW_TITLES: Record<ViewId, string> = {
   practice: '刷题训练',
   exam: '模拟考试',
   wrong: '错题本',
+  favorites: '收藏夹',
   notes: '经验笔记',
   stats: '数据统计',
   about: '关于',
@@ -187,6 +190,7 @@ export function AppShell() {
         {view === 'practice' && <PracticeView />}
         {view === 'exam' && <ExamView />}
         {view === 'wrong' && <WrongBookView />}
+        {view === 'favorites' && <FavoritesView />}
         {view === 'notes' && <NotesView />}
         {view === 'stats' && <StatsView />}
         {view === 'about' && <AboutView />}

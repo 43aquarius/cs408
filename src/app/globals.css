@@ -167,6 +167,78 @@
     50% { opacity: 0; }
   }
 
+  /* ============ 封面（CoverHero）专属 ============ */
+
+  /* 字标柔光（暗色下更亮，亮色下收敛） */
+  .text-glow {
+    text-shadow: 0 0 22px oklch(0.772 0.15 165 / 0.35), 0 0 72px oklch(0.772 0.15 165 / 0.2);
+  }
+  .dark .text-glow {
+    text-shadow: 0 0 26px oklch(0.772 0.15 165 / 0.5), 0 0 90px oklch(0.772 0.15 165 / 0.32);
+  }
+
+  /* 封面辉光色斑：慢速漂移 + 呼吸 */
+  @keyframes float-slow {
+    0%, 100% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.55; }
+    50% { transform: translate3d(36px, -28px, 0) scale(1.1); opacity: 0.9; }
+  }
+  .float-slow {
+    animation: float-slow 11s ease-in-out infinite;
+  }
+  .float-slower {
+    animation: float-slow 17s ease-in-out infinite reverse;
+  }
+
+  /* 开机自检行进入 */
+  @keyframes boot-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: none; }
+  }
+  .boot-in {
+    opacity: 0;
+    animation: boot-in 0.45s ease-out forwards;
+  }
+
+  /* 知识点跑马灯：无缝滚动，hover 暂停 */
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  .marquee-track {
+    animation: marquee 46s linear infinite;
+  }
+  .marquee-hover:hover .marquee-track {
+    animation-play-state: paused;
+  }
+
+  /* 机架模块呼吸灯 */
+  @keyframes breathe {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 currentColor; }
+    50% { opacity: 0.55; box-shadow: 0 0 6px 2px currentColor; }
+  }
+  .breathe {
+    animation: breathe 2.6s ease-in-out infinite;
+  }
+
+  /* 向下滚动提示 */
+  @keyframes nudge-down {
+    0%, 100% { transform: translateY(0); opacity: 0.9; }
+    50% { transform: translateY(6px); opacity: 0.45; }
+  }
+  .nudge-down {
+    animation: nudge-down 1.8s ease-in-out infinite;
+  }
+
+  /* 封面进入渐显 */
+  @keyframes rise-in {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: none; }
+  }
+  .rise-in {
+    opacity: 0;
+    animation: rise-in 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+  }
+
   /* Hero 点阵背景 */
   .dot-grid {
     background-image: radial-gradient(circle, oklch(0.596 0.13 163 / 0.16) 1px, transparent 1px);
@@ -214,7 +286,17 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .caret-blink {
+  .caret-blink,
+  .float-slow,
+  .float-slower,
+  .marquee-track,
+  .breathe,
+  .nudge-down {
+    animation: none;
+  }
+  .boot-in,
+  .rise-in {
+    opacity: 1;
     animation: none;
   }
   html {

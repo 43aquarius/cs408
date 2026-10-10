@@ -18,12 +18,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import { Star } from 'lucide-react'
 import { QuestionCard } from '@/components/question-card'
 import { QuestionBody } from '@/components/question-body'
 import { DifficultyBadge, SubjectBadge, TopicBadge, YearBadge } from '@/components/badges'
 import { QUESTIONS, YEARS, filterQuestions, getQuestion, CURATED, MOCKS, ALL_QUESTIONS } from '@/data'
 import { SUBJECTS, SUBJECT_ORDER, DIFFICULTY_LABEL } from '@/data/types'
 import type { SubjectCode, Difficulty } from '@/data/types'
+import { useProgress, favoritedQids } from '@/lib/store'
 import { useUI } from '@/lib/store'
 import { cn } from '@/lib/utils'
 
@@ -66,12 +68,14 @@ export function QuestionsView() {
   const setFocus = useUI((s) => s.setFocus)
   const consumePreset = useUI((s) => s.consumeQuestionsSubject)
   const consumeKeywordPreset = useUI((s) => s.consumeQuestionsKeyword)
+  const favorites = useProgress((s) => s.favorites)
 
   const [subject, setSubject] = React.useState<SubjectCode | 'all'>('all')
   const [year, setYear] = React.useState<number | 'all'>('all')
   const [type, setType] = React.useState<'all' | 'single' | 'application'>('all')
   const [difficulty, setDifficulty] = React.useState<Difficulty | 'all'>('all')
   const [source, setSource] = React.useState<'all' | 'real' | 'adapted' | 'curated' | 'mock'>('all')
+  const [onlyFav, setOnlyFav] = React.useState(false)
   const [keyword, setKeyword] = React.useState('')
   const [page, setPage] = React.useState(0)
 
@@ -86,6 +90,8 @@ export function QuestionsView() {
     if (kw) setKeyword(kw)
   }, [consumeKeywordPreset])
 
+  const favSet = React.useMemo(() => new Set(favoritedQids(favorites)), [favorites])
+
   const filtered = React.useMemo(
     () =>
       filterQuestions({
@@ -95,11 +101,12 @@ export function QuestionsView() {
         difficulty,
         source,
         keyword,
+        ids: onlyFav ? favSet : undefined,
       }),
-    [subject, year, type, difficulty, source, keyword],
+    [subject, year, type, difficulty, source, keyword, onlyFav, favSet],
   )
 
-  React.useEffect(() => setPage(0), [subject, year, type, difficulty, source, keyword])
+  React.useEffect(() => setPage(0), [subject, year, type, difficulty, source, keyword, onlyFav])
 
   // 切换到精选/模拟卷来源时，年份筛选自动失效并复位
   React.useEffect(() => {
@@ -180,6 +187,14 @@ export function QuestionsView() {
           </Chip>
           <Chip active={source === 'mock'} onClick={() => setSource(source === 'mock' ? 'all' : 'mock')}>
             模拟卷
+          </Chip>
+          <Chip
+            active={onlyFav}
+            onClick={() => setOnlyFav((v) => !v)}
+            className={favSet.size === 0 && !onlyFav ? 'opacity-50' : ''}
+          >
+            <Star className={cn('mr-1 inline h-3 w-3', onlyFav && 'fill-current')} aria-hidden />
+            只看收藏{favSet.size > 0 ? ` · ${favSet.size}` : ''}
           </Chip>
           <div className="ml-auto flex items-center gap-2">
             <Select

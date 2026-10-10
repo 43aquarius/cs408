@@ -186,11 +186,14 @@ export interface QuestionFilter {
   difficulty?: Difficulty | 'all'
   source?: 'all' | 'real' | 'adapted' | 'curated' | 'mock'
   keyword?: string
+  /** 限定题号白名单（收藏筛选等） */
+  ids?: Set<string>
 }
 
 export function filterQuestions(f: QuestionFilter): Question[] {
   const kw = f.keyword?.trim().toLowerCase() ?? ''
   return ALL_QUESTIONS.filter((q) => {
+    if (f.ids && !f.ids.has(q.id)) return false
     if (f.subjects && f.subjects.length > 0 && !f.subjects.includes(q.subject)) return false
     // 年份筛选仅对真题生效（精选/模拟题 year=0，指定年份时自动排除）
     if (f.years && f.years.length > 0 && !f.years.includes(q.year)) return false

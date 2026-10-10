@@ -29,15 +29,29 @@ export interface ExamRecord {
   perSubject: Partial<Record<SubjectCode, { c: number; t: number }>>
 }
 
+/** 收藏条目：条目不物理删除（fav=false 即取消），便于多端同步合并 */
+export interface FavEntry {
+  fav: boolean
+  /** 收藏状态最近一次变更时间（同步时决定 fav 以谁为准） */
+  ts: number
+  note: string
+  /** 备注最近一次编辑时间（同步时决定 note 以谁为准） */
+  noteAt: number
+}
+
 interface ProgressState {
   records: Record<string, QRecord>
   /** 'YYYY-MM-DD' -> 当日答题次数 */
   daily: Record<string, number>
   exams: ExamRecord[]
+  /** 题目收藏 + 备注（qid -> 条目） */
+  favorites: Record<string, FavEntry>
   submitAnswer: (qid: string, result: 'correct' | 'wrong') => void
   markApplication: (qid: string, mastered: boolean) => void
   addExam: (rec: Omit<ExamRecord, 'id' | 'ts'> & { id?: string }) => void
   updateExam: (id: string, patch: Partial<ExamRecord>) => void
+  toggleFavorite: (qid: string) => void
+  setNote: (qid: string, note: string) => void
   resetAll: () => void
 }
 
@@ -54,6 +68,7 @@ export const useProgress = create<ProgressState>()(
       records: {},
       daily: {},
       exams: [],
+      favorites: {},
       submitAnswer: (qid, result) =>
         set((s) => {
           const prev = s.records[qid]
@@ -97,7 +112,27 @@ export const useProgress = create<ProgressState>()(
         set((s) => ({
           exams: s.exams.map((e) => (e.id === id ? { ...e, ...patch } : e)),
         })),
-      resetAll: () => set({ records: {}, daily: {}, exams: [] }),
+      toggleFavorite: (qid) =>
+        set((s) => {
+          const prev = s.favorites[qid]
+          return {
+            favorites: {
+              ...s.favorites,
+              [qid]: { fav: !(prev?.fav ?? false), ts: Date.now(), note: prev?.note ?? '', noteAt: prev?.noteAt ?? 0 },
+            },
+          }
+        }),
+      setNote: (qid, note) =>
+        set((s) => {
+          const prev = s.favorites[qid]
+          return {
+            favorites: {
+              ...s.favorites,
+              [qid]: { fav: prev?.fav ?? false, ts: prev?.ts ?? 0, note, noteAt: Date.now() },
+            },
+          }
+        }),
+      resetAll: () => set({ records: {}, daily: {}, exams: [], favorites: {} }),
     }),
     {
       name: '408lab-progress-v1',
@@ -113,6 +148,7 @@ export type ViewId =
   | 'practice'
   | 'exam'
   | 'wrong'
+  | 'favorites'
   | 'notes'
   | 'stats'
   | 'about'
@@ -186,4 +222,17 @@ export function isWrongEntry(rec: QRecord | undefined): boolean {
     (rec.lastResult === 'wrong' || rec.lastResult === 'unmastered') &&
     rec.wrong > 0
   )
+}
+
+/** 是否已收藏（多视图复用） */
+export function isFavorited(fav: FavEntry | undefined): boolean {
+  return fav?.fav === true
+}
+
+/** 收藏的题号列表（按收藏时间倒序） */
+export function favoritedQids(favorites: Record<string, FavEntry>): string[] {
+  return Object.entries(favorites)
+    .filter(([, f]) => f.fav)
+    .sort((a, b) => b[1].ts - a[1].ts)
+    .map(([qid]) => qid)
 }

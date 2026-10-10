@@ -1,6 +1,7 @@
 'use client'
 
-import { ArrowUpRight } from 'lucide-react'
+import * as React from 'react'
+import { ArrowUpRight, Star } from 'lucide-react'
 import { Card, CardFooter, CardHeader } from '@/components/ui/card'
 import {
   DifficultyBadge,
@@ -12,12 +13,14 @@ import {
 } from '@/components/badges'
 import { RichText } from '@/components/rich-text'
 import type { Question } from '@/data/types'
-import { useProgress } from '@/lib/store'
+import { useProgress, isFavorited } from '@/lib/store'
 import { cn } from '@/lib/utils'
 
 /** 题库文章卡片：hover 抬升（程序员博客 article card 风格） */
 export function QuestionCard({ q, onOpen }: { q: Question; onOpen: (q: Question) => void }) {
   const rec = useProgress((s) => s.records[q.id])
+  const fav = useProgress((s) => isFavorited(s.favorites[q.id]))
+  const toggleFavorite = useProgress((s) => s.toggleFavorite)
 
   return (
     <Card
@@ -39,7 +42,25 @@ export function QuestionCard({ q, onOpen }: { q: Question; onOpen: (q: Question)
         <SubjectBadge subject={q.subject} />
         <TypeBadge type={q.type} />
         <SourceBadge source={q.source} />
-        <span className="ml-auto">
+        <span className="ml-auto flex items-center gap-1">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation()
+              toggleFavorite(q.id)
+            }}
+            aria-pressed={fav}
+            aria-label={fav ? `取消收藏 ${q.id}` : `收藏 ${q.id}`}
+            title={fav ? '取消收藏' : '收藏本题'}
+            className={cn(
+              'flex h-6 w-6 items-center justify-center rounded-md outline-none transition-all focus-visible:ring-2 focus-visible:ring-ring',
+              fav
+                ? 'text-amber-500'
+                : 'text-muted-foreground/40 hover:text-amber-500 md:opacity-0 md:group-hover:opacity-100',
+            )}
+          >
+            <Star className={cn('h-4 w-4', fav && 'fill-current')} aria-hidden />
+          </button>
           <DifficultyBadge difficulty={q.difficulty} />
         </span>
       </CardHeader>
